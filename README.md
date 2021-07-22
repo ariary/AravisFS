@@ -1,3 +1,4 @@
+
 # CeasarFS
 
 A fake encrypted file system 🌺 *Another non-production ready software*
@@ -21,6 +22,16 @@ Providing a fake encrypted FS and utilities to interact with
  - To boast of having an encrypted fs .. but unusable
 
 ## 💺 Usage (under construction)
+|Function| Use |
+|--|--|
+| `ceasarsalad` | encrypt a fs |
+| `ceasardalas` | decrypt representation of a fs |
+| `ceasartexas` | make a fs representation real |
+| `ceasarsalad` | encrypt a fs |
+|`ceasarpath`| encrypt a path|
+| `ceasarls` | `ls` in encrypted fs |
+| `ceasarcat`| print content file of encrypted fs |
+|`ceasarmv`,  `ceasarcp`, `ceasarrm`,  `ceasartouch`, etc| Unix things ...
 
 ### Encrypt a fs
 
@@ -60,19 +71,20 @@ Providing a fake encrypted FS and utilities to interact with
  *process*: Same thing that `ls path`
  
   - **Print the content of a file of the encrypted fs with  `ceasarcat`**
- *parameter*: `folder_representation` (representation ofan encrypted fs) and `filepath`
+ *parameter*: `folder_representation` (representation of an encrypted fs) and `filepath`
 
 *process*: Same thing that `cat filepath`
- *Pb: leak  info in stdout that could be spied*
+ *Pb: leak  info in stdout that could be spied on*
+ 
  #### Example
- On a target machine containing my encrypted fs `secret_fs`, Iwan to know the content of the folder toto:
+ On a target machine containing my encrypted fs `secret_fs`, I want to know the content of the folder toto:
 
      (on my machine) $ ceasarpath toto 
      ~~> **copy/paste result**
      (on the target machine) $ ceasarls secret_fs <paste_ceasarpath _result>
 
 #### Note
-CeasarPath will be provided later. The reason why we encrypt the path is to avoid info leak from `.bash_history` (information about the hierarchy of the secret fs)
+`CeasarPath` will be provided later. The reason why we encrypt the path is to avoid info leak from `.bash_history` (information about the hierarchy of the secret fs)
 
 ### Manipulate an encrypted fs (future)
 `ceasarmv`,  `ceasarcp`, `ceasarrm`,  `ceasartouch`, etc
