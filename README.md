@@ -8,7 +8,7 @@ No pretension just to learn and keep my mind busy
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 ## 🔦 Idea
-Providing a fake encrypted FS and utility to interact with
+Providing a fake encrypted FS and utilities to interact with
 
 **Why fake?**
 
