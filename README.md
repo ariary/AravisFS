@@ -27,6 +27,7 @@ Providing a fake encrypted FS and utilities to interact with
  - **Encrypt with `CeasarSalad`**
  *parameter*: `folder`
  *return*: `ceasar_salad`
+ 
  *process*: Take `folder`, encrypt it using magic, and return the representation of the folder encrypted `ceasar_salad`
 
 ### Decrypt an encrypted fs
