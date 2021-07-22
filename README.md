@@ -31,7 +31,7 @@ Providing a fake encrypted FS and utilities to interact with
 |`ceasarpath`| encrypt a path|
 | `ceasarls` | `ls` in encrypted fs |
 | `ceasarcat`| print content file of encrypted fs |
-|`ceasarmv`,  `ceasarcp`, `ceasarrm`,  `ceasartouch`, etc| Unix things ...
+|`ceasarmv`,  `ceasarcp`, `ceasarrm`,  `ceasartouch`, etc| Unix things on encrypted fs... |
 
 ### Encrypt a fs
 
