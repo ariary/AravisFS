@@ -34,11 +34,13 @@ Providing a fake encrypted FS and utilities to interact with
  - **Decrypt with `CeasarDalas`**
  *parameter*: `ceasar_salad`
  *return*: `folder_representation`
- *process*: Take `ceasar_salad`, decrypt it using magic, and return the representation of the folder decrypted `folder_representation`
+
+*process*: Take `ceasar_salad`, decrypt it using magic, and return the representation of the folder decrypted `folder_representation`
 
  - **Create the fs described by a  representation with `CeasarTexas`**
  *parameter*: `folder_representation` (representation of an unencrypted folder/fs)
- *process*: Create the different folder and file describe in the `folder_representation` on the file system.
+
+*process*: Create the different folder and file describe in the `folder_representation` on the file system.
  
  #### Example
  First I encrypt a fs:
@@ -54,11 +56,13 @@ Providing a fake encrypted FS and utilities to interact with
 ### Explore an encrypted fs
  - **Browse encrypted fs with  `ceasarls`**
  *parameter*: `folder_representation` (representation of an encrypted fs) and `path`
+ 
  *process*: Same thing that `ls path`
  
   - **Print the content of a file of the encrypted fs with  `ceasarcat`**
  *parameter*: `folder_representation` (representation ofan encrypted fs) and `filepath`
- *process*: Same thing that `cat filepath`
+
+*process*: Same thing that `cat filepath`
  *Pb: leak  info in stdout that could be spied*
  #### Example
  On a target machine containing my encrypted fs `secret_fs`, Iwan to know the content of the folder toto:
