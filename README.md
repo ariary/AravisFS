@@ -1,6 +1,6 @@
 
 # AravisFS 🗻🌄
-![Aravis](https://www.bivouak.net/photos/p/Panorama_sur_les_Aravis_17755.jpg)
+
 A fake encrypted file system 🔐 *Another non-production ready software*
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
@@ -9,6 +9,13 @@ A fake encrypted file system 🔐 *Another non-production ready software*
 |:------------------------------------------------------------------------------------------------------------------:|
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
+	
+	
+|                                                     🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟                                                     |
+|:------------------------------------------------------------------------------------------------------------------:|
+| **DRAFT STAGE - *Any idea, criticism, contribution is welcome*** No pretension just to learn and keep my mind busy |
+|                                                     🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟                                                     |
+
 ## 🔦 Idea
 **Aim?**
 Providing a fake encrypted FS and utilities to interact with. 
