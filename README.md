@@ -1,4 +1,5 @@
 
+
 # AravisFS 🗻🌄
 
 A fake encrypted file system 🔐 *Another non-production ready software*
@@ -24,14 +25,17 @@ For this purposewe use 2 utilities, each on different side:
 
 *We accept to leak information about the fs structure (number of file/folder, size)*
 
-**Why fake?**
- - Cause encryption isn't strong
- - Cause it does not provide a real fs, just a representation of it. *(And to be honest it only encrypts a folder but by extension we say a file system)*
+
 
 **Use case?**
  - To avoid your volume being spied on by your cloud provider
  - To make a temporary folder/fs on a target machine if you are a black hat and you do not want to be spied on by forensic people. Or if you want to hide a payload.
  - To boast of having an encrypted fs .. but practically unusable anyway
+
+**Why "fake"?**
+ - Cause encryption isn't strong
+ - Cause it does not provide a real fs, just a representation of it. *(And to be honest it only encrypts a folder but by extension we say a file system)*
+
  
  ## 💺 Usage (***In case I ever code***)
 ### 🔍 Explore encrypted folder
@@ -133,7 +137,31 @@ And theirs siblings `remotemv`  ,etc
 Magic! (**soon explained**)
 
 ### How  is the fs encrypted ?
-structure, retrieve content without key etc ...
+
+When the `adret`utlity encrypt a folder it returns what we called the **"encrypted filesystem"** wich is `.arafs`. It is in fact a text file of the fs representation (encrypted of course).
+
+The structure of  the content of the `.arafs` file  is influenced by the following constraint: **it musts be used to retrieve data without using the key**
+
+#### Encrypted fs data structure
+For this reason, the data stracture of the content is a (unordered) list of all the **"resources"**  present in the folder. In that way, we could only know how many resources the encrypted fs has and also the size of the fs without having the key.
+
+##### Resource
+A resource is:
+|  |  ||
+|--|--|--|
+|🔐name  | type |🔐content|
+
+**name**: is the encrypted value of the path of the resource
+**type** : is the type of the ressource within the fs. it could be:
+ - folder
+ -  file
+**content**: is the content of the resource ie a list of child resources name if type is  folder or the file content if type is file
+
+#### Example: Search in encrypted fs
+Take the example of `ubac -ls darkpath myencryptedfs.arafs` which aims to perform `ls` of the `darkpath` in `myencryptedfs.arafs`.
+
+First it will search the `darkpath` (it is an encrypted path) name in the list which is `myencryptedfs.arafs` . If the type is file it will return ... If the type is a folder it will take the content part and retrieve the type of all resource within (by searching with their name).
+Finally it will return a list with the child resources name with their type. (child resource name are encrypted)
 
 ### How does the remote interaction work  with the encrypted fs?
 Here the sequence of a `remotecat`. 
