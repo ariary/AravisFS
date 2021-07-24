@@ -2,7 +2,7 @@
 
 # AravisFS 🗻🌄
 
-A fake encrypted file system 🔐 *Another non-production ready software*
+A fake encrypted file system 🔐 *Another non production-ready software*
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 
