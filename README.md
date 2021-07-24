@@ -6,9 +6,9 @@ A fake encrypted file system 🔐 *Another non production-ready software*
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 
-| **DRAFT STAGE** - *Any idea, criticism, contribution is welcome*. No pretension just to learn and keep my mind busy |
+| **DRAFT STAGE** - *Any idea, criticism, contribution is welcome*.  |
 |:------------------------------------------------------------------------------------------------------------------:|
-
+*No pretension just to learn and keep my mind busy*
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	
 	
