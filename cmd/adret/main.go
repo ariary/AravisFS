@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
+	"github.com/a8m/tree/ostree"
 	"github.com/ariary/AravisFS/pkg/encrypt"
 	"github.com/ariary/AravisFS/pkg/filesystem"
 )
@@ -26,7 +28,15 @@ func main() {
 	f.Write(file_content_decrypted)
 
 	//FS
-	r := filesystem.Test("test/mytestfolder/tata/binary_hello", "file", file_content_decrypted)
-	filesystem.Test2(r)
+	// r := filesystem.Test("test/mytestfolder/tata/binary_hello", "file", file_content_decrypted)
+	// filesystem.Test2(r)
+
+	//Browse fs to construct
+	// dir := new(ostree.FS)
+	fmt.Println(ostree.Print("."))
+	// fmt.Println(dir.ReadDir("."))
+	// fmt.Println(dir.Stat("./README.md"))
+	filesystem.MyVisitTree()
+	filesystem.MyVisitWalk()
 
 }
