@@ -30,7 +30,5 @@ func main() {
 	// filesystem.Test2(r)
 
 	//Browse fs to construct
-	filesystem.MyVisitTree()
-	filesystem.MyVisitWalk()
-
+	filesystem.CreateAravisFS("./test/mytestfolder", "toto")
 }

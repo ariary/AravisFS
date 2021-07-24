@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/a8m/tree"
-	"github.com/a8m/tree/ostree"
 	"github.com/ariary/AravisFS/pkg/encrypt"
 )
 
@@ -62,7 +60,7 @@ func WriteFSFile(resources resourceList) {
 	file, _ := json.MarshalIndent(resources, "", " ")
 	// file, _ := json.Marshal(resources)
 
-	_ = ioutil.WriteFile("test.arafs", file, 0644)
+	_ = ioutil.WriteFile("ceciestlav1.arafs", file, 0644)
 }
 
 func PrintFSFile(resources resourceList) {
@@ -70,16 +68,6 @@ func PrintFSFile(resources resourceList) {
 	// file, _ := json.Marshal(resources)
 
 	fmt.Println(string(file))
-}
-
-func MyVisitTree() {
-	tr := tree.New("./test") //node
-	opts := &tree.Options{
-		Fs: new(ostree.FS),
-	}
-	dir, files := tr.Visit(opts)
-	fmt.Println(dir)
-	fmt.Println(files)
 }
 
 // CreateAravisFS take the path of a directory parameter and write the .arafs file representing the
@@ -91,8 +79,7 @@ func CreateAravisFS(path string, key string) {
 	rl := []resource{}
 	resources := resourceList{rl}
 
-	nodes := make(map[string]bool)
-	err := filepath.Walk("./test",
+	err := filepath.Walk(path,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -113,36 +100,4 @@ func CreateAravisFS(path string, key string) {
 
 	WriteFSFile(resources)
 
-}
-
-func MyVisitWalk() {
-
-	rl := []resource{}
-	resources := resourceList{rl}
-
-	nodes := make(map[string]bool)
-	err := filepath.Walk("./test",
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			nodes[path] = info.IsDir()
-			var resourceType string
-			if info.IsDir() {
-				resourceType = "directory"
-			} else {
-				resourceType = "file"
-			}
-			r := createResource(path, resourceType, encrypt.EncryptFile(path, "toto"))
-			resources.Addresource(r)
-			return nil
-		})
-	if err != nil {
-		log.Println(err)
-	}
-
-	// for node, isDir := range nodes {
-	// 	fmt.Println("node:", node, "=>", "isDir:", isDir)
-	// }
-	PrintFSFile(resources)
 }
