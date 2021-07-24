@@ -82,23 +82,45 @@ func MyVisitTree() {
 	fmt.Println(files)
 }
 
+// CreateAravisFS take the path of a directory parameter and write the .arafs file representing the
+// the encrypted fs of this directory with the key parameter
+// Encrypted fs is a list of the resources. By resource we mean resource=[name,is it a dir?,content].
+// Take into account that name and content are encrypted with the key
+func CreateAravisFS(path string, key string) {
+
+	rl := []resource{}
+	resources := resourceList{rl}
+
+	nodes := make(map[string]bool)
+	err := filepath.Walk("./test",
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			var resourceType string
+			if info.IsDir() {
+				resourceType = "directory"
+			} else {
+				resourceType = "file"
+			}
+			r := createResource(path, resourceType, encrypt.EncryptFile(path, key))
+			resources.Addresource(r)
+			return nil
+		})
+	if err != nil {
+		log.Println(err)
+	}
+
+	WriteFSFile(resources)
+
+}
+
 func MyVisitWalk() {
 
 	rl := []resource{}
 	resources := resourceList{rl}
 
 	nodes := make(map[string]bool)
-	// err := filepath.Walk("./test",
-	// 	func(path string, info os.FileInfo, err error) error {
-	// 		if err != nil {
-	// 			return err
-	// 		}
-	// 		fmt.Println(path, info.Size(), info.IsDir())
-	// 		return nil
-	// 	})
-	// if err != nil {
-	// 	log.Println(err)
-	// }
 	err := filepath.Walk("./test",
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
