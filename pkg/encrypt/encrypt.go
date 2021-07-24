@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"io"
+	"io/ioutil"
 )
 
 //from https://www.thepolyglotdeveloper.com/2018/02/encrypt-decrypt-data-golang-application-crypto-packages/
@@ -49,3 +50,13 @@ func Decrypt(data []byte, passphrase string) []byte {
 	}
 	return plaintext
 }
+
+func EncryptFile(filename string, passphrase string) []byte {
+	data, _ := ioutil.ReadFile(filename)
+	return Encrypt(data, passphrase)
+}
+
+// func DecryptFile(filename string, passphrase string) []byte {
+// 	data, _ := ioutil.ReadFile(filename)
+// 	return Decrypt(data, passphrase)
+// }
