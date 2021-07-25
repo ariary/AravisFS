@@ -5,7 +5,9 @@ import (
 	"crypto/cipher"
 	"crypto/md5"
 	"crypto/rand"
+	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"io"
 	"io/ioutil"
 )
@@ -32,7 +34,12 @@ func Encrypt(data []byte, passphrase string) []byte {
 	return ciphertext
 }
 
-func Decrypt(data []byte, passphrase string) []byte {
+func EncryptFile(filename string, passphrase string) []byte {
+	data, _ := ioutil.ReadFile(filename)
+	return Encrypt(data, passphrase)
+}
+
+func DecryptByte(data []byte, passphrase string) []byte {
 	key := []byte(createHash(passphrase))
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -51,12 +58,11 @@ func Decrypt(data []byte, passphrase string) []byte {
 	return plaintext
 }
 
-func EncryptFile(filename string, passphrase string) []byte {
-	data, _ := ioutil.ReadFile(filename)
-	return Encrypt(data, passphrase)
+func DecryptString(data string, passphrase string) []byte {
+	dataDecoded, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		fmt.Println("error:", err)
+		return nil
+	}
+	return DecryptByte([]byte(dataDecoded), passphrase)
 }
-
-// func DecryptFile(filename string, passphrase string) []byte {
-// 	data, _ := ioutil.ReadFile(filename)
-// 	return Decrypt(data, passphrase)
-// }
