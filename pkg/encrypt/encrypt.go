@@ -39,6 +39,12 @@ func EncryptFile(filename string, passphrase string) []byte {
 	return Encrypt(data, passphrase)
 }
 
+func DarkenPath(filename string, key string) string {
+	darkpath := Encrypt([]byte(filename), key)
+	darkpath_enc := base64.StdEncoding.EncodeToString(darkpath)
+	return darkpath_enc
+}
+
 func DecryptByte(data []byte, passphrase string) []byte {
 	key := []byte(createHash(passphrase))
 	block, err := aes.NewCipher(key)

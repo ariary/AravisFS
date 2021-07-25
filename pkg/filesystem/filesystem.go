@@ -75,9 +75,10 @@ func PrintFSFile(resources resourceList) {
 // Encrypted fs is a list of the resources. By resource we mean resource=[name,is it a dir?,content].
 // Take into account that name and content are encrypted with the key
 func CreateAravisFS(path string, key string) {
-
 	rl := []resource{}
 	resources := resourceList{rl}
+
+	path = filepath.Clean(path) // avoid "./ type path"
 
 	err := filepath.Walk(path,
 		func(path string, info os.FileInfo, err error) error {
