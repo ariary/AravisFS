@@ -1,7 +1,7 @@
 package filesystem
 
 type Resource struct {
-	Name    string `json:"name"`
+	Name    []byte `json:"name"`
 	Type    string `json:"type"`
 	Content []byte `json:"content"`
 }
@@ -13,7 +13,7 @@ type ResourceList struct {
 	List []Resource
 }
 
-func createResource(filename string, resourceType string, content []byte) Resource {
+func createResource(filename []byte, resourceType string, content []byte) Resource {
 
 	r := &Resource{
 		Name:    filename,

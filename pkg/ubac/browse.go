@@ -38,7 +38,7 @@ func GetResourceInFS(resourcename string, filename string) *filesystem.Resource 
 	}
 	resources := resourcesList.List
 	for i := range resources { //for loop using index to avoid copy (perf)
-		if resources[i].Name == resourcename {
+		if string(resources[i].Name) == resourcename {
 			return &resources[i]
 		}
 	}

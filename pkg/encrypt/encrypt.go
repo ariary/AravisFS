@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"path/filepath"
 )
 
 //from https://www.thepolyglotdeveloper.com/2018/02/encrypt-decrypt-data-golang-application-crypto-packages/
@@ -20,8 +21,8 @@ func createHash(key string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func Encrypt(data []byte, passphrase string) []byte {
-	block, _ := aes.NewCipher([]byte(createHash(passphrase)))
+func Encrypt(data []byte, key string) []byte {
+	block, _ := aes.NewCipher([]byte(createHash(key)))
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
 		panic(err.Error())
@@ -34,20 +35,44 @@ func Encrypt(data []byte, passphrase string) []byte {
 	return ciphertext
 }
 
-func EncryptFile(filename string, passphrase string) []byte {
+func EncryptFile(filename string, key string) []byte {
 	data, _ := ioutil.ReadFile(filename)
-	return Encrypt(data, passphrase)
+	return Encrypt(data, key)
 }
 
-func DarkenPath(filename string, key string) string {
-	darkpath := Encrypt([]byte(filename), key)
+// Encrypt a String
+func EncryptString(filename string, key string) []byte {
+	filenameByte := []byte(filename)
+	return Encrypt(filenameByte, key)
+}
+
+// Return the path encrypted as it appears in the encrypted fs
+// As we use JSON.MArshall to embed resource in fs and the resource name,
+// which is the path encrypted, is a []byte it is encoded with base64
+// In that way , to obtain path as it appear in FS we encrypt it and then encode
+// it using base64
+func DarkenPath(path string, key string) string {
+	path = filepath.Clean(path)
+	darkpath := Encrypt([]byte(path), key)
 	darkpath_enc := base64.StdEncoding.EncodeToString(darkpath)
 	return darkpath_enc
 }
 
-func DecryptByte(data []byte, passphrase string) []byte {
-	key := []byte(createHash(passphrase))
-	block, err := aes.NewCipher(key)
+// Decrypt a path of encrypted fs
+// first it decode it using base64 and then decrypt it
+// finally it convert it in a string
+func DecryptPath(encryptedPath string, key string) string {
+	decoded, err := base64.StdEncoding.DecodeString(encryptedPath)
+	if err != nil {
+		fmt.Printf("Error decoding encrypted path: %s ", err.Error())
+		return ""
+	}
+	return string(DecryptByte(decoded, key))
+}
+
+func DecryptByte(data []byte, key string) []byte {
+	passphrase := []byte(createHash(key))
+	block, err := aes.NewCipher(passphrase)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -64,11 +89,11 @@ func DecryptByte(data []byte, passphrase string) []byte {
 	return plaintext
 }
 
-func DecryptString(data string, passphrase string) []byte {
+func DecryptString(data string, key string) []byte {
 	dataDecoded, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
 		fmt.Println("error:", err)
 		return nil
 	}
-	return DecryptByte([]byte(dataDecoded), passphrase)
+	return DecryptByte([]byte(dataDecoded), key)
 }
