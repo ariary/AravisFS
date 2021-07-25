@@ -7,67 +7,65 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
 )
 
-type resource struct {
-	Name    string `json:"name"`
-	Type    string `json:"type"`
-	Content []byte `json:"content"`
-}
-
-type resourceList struct {
-	List []resource
-}
-
-func Test(filename string, resourceType string, content []byte) resource {
-	r := createResource(filename, resourceType, content)
-
-	return r
-}
-func createResource(filename string, resourceType string, content []byte) resource {
-
-	r := &resource{
-		Name:    filename,
-		Type:    resourceType,
-		Content: content}
-	return *r
-	// rjson, _ := json.Marshal(r)
-	// fmt.Println(string(rjson))
-	// jsondat := &resourceList{List: []resource{*r, *r}}
-	// encjson, _ := json.Marshal(jsondat)
-	// fmt.Println(string(encjson))
-}
-
-func Test2(r resource) {
+func Test2(r Resource) {
 	// var resources *resourceList
 	// resources = new(resourceList)
 
-	rl := []resource{}
-	resources := resourceList{rl}
+	rl := []Resource{}
+	resources := ResourceList{rl}
 
 	resources.Addresource(r)
 
 	WriteFSFile(resources)
 }
-func (resources *resourceList) Addresource(r resource) []resource {
-	resources.List = append(resources.List, r)
-	return resources.List
-}
 
-func WriteFSFile(resources resourceList) {
+func WriteFSFile(resources ResourceList) {
 	file, _ := json.MarshalIndent(resources, "", " ")
 	// file, _ := json.Marshal(resources)
 
 	_ = ioutil.WriteFile("ceciestlav1.arafs", file, 0644)
 }
 
-func PrintFSFile(resources resourceList) {
+func PrintFSFile(resources ResourceList) {
 	file, _ := json.MarshalIndent(resources, "", " ")
 	// file, _ := json.Marshal(resources)
 
 	fmt.Println(string(file))
+}
+
+// Return the content of a directory as a byte array
+// the content is the list of file & directory within the directory
+// content structure: "file1/file2/../fileN"
+// it is return as a list of these resources in a string, each resource is seperated by the character "\"
+// which is then converted in byte array
+func GetDirectoryContent(dirname string) []byte {
+	dirname = filepath.Clean(dirname)
+	f, err := ioutil.ReadDir(dirname) // (we use ReadDir instead of Walk to avoid recursively browsing the directory)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var files string
+	for _, file := range f {
+		if files == "" {
+			files = dirname + "/" + file.Name()
+		} else {
+			files = files + "\\" + dirname + "/" + file.Name()
+		}
+
+	}
+
+	fmt.Println(files)
+	ParseDirectoryContent(files)
+	return []byte(files)
+}
+
+func ParseDirectoryContent(content string) []string {
+	return strings.Split(content, "\\")
 }
 
 // CreateAravisFS take the path of a directory parameter and write the .arafs file representing the
@@ -75,8 +73,8 @@ func PrintFSFile(resources resourceList) {
 // Encrypted fs is a list of the resources. By resource we mean resource=[name,is it a dir?,content].
 // Take into account that name and content are encrypted with the key
 func CreateAravisFS(path string, key string) {
-	rl := []resource{}
-	resources := resourceList{rl}
+	rl := []Resource{}
+	resources := ResourceList{rl}
 
 	path = filepath.Clean(path) // avoid "./ type path"
 
@@ -86,12 +84,17 @@ func CreateAravisFS(path string, key string) {
 				return err
 			}
 			var resourceType string
+			var resourceContent []byte
 			if info.IsDir() {
-				resourceType = "directory"
+				resourceType = DIRECTORY
+				resourceContent = GetDirectoryContent(path)
+				//encrypt it
+
 			} else {
-				resourceType = "file"
+				resourceType = FILE
+				resourceContent = encrypt.EncryptFile(path, key)
 			}
-			r := createResource(path, resourceType, encrypt.EncryptFile(path, key))
+			r := createResource(path, resourceType, resourceContent)
 			resources.Addresource(r)
 			return nil
 		})
