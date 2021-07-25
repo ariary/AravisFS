@@ -12,6 +12,6 @@ func main() {
 	// fmt.Println(resource.Name)
 
 	//ls test
-	ubac.Ls("test/mytestfolder", "test/arafs/encrypted.arafs")
+	ubac.PrintLs("AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA235ttcqjgwlrfQDRy+r2o07a", "test/arafs/encrypted.arafs")
 
 }

@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"path/filepath"
-	"strings"
 
 	"github.com/ariary/AravisFS/pkg/filesystem"
 )
@@ -17,15 +15,15 @@ import (
 // And an error if the if the file is not retrieve or the resource Type is not a file or directory
 // Behind teh scene: retrieve the list of resource, iterate over and compare each resource name with the
 // one provided.
-func Ls(resourcename string, filename string) ( content string,resourceType string, error) {
+func Ls(resourcename string, filename string) (content string, resourceType string, err error) {
 	resource := GetResourceInFS(resourcename, filename)
 	if resource == nil {
-		return "","", errors.New(fmt.Sprintf("ls: cannot access %v: No such file or directory", resourcename))
+		// TO DO: == nil does'nt work
+		err = errors.New(fmt.Sprintf("ls: cannot access %v: No such file or directory", resourcename))
+		return "", "", err
 	}
 	if resource.Type == filesystem.DIRECTORY {
-		// files := filesystem.ParseDirectoryContent(string(resource.Content))
 		// //TO DO: specify if it is a file or directory
-		// output_files := strings.Join(files, " ")
 		content = string(resource.Content)
 		resourceType = filesystem.DIRECTORY
 		return content, resourceType, nil
@@ -35,8 +33,20 @@ func Ls(resourcename string, filename string) ( content string,resourceType stri
 		resourceType = filesystem.FILE
 		return content, resourceType, nil
 	} else {
-		return "","", errors.New(fmt.Sprintf("ls: invalid resource type %v for resource %v", resource.Type, resourcename))
+		err = errors.New(fmt.Sprintf("ls: invalid resource type %v for resource %v", resource.Type, resourcename))
+		return "", "", err
 	}
+}
+
+func PrintLs(resourcename string, filename string) {
+	content, resourceType, err := Ls(resourcename, filename)
+	if err != nil {
+		fmt.Print(resourceType + ":" + content)
+	} else {
+		log.SetFlags(0)
+		log.Fatal(err)
+	}
+
 }
 
 // Like lsResult but only take base

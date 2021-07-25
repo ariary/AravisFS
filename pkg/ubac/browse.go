@@ -1,6 +1,7 @@
 package ubac
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -37,8 +38,11 @@ func GetResourceInFS(resourcename string, filename string) *filesystem.Resource 
 		log.Fatal(err)
 	}
 	resources := resourcesList.List
+
+	resourcenameDecoded, _ := base64.StdEncoding.DecodeString(resourcename)
 	for i := range resources { //for loop using index to avoid copy (perf)
-		if string(resources[i].Name) == resourcename {
+		fmt.Println(resources[i].Name)
+		if string(resources[i].Name) == string(resourcenameDecoded) {
 			return &resources[i]
 		}
 	}
