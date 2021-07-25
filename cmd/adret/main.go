@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"log"
 
@@ -42,19 +40,19 @@ func main() {
 	// decrypted := encrypt.DecryptPath("AdyAMnISHHVnsmk/zydtskgbq8VWS8hR2rCGjywHbouh6wm8cR8vjk8B98Cy", "toto")
 	// fmt.Println("Decrypted path: ", decrypted)
 
-	data, _ := base64.StdEncoding.DecodeString("RL9d71jr5lVRaW/ryhGTYLaoDBH8quBOM/fYfUlUIn8ngS7EEobdDHajWcfw")
+	// data, _ := base64.StdEncoding.DecodeString("RL9d71jr5lVRaW/ryhGTYLaoDBH8quBOM/fYfUlUIn8ngS7EEobdDHajWcfw")
 
-	fmt.Printf("Decoded in main %q\n", string(encrypt.DecryptByte(data, "toto")))
+	// fmt.Printf("Decoded in main %q\n", string(encrypt.DecryptByte(data, "toto")))
 
-	path := "test/mytestfolder"
+	// path := "test/mytestfolder"
 
-	fmt.Println("Path to retrieve: RL9d71jr5lVRaW/ryhGTYLaoDBH8quBOM/fYfUlUIn8ngS7EEobdDHajWcfw which is ", path)
-	var pathEncrypted = encrypt.EncryptString(path, "toto")
-	fmt.Println("Path encrypted ", pathEncrypted)
-	j, _ := json.Marshal(pathEncrypted)
-	fmt.Println("marshal ", string(j))
-	darkpath_enc := base64.StdEncoding.EncodeToString(pathEncrypted)
-	fmt.Println("base64 encrypted path: ", darkpath_enc)
+	// fmt.Println("Path to retrieve: RL9d71jr5lVRaW/ryhGTYLaoDBH8quBOM/fYfUlUIn8ngS7EEobdDHajWcfw which is ", path)
+	// var pathEncrypted = encrypt.EncryptString(path, "toto")
+	// fmt.Println("Path encrypted ", pathEncrypted)
+	// j, _ := json.Marshal(pathEncrypted)
+	// fmt.Println("marshal ", string(j))
+	// darkpath_enc := base64.StdEncoding.EncodeToString(pathEncrypted)
+	// fmt.Println("base64 encrypted path: ", darkpath_enc)
 
 	// fmt.Printf("DarkenPAth in main %q\n", encrypt.DarkenPath("test/mytestfolder", "toto"))
 	// encrypted := encrypt.Encrypt([]byte("test/mytestfolder"), "toto")
