@@ -28,9 +28,14 @@ func Encrypt(data []byte, key string) []byte {
 		panic(err.Error())
 	}
 	nonce := make([]byte, gcm.NonceSize())
-	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		panic(err.Error())
-	}
+	// /!\ AES encryption must be used we a unique nonce at each encryption
+	// Here we don't want a different output for the same input that's why
+	// (ie. AES ECB)
+	// BUT IT IS UNSECURE !!(https://zachgrace.com/posts/attacking-ecb/)
+	//uncomment this part to have a unique nonce each time
+	// if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+	// 	panic(err.Error())
+	// }
 	ciphertext := gcm.Seal(nonce, nonce, data, nil)
 	return ciphertext
 }
