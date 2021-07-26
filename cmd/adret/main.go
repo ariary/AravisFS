@@ -21,6 +21,11 @@ func main() {
 	encryptfsPath := encryptfsCmd.String("path", "", "directory to encrypt")
 	encryptfsKey := encryptfsCmd.String("key", "", "key used for encryption")
 
+	//decryptLs
+	decryptlsCmd := flag.NewFlagSet("decryptls", flag.ExitOnError)
+	decryptlsOutput := decryptlsCmd.String("output", "", "output of ubac ls")
+	decryptlsKey := decryptlsCmd.String("key", "", "key used for decryption")
+
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'adret help' to get help")
 		os.Exit(1)
@@ -63,6 +68,23 @@ func main() {
 			fmt.Println("done! Encrypted fs saved in encrypted.arafs")
 		} else {
 			fmt.Println("expected path for encrypted subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+	case "decryptls":
+		decryptlsCmd.Parse(os.Args[2:])
+
+		//key parsing
+		if *decryptlsKey == "" {
+			fmt.Println("expected key for decryptls subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//output parsing
+		if *decryptlsOutput != "" {
+			adret.PrintLS(*decryptlsOutput, *decryptlsKey)
+		} else if len(decryptlsCmd.Args()) != 0 {
+			adret.PrintLS(decryptlsCmd.Arg(0), *decryptlsKey)
+		} else {
+			fmt.Println("expected data to decrypt for decryptls subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
 	case "help":

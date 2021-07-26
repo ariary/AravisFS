@@ -48,8 +48,6 @@ func GetDirectoryContent(dirname string, key string) []byte {
 		}
 
 	}
-
-	fmt.Println(files)
 	return encrypt.EncryptString(files, key)
 }
 
@@ -62,20 +60,16 @@ func CreateAravisFS(path string, key string) {
 	resources := ResourceList{rl}
 
 	path = filepath.Clean(path) // avoid "./ type path"
-
+	fmt.Println("Encrypt resources:")
 	// get list of all resources within this path (recursively)
 	err := filepath.Walk(path,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
+			fmt.Println(path)
 			// Encrypt path and add it
-
-			// fmt.Println("Raw ", path)
 			var pathEncrypted = encrypt.EncryptString(path, key)
-			// fmt.Println("Byte ", pathEncrypted)
-			// fmt.Println("encr raw ", string(pathEncrypted))
-			// fmt.Println("Base64 ", base64.StdEncoding.EncodeToString(pathEncrypted))
 
 			// Determine resource type and add content accordingly
 			var resourceType string
