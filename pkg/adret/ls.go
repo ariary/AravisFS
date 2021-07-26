@@ -1,6 +1,7 @@
 package adret
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -14,12 +15,17 @@ import (
 // First decrypt the whole content
 // Then parse the content as each resources is separated by "\"
 func ParseLsDirectoryContent(content string, key string) []string {
-	lsResult := string(encrypt.DecryptString(content, key))
+	contentDecoded, err := base64.StdEncoding.DecodeString(content)
+	if err != nil {
+		log.Fatal("error:", err)
+	}
+	lsResult := string(encrypt.DecryptByte(contentDecoded, key))
 	//TO DO: add info if file is directory or not
 	return strings.Split(lsResult, "\\")
 }
 
-// result structure: resourceTYpe:Content
+// Parse the ls result received from ubac utility
+// result structure: resourceType:base64(Encrypt(Content))
 func ParseLsContent(result string, key string) string {
 	//file or directory output?
 	resultParsed := strings.SplitN(result, ":", 2)
@@ -34,7 +40,7 @@ func ParseLsContent(result string, key string) string {
 			files[i] = filepath.Base(files[i])
 		}
 
-		//TO DO: specify if it is a file or directory
+		//TO DO: specify if resource is a file or directory
 		lsOutput := strings.Join(files, " ")
 		return lsOutput
 
@@ -51,7 +57,7 @@ func ParseLsContent(result string, key string) string {
 func PrintLS(result string, key string) {
 	output := ParseLsContent(result, key)
 	if output != "" {
-		fmt.Println()
+		fmt.Println(output)
 	} else {
 		log.Fatal("Failed to parse ls result")
 	}

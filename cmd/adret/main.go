@@ -1,17 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
-	"github.com/ariary/AravisFS/pkg/encrypt"
-	"github.com/ariary/AravisFS/pkg/filesystem"
+	"github.com/ariary/AravisFS/pkg/adret"
 )
 
 func main() {
 
 	log.Println("Hello adret!")
-	// key := "toto"
+	key := "toto"
 	// // text := []byte("thisis/a/test")
 	// // encrypted := encrypt.Encrypt(text, key)
 	// // log.Println("  encrypted: " + string(encrypted))
@@ -70,8 +68,8 @@ func main() {
 	// fmt.Println("Decrypted path: ", decrypted)
 
 	// //Browse fs to construct
-	filesystem.CreateAravisFS("./test/mytestfolder", "toto")
-	fmt.Println(encrypt.DarkenPath("test/mytestfolder", "toto"))
+	// filesystem.CreateAravisFS("./test/mytestfolder", "toto")
+	// fmt.Println(encrypt.DarkenPath("test/mytestfolder", "toto"))
 
 	// //test darkenPath
 	// fmt.Println(encrypt.DarkenPath("./test/mytestfolder", "toto"))
@@ -81,4 +79,8 @@ func main() {
 
 	//test GetdirectoryContent
 	// fmt.Println(filesystem.GetDirectoryContent("./test/"))
+
+	// test PrintLS
+	lsUbacResult := "directory:AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA237KVk6le21X9+Fky1Fb98v61k+DQJivbwJosBKJ8FSD4YitHoo9GZf40l3HLHGTDjc="
+	adret.PrintLS(lsUbacResult, key)
 }
