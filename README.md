@@ -1,5 +1,6 @@
 
 
+
 # AravisFS 🗻🌄
 
 A fake encrypted file system 🔐 *Another non production-ready software*
@@ -9,18 +10,19 @@ A fake encrypted file system 🔐 *Another non production-ready software*
 | **DRAFT STAGE** - *Any idea, criticism, contribution is welcome*.  |
 |:------------------------------------------------------------------------------------------------------------------:|
 *No pretension just to learn and keep my mind busy*
+
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	
 	
 ## 🔦 Idea
 **Aim?**
-Providing a fake encrypted FS and utilities to interact with. 
+Providing a fake encrypted FS and utilities to interact with.  The objective is to leak as little information as possible. 
 
-Our objective is to leak as little information as possible. The local machine is our trusted environnement where we could manipulate the key, the clear-text data. This is our **(light side)**
- And on another untrusted location we have our encrypted fs. We do not want to manipulate key or clear text but we want to be able to interact as much as possible with the encrypted fs. This is our **(dark side)**
+The local machine is our trusted environment where we could manipulate the key, the clear-text data etc. This is our **(light side)**
+ On another untrusted location we have our encrypted fs. We do not want to manipulate key or clear text but we want to be able to interact as much as possible with the encrypted fs. This is our **(dark side)**
 
-For this purposewe use 2 utilities, each on different side:
-- `adret`: Encrypt/decrypt fs. Deal with key & clear-text data ***(light side)***
+For this purpose we use 2 utilities, each on different side:
+- `adret`: Encrypt/decrypt fs etc. Deal with key & clear-text data ***(light side)***
  - `ubac`: Interact with encrypted fs. Deal with no "sensitive" data (no key & clear-text manipulation) ***(dark side)***
 
 *We accept to leak information about the fs structure (number of file/folder, size)*
@@ -33,33 +35,38 @@ For this purposewe use 2 utilities, each on different side:
  - To boast of having an encrypted fs .. but practically unusable anyway
 
 **Why "fake"?**
- - Cause encryption isn't strong
- - Cause it does not provide a real fs, just a representation of it. *(And to be honest it only encrypts a folder but by extension we say a file system)*
+ - Cause encryption isn't strong *(AES ECB)*
+ - Cause it does not provide a real fs, just a representation of it. *(And to be honest it only encrypts a folder but by extension we say a filesystem)*
 
  
- ## 💺 Usage (***In case I ever code***)
+ ## 🚀 Usage 
 ### 🔍 Explore encrypted folder
 #### List folder content from my encrypted fs
 First I encrypt my fs :
 
-    (local) $ adret -encrypt_fs <myfolder> <mykey>
+    (local) $ adret encryptfs -key=<secret> <path>
+    [...]
+    test/mytestfolder/titi
+    [...]
+    done! Encrypted fs saved in encrypted.arafs
 
-Then I put the result (encrypted fs `.arafs`) and `ubac` utility on the dark zone (target machine, my OVH server, container on GKE, etc) the way I want. I could then remove `<myfolder>`from my host, otherwise it has real no sense
+Then I put the result, our encrypted fs `.arafs`, and `ubac` utility on the dark zone the way I want( It  could be a target machine, my OVH server, container on GKE, etc).  I could then remove `<myfolder>`from my host, *otherwise it has real no sense*
 
-Say I want to `ls` in `<myfolder>/toto/`, so I encrypt the path:
+Say I want to `ls` in ` "test/mytestfolder/titi"`, so I encrypt first the encrypt the path:
 
-    (local) $ adret -encrypt_path <myfolder>/toto/ <mykey>
-    **We obtain darkpath! COPY THE RESULT**
+    (local) $ adret darkenpath -key="toto" "test/mytestfolder/titi"
+    **We obtain encrypted path! COPY THE RESULT**
 
 Then we do the `ls` in our encrypted fs:
 
-    (remote) ubac -ls darkpath myencryptedfs.arafs
+    (remote) ubac -ls -path=myencryptedfs.arafs <encryptedpath_from_adret> 
     **We obtain ls result! COPY THE RESULT**
 
 And finally decrypt the result of ls:
 
-    (local) $ adret -encrypt_path <ls_rult> <mykey>
-
+    (local) $ adret decryptls -key="toto"
+    tutu tutu.txt utut.txt
+	
 #### Print file content from my encrypted fs
 Idem as above but change the `ubac command with:
 
@@ -99,11 +106,11 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 #### 🌄 Adret
 | function    | parameter | return         | use                                                                 
 |-------------|-----------|----------------|---|
-| encrypt     | key, data | encrypted_data | Encrypt/Decrypt  `data`  |
-| encrypt_fs  | key, path | encrypted_fs   | Encrypt fs (=folder pointed by the `path`)  |
-| darken_path | key, path | encrypted_path | Encrypt a `path`                                            |
+| darkenpath     | key, path | encrypted_path | Encrypt a `path`   |
+| encryptfs  | key, path | encrypted_fs   | Encrypt fs (=folder pointed by the `path`)  |
+| decryptls | key, path |  |  decrypt ls result (from ubac utility)                                           |
 
-`encrypted_fs`is a file (`.arafs`) representing the folder hierarchy (~fs) encrypted. ***TO DO*** Determine the structure (tree, yaml etc )
+`encrypted_fs`is a file (`.arafs`) representing the folder hierarchy (~fs) encrypted. 
 
 #### 🗻 Ubac
 | function | parameter                   | return               | use                        |
