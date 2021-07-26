@@ -15,7 +15,7 @@ func WriteFSFile(resources ResourceList) {
 	file, _ := json.MarshalIndent(resources, "", " ")
 	// file, _ := json.Marshal(resources)
 
-	_ = ioutil.WriteFile("test/arafs/encrypted.arafs", file, 0644)
+	_ = ioutil.WriteFile("encrypted.arafs", file, 0644)
 }
 
 func PrintFSFile(resources ResourceList) {
