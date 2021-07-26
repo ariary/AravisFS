@@ -3,6 +3,7 @@ package adret
 import (
 	"fmt"
 	"log"
+	"path/filepath"
 	"strings"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
@@ -28,10 +29,10 @@ func ParseLsContent(result string, key string) string {
 		// decrypt content, parse it to have all resource under and print it
 		files := ParseLsDirectoryContent(content, key)
 		//take basename
-		//TO DO take only basename (ie /toto/tata/titi.txt ~> titi.txt)
-		// for i := range files {
-		// 	files[i] = filepath.Base(files[i])
-		// }
+		// TO DO propose to print the full path (ie don't call Base ~ ls -d $PWD/*)
+		for i := range files {
+			files[i] = filepath.Base(files[i])
+		}
 
 		//TO DO: specify if it is a file or directory
 		lsOutput := strings.Join(files, " ")
