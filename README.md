@@ -25,7 +25,7 @@ A fake encrypted file system 🔐 *Another non production-ready software*
  - [💺 Installation](#-installation)
  - [🚀 Usage](#-usage)
  - [📝 Spec](#-spec)
- - [🧙 How does it works?](#-how-does-it-works)
+ - [🧙 How does it work?](#-how-does-it-works)
  - [💭Limits/improvements](#limitsimprovements)
 	
 ## 🔦 Idea
@@ -179,7 +179,7 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 
 And theirs siblings `remotemv`  ,etc
 
-## 🧙 How does it works?
+## 🧙 How does it work?
 Magic! (**soon explained**)
 
 ### How  is the fs encrypted ?
