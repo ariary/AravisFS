@@ -229,6 +229,6 @@ Previously we have our `ubac` listener launch on an accesible port on remote and
 - you can't encrypt a filesystem w/ a folder/file having `'\'` in its name. *It is due to the way we encapsulate resource in directory content*
 - you can't perform "`ls .`". *As we search for resource with its exact name we do not have `.` resource from now*
 - launch `adret` in the same directory of the fs you want to encrypt *Otherwise it will keep prefix like "../" etc, (see filesystem.GetDirectoryContent)*
-- for `adret decrypt cat` we could not `cat` big file. *It is due to the fact that we take the encrypted content to show from command-lin. Hence we are limited by `ARG_MAX` length (`getconf ARG_MAX`to know the value). For such reason avoid embedding binary (or try to compress it using `upx` command before). This limitation apply for all command in fact*
+- for `adret decrypt cat` we could not `cat` big file. *It is due to the fact that we take the encrypted content to show from command-line. Hence we are limited by `ARG_MAX` length (`getconf ARG_MAX`to know the value). For such reason avoid embedding binary file (or try to compress it using `upx` command before). This limitation applies for all command in fact*
 
 
