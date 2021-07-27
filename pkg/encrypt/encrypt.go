@@ -94,7 +94,7 @@ func DecryptByte(data []byte, key string) []byte {
 
 // Decrypt String from ubac with the key
 // As it is from ubac 'data' is a base64 encoded byte array
-func DecryptString(data string, key string) []byte {
+func DecryptStringFromUbac(data string, key string) []byte {
 	dataDecoded, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
 		fmt.Println("error:", err)

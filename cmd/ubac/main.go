@@ -14,6 +14,11 @@ func main() {
 	lsResource := lsCmd.String("resource", "", "encrypted resource path to search in encrypted fs")
 	lsPath := lsCmd.String("path", "", "path to encrypted fs (.arafs)")
 
+	//cat
+	catCmd := flag.NewFlagSet("cat", flag.ExitOnError)
+	catResource := catCmd.String("resource", "", "encrypted resource path to search in encrypted fs")
+	catPath := catCmd.String("path", "", "path to encrypted fs (.arafs)")
+
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'ubac help' to get help")
 		os.Exit(1)
@@ -37,17 +42,28 @@ func main() {
 			fmt.Println("expected resource to list for ls subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
+	case "cat":
+		catCmd.Parse(os.Args[2:])
 
+		//path parsing
+		if *catPath == "" {
+			fmt.Println("No encrypted fs precised. expected path for cat subcommand. see 'ubac help' to get help")
+			os.Exit(1)
+		}
+		//resource parsing
+		if *catResource != "" {
+			ubac.PrintCat(*catResource, *catPath)
+			os.Exit(0)
+		} else if len(catCmd.Args()) != 0 {
+			ubac.PrintCat(catCmd.Arg(0), *catPath)
+		} else {
+			fmt.Println("expected resource to print content with cat subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
 	case "help":
 		ubac.PrintHelp()
 	default:
 		fmt.Printf("Unknown subcommand '%v', see 'ubac help' to get help\n", os.Args[1])
 		os.Exit(1)
 	}
-	// resource := ubac.GetResourceInFS("test/mytestfolder/tata/atat", "./test/arafs/ceciestlav1_filename_unencrypted.arafs")
-	// fmt.Println(resource.Name)
-
-	//ls test
-	// ubac.PrintLs("AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA235ttcqjgwlrfQDRy+r2o07a", "test/arafs/encrypted.arafs")
-
 }

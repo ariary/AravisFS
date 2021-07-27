@@ -26,6 +26,11 @@ func main() {
 	decryptlsOutput := decryptlsCmd.String("output", "", "output of ubac ls")
 	decryptlsKey := decryptlsCmd.String("key", "", "key used for decryption")
 
+	//decryptcat
+	decryptcatCmd := flag.NewFlagSet("decryptcat", flag.ExitOnError)
+	decryptcatOutput := decryptcatCmd.String("output", "", "output of ubac cat")
+	decryptcatKey := decryptcatCmd.String("key", "", "key used for decryption")
+
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'adret help' to get help")
 		os.Exit(1)
@@ -80,11 +85,28 @@ func main() {
 		}
 		//output parsing
 		if *decryptlsOutput != "" {
-			adret.PrintLS(*decryptlsOutput, *decryptlsKey)
+			adret.PrintLs(*decryptlsOutput, *decryptlsKey)
 		} else if len(decryptlsCmd.Args()) != 0 {
-			adret.PrintLS(decryptlsCmd.Arg(0), *decryptlsKey)
+			adret.PrintLs(decryptlsCmd.Arg(0), *decryptlsKey)
 		} else {
 			fmt.Println("expected data to decrypt for decryptls subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+	case "decryptcat":
+		decryptcatCmd.Parse(os.Args[2:])
+
+		//key parsing
+		if *decryptcatKey == "" {
+			fmt.Println("expected key for decryptcat subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//output parsing
+		if *decryptcatOutput != "" {
+			adret.PrintCat(*decryptcatOutput, *decryptcatKey)
+		} else if len(decryptcatCmd.Args()) != 0 {
+			adret.PrintCat(decryptcatCmd.Arg(0), *decryptcatKey)
+		} else {
+			fmt.Println("expected data to decrypt for decryptcat subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
 	case "help":

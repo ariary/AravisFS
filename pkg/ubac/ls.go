@@ -9,12 +9,12 @@ import (
 	"github.com/ariary/AravisFS/pkg/filesystem"
 )
 
-// Provide ls result in string + string specifying resource type on which we operate ls
-// ( ti will help adret to parse the content)
+// Provide ls result in string + resource type on which we operate ls
+// ( it will help adret to parse the content)
 // Return the filename (encrypted) if it is a file and the content (encrypted) it is a directory
 // the directory content is a string of all the resources under the directory separated by "\"
-// And an error if the if the file is not retrieve or the resource Type is not a file or directory
-// Behind teh scene: retrieve the list of resource, iterate over and compare each resource name with the
+// And an error if the if the file is not retrieved or the resource Type is not a file or directory
+// Behind the scene: retrieve the list of resource, iterate over and compare each resource name with the
 // one provided.
 func Ls(resourcename string, filename string) (content string, resourceType string, err error) {
 

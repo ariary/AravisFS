@@ -46,7 +46,7 @@ func ParseLsContent(result string, key string) string {
 
 	} else if resourceType == filesystem.FILE {
 		// decrypt content and print it (it must be the filename)
-		lsOutput := string(encrypt.DecryptString(content, key))
+		lsOutput := string(encrypt.DecryptStringFromUbac(content, key))
 		return lsOutput
 	} else {
 		log.Fatal("Failed to retrieve content after decrypting result")
@@ -54,7 +54,7 @@ func ParseLsContent(result string, key string) string {
 	return ""
 }
 
-func PrintLS(result string, key string) {
+func PrintLs(result string, key string) {
 	output := ParseLsContent(result, key)
 	if output != "" {
 		fmt.Println(output)

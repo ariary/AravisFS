@@ -18,7 +18,7 @@ func TestEncrypt(t *testing.T) {
 	text := []byte(textString)
 	encrypted := encrypt.Encrypt(text, key)
 	decrypted := string(encrypt.DecryptByte(encrypted, key))
-	decryptedString := string(encrypt.DecryptString(base64.StdEncoding.EncodeToString(encrypted), key))
+	decryptedString := string(encrypt.DecryptStringFromUbac(base64.StdEncoding.EncodeToString(encrypted), key))
 	if decrypted != textString {
 		t.Errorf("Decryption was incorrect, got: %v, want: %v.", decrypted, textString)
 	}
