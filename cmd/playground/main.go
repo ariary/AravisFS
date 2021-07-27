@@ -72,17 +72,36 @@ func specialPrint(name string, last bool) {
 	//calcul deepth (avec /)
 	// print consequently filepath.Base((node.Name)
 	depth := strings.Count(name, "/")
+	output := ""
+
 	if depth == 0 {
 		//Base is not mandatory
-		fmt.Println(filepath.Base(name))
+		output += filepath.Base(name)
 	} else {
+		if depth > 2 {
+			if last {
+				output += strings.Repeat("   ", depth-2) + "|" + strings.Repeat("   ", 1)
+			} else {
+				output += strings.Repeat("   ", depth-2) + "|" + strings.Repeat("   ", 1)
+			}
+			// special case 2
+		} else if depth == 2 {
+			output += strings.Repeat("   ", depth-1)
+		}
+		//special case of first child nodes
+		if depth != 1 {
+			output = "|" + output
+		}
+
+		//determine symbol behind name
 		if last {
-			fmt.Println("|" + strings.Repeat("  ", depth) + "├── " + filepath.Base(name))
+			output += "└── " + filepath.Base(name)
 		} else {
-			fmt.Println("|" + strings.Repeat("  ", depth) + "└── " + filepath.Base(name))
+			output += "├── " + filepath.Base(name)
 		}
 
 	}
+	fmt.Println(output)
 
 }
 
@@ -96,11 +115,11 @@ func getTreeStructFromResourcesMap(resources map[string]string) Tree {
 	return tree
 }
 
-func getNodeByName(name string, tree Tree) (node Node, err error) {
+func getNodeByName(name string, nodes []Node) (node Node, err error) {
 
-	for i := range tree.Nodes {
-		if tree.Nodes[i].Name == name {
-			node = tree.Nodes[i]
+	for i := range nodes {
+		if nodes[i].Name == name {
+			node = nodes[i]
 			return node, nil
 		}
 	}
@@ -109,11 +128,12 @@ func getNodeByName(name string, tree Tree) (node Node, err error) {
 }
 
 func PrintAll(tree Tree, root string) {
-	rootNode, err := getNodeByName(root, tree)
+	rootNode, err := getNodeByName(root, tree.Nodes)
 	if err != nil {
 		log.SetFlags(0)
 		log.Fatal(err)
 	}
+	specialPrint(root, true)
 	PrintNode(tree.Nodes, rootNode, false)
 }
 
@@ -132,22 +152,40 @@ func getNodeWithPrefix(prefix string, nodes []Node) []string {
 // Theni terate over the list when we arrive at last PrintNode(node.Name,true)
 func PrintNodeWithprefix(prefix string, nodes []Node) {
 
-	//retrieve node with this prefix
-	nodeWithPrefix := getNodeWithPrefix(prefix, nodes)
-	//iterate to print the last one differently
-	for i := range nodeWithPrefix {
-		last := (len(nodeWithPrefix)-1 == i)
-		specialPrint(nodeWithPrefix[i], last)
-	}
+	// //retrieve node with this prefix
+	// nodeWithPrefix := getNodeWithPrefix(prefix, nodes)
+	// //iterate to print the last one differently
+	// for i := range nodeWithPrefix {
+	// 	last := (len(nodeWithPrefix)-1 == i)
+	// 	specialPrint(nodeWithPrefix[i], last)
+	// 	//recursivity
+	// 	PrintNode(nodeWithPrefix)
+	// }
 
 }
 
+//Print the tree under the root (except the root)
 func PrintNode(nodes []Node, node Node, last bool) {
 	if node.Type == "file" {
-		specialPrint(node.Name, last)
+		// specialPrint(node.Name, last)
 	} else if node.Type == "directory" {
-		specialPrint(node.Name, last)
-		PrintNodeWithprefix(node.Name, nodes)
+		// specialPrint(node.Name, last)
+		// PrintNodeWithprefix(node.Name, nodes)
+
+		//Recursivity: print node under this node
+		nodeWithPrefix := getNodeWithPrefix(node.Name, nodes)
+		//iterate to print the last one differently
+		for i := range nodeWithPrefix {
+			last := (len(nodeWithPrefix)-1 == i)
+			specialPrint(nodeWithPrefix[i], last)
+			//!recursivity
+			node, err := getNodeByName(nodeWithPrefix[i], nodes)
+			if err != nil {
+				log.SetFlags(0)
+				log.Fatal(err)
+			}
+			PrintNode(nodes, node, last)
+		}
 	} else {
 		log.Fatal("Node/Resource with undefined type")
 	}
