@@ -1,6 +1,7 @@
 
 
 
+
 # AravisFS 🗻🌄
 
 A fake encrypted file system 🔐 *Another non production-ready software*
@@ -13,6 +14,19 @@ A fake encrypted file system 🔐 *Another non production-ready software*
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	
+
+
+
+
+
+##  Table of contents
+
+ - [🔦 Idea](#-idea)
+ - [💺 Installation](#-installation)
+ - [🚀 Usage](#-usage)
+ - [📝 Spec](#-spec)
+ - [🧙 How does it works?](#-how-does-it-works)
+ - [💭Limits/improvements](#limitsimprovements)
 	
 ## 🔦 Idea
 **Aim?**
@@ -38,7 +52,17 @@ For this purpose we use 2 utilities, each on different side:
  - Cause encryption isn't strong *(AES ECB)*
  - Cause it does not provide a real fs, just a representation of it. *(And to be honest it only encrypts a folder but by extension we say a filesystem)*
 
- 
+ ## 💺 Installation
+ To build `adret` :
+
+     make build_adret
+
+Idem, to build `ubac`:
+
+    make build_ubac
+
+***REMINDER***: use `adret` in an trusted environment cause it will manipulate clear-text data and key. Transfer `ubac`utility where you encrypted fs is (w/ tftp, python web server, nc, certutil, etc Be [creative](https://medium.com/@PenTest_duck/almost-all-the-ways-to-file-transfer-1bd6bf710d65))
+
  ## 🚀 Usage 
 ### 🔍 Explore encrypted folder
 #### List folder content from my encrypted fs
@@ -59,7 +83,7 @@ Say I want to `ls` in ` "test/mytestfolder/titi"`, so I encrypt first the encryp
 
 Then we do the `ls` in our encrypted fs:
 
-    (remote) ubac -ls -path=myencryptedfs.arafs <encryptedpath_from_adret> 
+    (remote) ubac ls -path=myencryptedfs.arafs <encryptedpath_from_adret> 
     **We obtain ls result! COPY THE RESULT**
 
 And finally decrypt the result of ls:
@@ -68,9 +92,21 @@ And finally decrypt the result of ls:
     tutu tutu.txt utut.txt
 	
 #### Print file content from my encrypted fs
-Idem as above but change the `ubac command with:
+Idem as above with `ls` but change the `ubac` command with:
 
-    (remote) ubac -cat darkpath myencryptedfs.arafs
+    (remote) ubac cat -path=myencryptedfs.arafs <encryptedpath_from_adret>
+
+#### Print  encrypted fs tree
+First retrieve encrypted tree from encrypted fs:
+
+    (remote) ubac tree -path=myencryptedfs.arafs
+    **We obtain the encrypted tree result! COPY THE RESULT**
+   
+  Then decrypt it to print it with (assume the fs was encrypted with the key "toto"):
+
+      (local) $ adret decrypttree -key="toto" <encryptedtree_from_ubac>
+
+   
 
 ### 🤖 Automatize a bit 
 If you want to interact with your remote encrypted fs more fluidly
@@ -106,9 +142,11 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 #### 🌄 Adret
 | function    | parameter | return         | use                                                                 
 |-------------|-----------|----------------|---|
-| darkenpath     | key, path | encrypted_path | Encrypt a `path`   |
-| encryptfs  | key, path | encrypted_fs   | Encrypt fs (=folder pointed by the `path`)  |
-| decryptls | key, path |  |  decrypt ls result (from ubac utility)                                           |
+| darkenpath     | key, path | encrypted_path | Encrypt a path   |
+| encryptfs  | key, path | encrypted_fs   | Encrypt fs (=folder pointed by the path)  |
+| decryptls | key, path |  |  decrypt `ls` result (from ubac utility)
+| decryptcat | key, path |  |  decrypt `cat` result (from ubac utility)
+| decrypttree | key, resources_tree |  |  decrypt tree result (from ubac utility)                                               |
 
 `encrypted_fs`is a file (`.arafs`) representing the folder hierarchy (~fs) encrypted. 
 
@@ -117,6 +155,7 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 |----------|-----------------------------|----------------------|----------------------------|
 | ls       | encrypted_fs, darkened_path | encrypted_result     | Get encrytped `ls` result  |
 | cat      | encrypted_fs, darkened_path | encrypt_content_file | Get encrypted `cat` result |
+| tree      | encrypted_fs | encrypt_resources_tree | Get encrypted `tree` result (malformed) |
 
 ### Target 2 - The future is now
 #### 🌄 
@@ -145,7 +184,7 @@ Magic! (**soon explained**)
 
 ### How  is the fs encrypted ?
 
-When the `adret`utlity encrypt a folder it returns what we called the **"encrypted filesystem"** wich is `.arafs`. It is in fact a text file of the fs representation (encrypted of course).
+When the `adret`utlity encrypt a folder it returns what we called the **"encrypted filesystem"** wich has `.arafs` extension. It is in fact a text file of the fs representation (encrypted of course).
 
 The structure of  the content of the `.arafs` file  is influenced by the following constraint: **it musts be used to retrieve data without using the key**
 
@@ -160,23 +199,26 @@ A resource is:
 
 **name**: is the encrypted value of the path of the resource
 **type** : is the type of the ressource within the fs. it could be:
- - folder
- -  file
+- folder
+-  file
+
 **content**: is the content of the resource ie a list of child resources name if type is  folder or the file content if type is file
 
 #### Example: Search in encrypted fs
-Take the example of `ubac -ls darkpath myencryptedfs.arafs` which aims to perform `ls` of the `darkpath` in `myencryptedfs.arafs`.
 
-First it will search the `darkpath` (it is an encrypted path) name in the list which is `myencryptedfs.arafs` . If the type is file it will return ... If the type is a folder it will take the content part and retrieve the type of all resource within (by searching with their name).
-Finally it will return a list with the child resources name with their type. (child resource name are encrypted)
+Take the example of  `ubac ls -path=myencryptedfs.arafs darkpath` which aims to perform `ls` of the `darkpath` in `myencryptedfs.arafs`.
+
+First it will search the `darkpath` (it is an encrypted path) name in the list which is `myencryptedfs.arafs` . 
+If the type is file it will return the filename. 
+If the type is a folder it will take the content part which is all its child resources encyrpted.
 
 ### How does the remote interaction work  with the encrypted fs?
 Here the sequence of a `remotecat`. 
 
 Previously we have our `ubac` listener launch on an accesible port on remote and the encrypted fs in the same location as the listener:
 
- 1. `-remotecat path/to/file <key>`
- 2. The path is encrypted using the `darken_path`function ~~> `darkenedpath`
+ 1. `remotecat  -key=<key> path/to/file`
+ 2. The path is encrypted using the `darkenpath`function ~~> `darkenedpath`
  3. The adret send a request to the ubac listener to perform a `cat` with `darkenedpath`
  4. The ubec listener perform the cat and return the encrypted result to `adret`
  5. `adret` decrypt it and print the result
