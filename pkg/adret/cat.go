@@ -23,7 +23,7 @@ func PrintCat(result string, key string) {
 	if output != "" {
 		fmt.Println(output)
 	} else {
-		log.Fatal("Failed to parse ls result")
+		log.Fatal("Failed to parse cat result")
 	}
 
 }

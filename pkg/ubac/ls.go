@@ -31,7 +31,7 @@ func Ls(resourcename string, filename string) (content string, resourceType stri
 		return content, resourceType, nil
 
 	} else if resource.Type == filesystem.FILE {
-		content = string(string(resource.Name))
+		content = base64.StdEncoding.EncodeToString(resource.Name)
 		resourceType = filesystem.FILE
 		return content, resourceType, nil
 	} else {
