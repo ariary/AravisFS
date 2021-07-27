@@ -41,9 +41,11 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
+	"strings"
 )
 
 type Node struct {
@@ -65,9 +67,23 @@ func createNode(name string, nodeType string, dir string) Node {
 	return *n
 }
 
-func specialPrint(name string) {
+//Print node name without prefix. If it is the last element of a directory it print it with a special character behind
+func specialPrint(name string, last bool) {
 	//calcul deepth (avec /)
 	// print consequently filepath.Base((node.Name)
+	depth := strings.Count(name, "/")
+	if depth == 0 {
+		//Base is not mandatory
+		fmt.Println(filepath.Base(name))
+	} else {
+		if last {
+			fmt.Println("|" + strings.Repeat("  ", depth) + "├── " + filepath.Base(name))
+		} else {
+			fmt.Println("|" + strings.Repeat("  ", depth) + "└── " + filepath.Base(name))
+		}
+
+	}
+
 }
 
 func getTreeStructFromResourcesMap(resources map[string]string) Tree {
@@ -80,20 +96,58 @@ func getTreeStructFromResourcesMap(resources map[string]string) Tree {
 	return tree
 }
 
-func PrintAll() {
-	PrintNode("test")
+func getNodeByName(name string, tree Tree) (node Node, err error) {
+
+	for i := range tree.Nodes {
+		if tree.Nodes[i].Name == name {
+			node = tree.Nodes[i]
+			return node, nil
+		}
+	}
+	err = errors.New(fmt.Sprintf("getNodeByName: Node % v doesn't exist", name))
+	return node, err
 }
 
-func PrintNodeWithprefix(prefix string) {
+func PrintAll(tree Tree, root string) {
+	rootNode, err := getNodeByName(root, tree)
+	if err != nil {
+		log.SetFlags(0)
+		log.Fatal(err)
+	}
+	PrintNode(tree.Nodes, rootNode, false)
+}
+
+func getNodeWithPrefix(prefix string, nodes []Node) []string {
+	var nodeWithPrefix []string
+	for i := range nodes {
+		if nodes[i].Dir == prefix {
+			nodeWithPrefix = append(nodeWithPrefix, nodes[i].Name)
+		}
+	}
+	return nodeWithPrefix
+}
+
+// Print all node with  a specific prefix ie node.Dir == prefix
+// Retrieve a list of all node
+// Theni terate over the list when we arrive at last PrintNode(node.Name,true)
+func PrintNodeWithprefix(prefix string, nodes []Node) {
+
+	//retrieve node with this prefix
+	nodeWithPrefix := getNodeWithPrefix(prefix, nodes)
+	//iterate to print the last one differently
+	for i := range nodeWithPrefix {
+		last := (len(nodeWithPrefix)-1 == i)
+		specialPrint(nodeWithPrefix[i], last)
+	}
 
 }
 
-func PrintNode(node Node) {
+func PrintNode(nodes []Node, node Node, last bool) {
 	if node.Type == "file" {
-		specialPrint(node.Name)
+		specialPrint(node.Name, last)
 	} else if node.Type == "directory" {
-		specialPrint(node.Name)
-		PrintNodeWithprefix(node.Name)
+		specialPrint(node.Name, last)
+		PrintNodeWithprefix(node.Name, nodes)
 	} else {
 		log.Fatal("Node/Resource with undefined type")
 	}
@@ -126,4 +180,15 @@ func main() {
 	treeJSON, _ := json.Marshal(tree)
 	fmt.Println(string(treeJSON))
 
+	//test specialPrint
+	specialPrint("test/ansible/bullit_conf/brain.txt", false)
+	specialPrint("test/pentest/ftp-server.py", false)
+	specialPrint("test/ansible/bullit_conf/brain.txt", true)
+	specialPrint("test", true)
+	specialPrint("test/ansible/toto.log", true)
+
+	// general test
+	fmt.Println()
+	fmt.Println("Tree test")
+	PrintAll(tree, "test")
 }
