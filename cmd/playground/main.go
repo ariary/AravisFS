@@ -65,6 +65,11 @@ func createNode(name string, nodeType string, dir string) Node {
 	return *n
 }
 
+func specialPrint(name string) {
+	//calcul deepth (avec /)
+	// print consequently filepath.Base((node.Name)
+}
+
 func getTreeStructFromResourcesMap(resources map[string]string) Tree {
 	var tree Tree
 	var nodeTmp Node
@@ -76,14 +81,19 @@ func getTreeStructFromResourcesMap(resources map[string]string) Tree {
 }
 
 func PrintAll() {
-	PrintNode("")
+	PrintNode("test")
 }
+
+func PrintNodeWithprefix(prefix string) {
+
+}
+
 func PrintNode(node Node) {
 	if node.Type == "file" {
-		print(filepath.Base((node.Name)))
+		specialPrint(node.Name)
 	} else if node.Type == "directory" {
-		print(filepath.Base((node.Name)))
-		PrintNode(node.Name)
+		specialPrint(node.Name)
+		PrintNodeWithprefix(node.Name)
 	} else {
 		log.Fatal("Node/Resource with undefined type")
 	}
