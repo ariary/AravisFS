@@ -223,6 +223,14 @@ Previously we have our `ubac` listener launch on an accesible port on remote and
  4. The ubec listener perform the cat and return the encrypted result to `adret`
  5. `adret` decrypt it and print the result
 
+### How does the encrypted is modified ?
+
+As the encrypted FS is represented in a JSON file format and `ubac` has no acknowledge about what is inside (and couldn't obtain), we must have 3 steps to modify the encrypted fs 
+ 1. Ask `ubac` to get the tree of the encrypted FS
+ 2. With the tree, craft the patch to apply on the FS with `adret`
+ 3. Provide the patch to `ubac` to apply it on the FS
+
+#### Example: remove an element
 
 ## 💭Limits/improvements
 - `adret` encrypt using AES ECB (attack possible). *A more robust AES encryption scheme change the nonce at each encryption => for the same input different outputs at each encryption. It is a problem as darkenpath must provide the same path encrypted as the initial encyrption (when we encrypt the fs)*
