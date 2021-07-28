@@ -110,42 +110,47 @@ func getNodeByName(name string, nodes []Node) (node Node, err error) {
 
 // Print node name without prefix with the right indentation its position in the Tree.
 // If it is the last element of a directory it print it with a special character behind
-func specialPrint(name string, last bool) {
+// If it is in a directory which is "the last element" it print one "|" less
+func specialPrint(name string, last bool, inlast bool) {
 	// compute depth (using / counter)
 	// print consequently filepath.Base((node.Name)
 	depth := strings.Count(name, "/")
+	//fmt.Println(name + ":" + strconv.Itoa(depth) + "," + strconv.FormatBool(inlast))
 	output := ""
 
-	if depth == 0 {
-		//Base is not mandatory
-		output += filepath.Base(name)
-	} else {
-		if depth > 2 {
-			// TODO: add a parameter "inlastDirectory" and replace "|" with " " if it is true
-			if last {
-				output += strings.Repeat("   ", depth-2) + "|" + strings.Repeat("   ", 1)
-			} else {
-				output += strings.Repeat("   ", depth-2) + "|" + strings.Repeat("   ", 1)
-			}
-			// special case 2
-		} else if depth == 2 {
-			output += strings.Repeat("   ", depth-1)
-		}
-		//special case of first child nodes
-		if depth != 1 {
-			output = "|" + output
-		}
+	//determine the appropriate characters
+	var lastCharacter string
+	var inlastCharacter string
 
-		//determine symbol behind name
-		if last {
-			output += "└── " + filepath.Base(name)
-		} else {
-			output += "├── " + filepath.Base(name)
+	tab := "   " //tabulate character
+	if last {
+		lastCharacter = "└── "
+	} else {
+		lastCharacter = "├── "
+	}
+
+	if inlast {
+		inlastCharacter = ""
+	} else {
+		inlastCharacter = "|"
+	}
+
+	if depth != 0 {
+		//if not root path
+		if depth == 1 {
+			output += lastCharacter
+		}
+		if depth == 2 {
+			output += inlastCharacter + tab + lastCharacter
+		}
+		if depth > 2 {
+			output += strings.Repeat("|"+tab, depth-2) + inlastCharacter + tab + lastCharacter
 		}
 
 	}
-	fmt.Println(output)
+	output += filepath.Base(name) //whatever happens
 
+	fmt.Println(output)
 }
 
 func PrintAll(tree Tree, root string) {
@@ -154,8 +159,8 @@ func PrintAll(tree Tree, root string) {
 		log.SetFlags(0)
 		log.Fatal(err)
 	}
-	specialPrint(root, true)
-	PrintNode(tree.Nodes, rootNode, false)
+	specialPrint(root, true, false)
+	PrintNode(tree.Nodes, rootNode, false, false)
 }
 
 func getNodeWithPrefix(prefix string, nodes []Node) []string {
@@ -168,30 +173,31 @@ func getNodeWithPrefix(prefix string, nodes []Node) []string {
 	return nodeWithPrefix
 }
 
-//Print the tree under the root (except the root)
-func PrintNode(nodes []Node, node Node, last bool) {
+// (recursive) Print the tree under the Node (except the node itself)
+// Retrieve all node under if it is a directory and print it, nothing if it is a file
+func PrintNode(nodes []Node, node Node, last bool, inlast bool) {
 	if node.Type == "file" {
-		// specialPrint(node.Name, last)
+		// the Node has already been printed
 	} else if node.Type == "directory" {
-		// specialPrint(node.Name, last)
-		// PrintNodeWithprefix(node.Name, nodes)
-
 		// Recursivity: print node under this node
 		// Print all node with  a specific prefix ie node.Dir == prefix
 		// Retrieve a list of all node
 		// Then iterate over the list when we arrive at last PrintNode(node.Name,true)
 		nodeWithPrefix := getNodeWithPrefix(node.Name, nodes)
+
+		inlast = last //if we are in last we must now call PrintNode with inlast at true, and conversely
+
 		//iterate to print the last one differently
 		for i := range nodeWithPrefix {
 			last := (len(nodeWithPrefix)-1 == i)
-			specialPrint(nodeWithPrefix[i], last)
+			specialPrint(nodeWithPrefix[i], last, inlast)
 			//!recursivity
 			node, err := getNodeByName(nodeWithPrefix[i], nodes)
 			if err != nil {
 				log.SetFlags(0)
 				log.Fatal(err)
 			}
-			PrintNode(nodes, node, last)
+			PrintNode(nodes, node, last, inlast)
 		}
 	} else {
 		log.Fatal("Node/Resource with undefined type")
@@ -236,11 +242,11 @@ func main() {
 	fmt.Println(string(treeJSON))
 
 	//test specialPrint
-	specialPrint("test/ansible/bullit_conf/brain.txt", false)
-	specialPrint("test/pentest/ftp-server.py", false)
-	specialPrint("test/ansible/bullit_conf/brain.txt", true)
-	specialPrint("test", true)
-	specialPrint("test/ansible/toto.log", true)
+	// specialPrint("test/ansible/bullit_conf/brain.txt", false)
+	// specialPrint("test/pentest/ftp-server.py", false)
+	// specialPrint("test/ansible/bullit_conf/brain.txt", true)
+	// specialPrint("test", true)
+	// specialPrint("test/ansible/toto.log", true)
 
 	// general test
 	fmt.Println()
