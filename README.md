@@ -173,10 +173,10 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 #### 🗻
 | function | parameter                   | return | use                       |
 |----------|-----------------------------|--------|---------------------------|
-| mv       | encrypted_fs, darkened_path |        | mv in the encrypted fs    |
-| cp       | encrypted_fs, darkened_path |        | cp in the encrypted fs    |
 | rm       | encrypted_fs, darkened_path |        | rm in the encrypted fs    |
 | touch    | encrypted_fs, darkened_path |        | touch in the encrypted fs |
+| mv       | encrypted_fs, darkened_path |        | mv in the encrypted fs    |
+| cp       | encrypted_fs, darkened_path |        | cp in the encrypted fs    |
 
 And theirs siblings `remotemv`  ,etc
 
