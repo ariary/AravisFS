@@ -228,28 +228,32 @@ Previously we have our `ubac` listener launch on an accesible port on remote and
 
 As the encrypted FS is represented in a JSON file format and `ubac` has no acknowledge about what is inside (and couldn't obtain), we must have 3 steps to modify the encrypted fs 
  1. Ask `ubac` to get the tree of the encrypted FS
- 2. Ask `ubac` content of the parent directory
- 3. With the tree, craft the patch to apply on the FS with `adret`
- 4. Provide the patch to `ubac` to apply it on the FS
+ 2. `Darkenpath` the parent directory of the resource which will be modified
+ 3. Ask `ubac` content of the parent directory (to modify it also)
+ 4. With the tree, craft the patch to apply on the FS with `adret`. Patch depend of the logic (if you want to remove, add a ressource etc)
+ 5. Provide the patch to `ubac` to apply it on the FS
 
 ##### Tree
-Tree is a containaing all the Resource in the ecrypted fs. It is a `Node` list which Node:
+Tree is a containaing all the Resource in the ecrypted fs. It is a `Node` list
+
+A `Node` is:
 |  |  ||
 |--|--|--|
 |🔐name  | type |🔐Dir|
 where `Dir` is the prefix of the resource name
 
 ##### Patch
-Patch is used to inform `ubac`which resources it could change. So it contains 3 list: `to_delete` for resources that must be removed, `to_add` for resources that must be added, `to_change` for resources thaht must be change.
+Patch is used to inform `ubac` which resources it will change. So it contains 3 list: `to_delete` for resources that must be removed, `to_add` for resources that must be added, `to_change` for resources that must be change (theirs contents).
 
 (`to_add` & `to_change` contain a list of the resource with their content associated)
 
 #### Example: remove an element
 
  1. ask ubac the tree
+ 2. Use adret to get the `darkenpath` of the parent directory of the resource we want to remove 
  2. ask ubac the content of the  directory of the parent of the resource we want to remove
  3. Ask adret the patch to delete the resource
-  add to `to_delete` the resource + modify parent resource content (delete the resource of it) and add parent resource to `to_change`
+  add to `to_delete` the resource + modify parent resource content (withdraw the resource of it) and add parent resource to `to_change`
 	 - if resource is a folder: add to `to_delete` all the resource with prefix containing <resource_to_delete_name> (ie under the directory)
  5. Provide the the patch to ubac
 
