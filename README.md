@@ -2,6 +2,7 @@
 
 
 
+
 # AravisFS 🗻🌄
 
 A fake encrypted file system 🔐 *Another non production-ready software*
@@ -172,10 +173,10 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 #### 🗻
 | function | parameter                   | return | use                       |
 |----------|-----------------------------|--------|---------------------------|
-| mv       | encrypted_fs, darkened_path |        | mv in the encrypted fs    |
-| cp       | encrypted_fs, darkened_path |        | cp in the encrypted fs    |
 | rm       | encrypted_fs, darkened_path |        | rm in the encrypted fs    |
 | touch    | encrypted_fs, darkened_path |        | touch in the encrypted fs |
+| mv       | encrypted_fs, darkened_path |        | mv in the encrypted fs    |
+| cp       | encrypted_fs, darkened_path |        | cp in the encrypted fs    |
 
 And theirs siblings `remotemv`  ,etc
 
@@ -223,14 +224,34 @@ Previously we have our `ubac` listener launch on an accesible port on remote and
  4. The ubec listener perform the cat and return the encrypted result to `adret`
  5. `adret` decrypt it and print the result
 
-### How does the encrypted is modified ?
+### How does the fs is modified ?
 
 As the encrypted FS is represented in a JSON file format and `ubac` has no acknowledge about what is inside (and couldn't obtain), we must have 3 steps to modify the encrypted fs 
  1. Ask `ubac` to get the tree of the encrypted FS
- 2. With the tree, craft the patch to apply on the FS with `adret`
- 3. Provide the patch to `ubac` to apply it on the FS
+ 2. Ask `ubac` content of the parent directory
+ 3. With the tree, craft the patch to apply on the FS with `adret`
+ 4. Provide the patch to `ubac` to apply it on the FS
+
+##### Tree
+Tree is a containaing all the Resource in the ecrypted fs. It is a `Node` list which Node:
+|  |  ||
+|--|--|--|
+|🔐name  | type |🔐Dir|
+where `Dir` is the prefix of the resource name
+
+##### Patch
+Patch is used to inform `ubac`which resources it could change. So it contains 3 list: `to_delete` for resources that must be removed, `to_add` for resources that must be added, `to_change` for resources thaht must be change.
+
+(`to_add` & `to_change` contain a list of the resource with their content associated)
 
 #### Example: remove an element
+
+ 1. ask ubac the tree
+ 2. ask ubac the content of the  directory of the parent of the resource we want to remove
+ 3. Ask adret the patch to delete the resource
+  add to `to_delete` the resource + modify parent resource content (delete the resource of it) and add parent resource to `to_change`
+	 - if resource is a folder: add to `to_delete` all the resource with prefix containing <resource_to_delete_name> (ie under the directory)
+ 5. Provide the the patch to ubac
 
 ## 💭Limits/improvements
 - `adret` encrypt using AES ECB (attack possible). *A more robust AES encryption scheme change the nonce at each encryption => for the same input different outputs at each encryption. It is a problem as darkenpath must provide the same path encrypted as the initial encyrption (when we encrypt the fs)*
