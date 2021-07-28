@@ -5,6 +5,8 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+
+	"github.com/ariary/AravisFS/pkg/filesystem"
 )
 
 // Function wich aim to imitate the tree command output
@@ -54,7 +56,7 @@ func specialPrint(name string, last bool, inlast bool) {
 
 // Print the Tree struct in a fashion way (as tree command would do.. I hope)
 func PrintTree(tree Tree, root string) {
-	rootNode, err := getNodeByName(root, tree.Nodes)
+	rootNode, err := filesystem.GetNodeByName(root, tree.Nodes)
 	if err != nil {
 		log.SetFlags(0)
 		log.Fatal(err)
@@ -73,7 +75,7 @@ func PrintNode(nodes []Node, node Node, last bool, inlast bool) {
 		// Print all node with  a specific prefix ie node.Dir == prefix
 		// Retrieve a list of all node
 		// Then iterate over the list when we arrive at last PrintNode(node.Name,true)
-		nodeWithPrefix := getNodeWithPrefix(node.Name, nodes)
+		nodeWithPrefix := filesystem.GetNodesWithPrefix(node.Name, nodes)
 
 		inlast = last //if we are in last we must now call PrintNode with inlast at true, and conversely
 

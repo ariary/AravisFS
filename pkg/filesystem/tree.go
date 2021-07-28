@@ -1,17 +1,21 @@
 package filesystem
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path/filepath"
 	"sort"
+
+	"github.com/ariary/AravisFS/pkg/encrypt"
+	"github.com/ariary/AravisFS/pkg/ubac"
 )
 
-// /!\ do not confuse with the Node & Tree struct of resources package
+// /!\ do not confuse with the Node & Tree struct of ubac package
 type Node struct {
-	Name string
-	Type string
-	Dir  string
+	Name   string
+	Type   string
+	Parent string
 }
 
 type Tree struct {
@@ -19,7 +23,7 @@ type Tree struct {
 }
 
 // Create a node from its name, its type and its parent directory
-func createNode(name string, nodeType string, dir string) Node {
+func CreateNode(name string, nodeType string, dir string) Node {
 
 	n := &Node{
 		Name: name,
@@ -29,7 +33,7 @@ func createNode(name string, nodeType string, dir string) Node {
 }
 
 // Get a Node by providing its name, an error is thrown if the Node isn't found
-func getNodeByName(name string, nodes []Node) (node Node, err error) {
+func GetNodeByName(name string, nodes []Node) (node Node, err error) {
 
 	for i := range nodes {
 		if nodes[i].Name == name {
@@ -42,11 +46,26 @@ func getNodeByName(name string, nodes []Node) (node Node, err error) {
 }
 
 // Take the Tree (JSON format, from ubac) as input and return it in a struct that help to work with it
-func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree, err error) {
+func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
+	var ubacTree ubac.Tree
+	json.Unmarshal([]byte(treeJSON), &ubacTree)
+	ubacNodes := ubacTree.List
 
+	nodesMap := make(map[string]string)
+	// fill nodesMap: key = name, value = type
+	for i := 0; i < len(ubacNodes); i++ {
+		//don't forget to decrypt it
+		name := string(encrypt.DecryptStringFromUbac(ubacNodes[i].Name, key))
+		resourceType := ubacNodes[i].Type
+		nodesMap[name] = resourceType
+	}
+
+	tree = GetTreeStructFromResourcesMap(nodesMap)
+	return tree
 }
 
-func getTreeStructFromResourcesMap(resources map[string]string) Tree {
+// Get tree structure from map. Map: key= resource name and value= resource type
+func GetTreeStructFromResourcesMap(resources map[string]string) Tree {
 	var tree Tree
 	var nodeTmp Node
 
@@ -58,9 +77,20 @@ func getTreeStructFromResourcesMap(resources map[string]string) Tree {
 	}
 	sort.Strings(keys)
 	for _, name := range keys {
-		nodeTmp = createNode(name, resources[name], filepath.Dir(name))
+		nodeTmp = CreateNode(name, resources[name], filepath.Dir(name))
 		tree.Nodes = append(tree.Nodes, nodeTmp)
 	}
 
 	return tree
+}
+
+// Return all node with specific prefix/parent directory (ie prefix == node.Parent)
+func GetNodesWithPrefix(prefix string, nodes []Node) []string {
+	var nodesWithPrefix []string
+	for i := range nodes {
+		if nodes[i].Parent == prefix {
+			nodesWithPrefix = append(nodesWithPrefix, nodes[i].Name)
+		}
+	}
+	return nodesWithPrefix
 }
