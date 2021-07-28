@@ -1,0 +1,149 @@
+z/OS
+Change version
+
+        z/OS Communications Server
+
+    z/OS Communications Server: ACF/TAP Trace Analysis Handbook
+
+z/OS Communications Server: CMIP Services and Topology Agent Guide
+z/OS Communications Server: CSM Guide
+z/OS Communications Server: IP and SNA Codes
+z/OS Communications Server: IP CICS Sockets Guide
+z/OS Communications Server: IP Configuration Guide
+z/OS Communications Server: IP Configuration Reference
+z/OS Communications Server: IP Diagnosis Guide
+
+    Abstract for IP Diagnosis
+    Summary of changes
+
+General diagnosis information
+Traces and control blocks
+Diagnosing z/OS Communications Server components
+
+    Diagnosing problems with the z/OS Load Balancing Advisor
+
+Diagnosing problems with the automated domain name registration application (ADNR)
+Diagnosing IKE daemon problems
+Diagnosing network security services (NSS) server problems
+Diagnosing dynamic VIPA and sysplex problems
+Diagnosing access control problems
+Diagnosing line print requester and daemon (LPR and LPD) problems
+Diagnosing File Transfer Protocol (FTP) problems
+Diagnosing z/OS UNIX Telnet daemon (otelnetd) problems
+Diagnosing Telnet problems
+Diagnosing Simple Mail Transfer Protocol (SMTP) problems
+Diagnosing z/OS UNIX sendmail and popper problems
+Diagnosing SNALINK LU0 problems
+Diagnosing SNALINK LU6.2 problems
+Diagnosing REXEC, REXECD, and RSH problems
+Diagnosing z/OS UNIX REXEC, RSH, REXECD, and RSHD problems
+Diagnosing X Window System and Motif problems
+Diagnosing Simple Network Management Protocol (SNMP) problems
+Diagnosing Policy Agent problems
+Diagnosing RSVP agent problems
+
+    Overview
+    Reservation types, styles, and objects
+    Policies and RSVP processing
+    Gathering diagnostic information
+    Diagnosing RSVP agent problems
+
+        Initialization problems
+        Application problems
+        Policy problems
+        Example log file
+
+Diagnosing intrusion detection problems
+Diagnosing Application Transparent Transport Layer Security (AT-TLS)
+Diagnosing Defense Manager daemon problems
+Diagnosing IP security and defensive filter problems
+Diagnosing OMPROUTE problems
+Diagnosing NCPROUTE problems
+Diagnosing X.25 NPSI problems
+Diagnosing IMS problems
+Diagnosing VMCF/TNF/IUCV problems
+Diagnosing problems with IP CICS sockets
+Diagnosing problems with SMC-R
+Diagnosing problems with Express Logon
+Diagnosing resolver problems
+Diagnosing Simple Network Time Protocol (SNTP) problems
+Diagnosing Communications Server SMTP application problems
+Diagnosing storage abends and storage growth
+
+First Failure Support Technology (FFST)
+Overview of internetworking
+IKE protocol details
+
+    IBM Health Checker for z/OS
+    Related protocol specifications
+    Accessibility
+    Bibliography
+
+z/OS Communications Server: IP IMS Sockets Guide
+z/OS Communications Server: IP Messages Volume 1 (EZA)
+z/OS Communications Server: IP Messages Volume 2 (EZB, EZD)
+z/OS Communications Server: IP Messages Volume 3 (EZY)
+z/OS Communications Server: IP Messages Volume 4 (EZZ, SNM)
+z/OS Communications Server: IP Network Print Facility
+z/OS Communications Server: IP Programmer's Guide and Reference
+z/OS Communications Server: IP Sockets Application Programming Interface Guide and Reference
+z/OS Communications Server: IP System Administrator's Commands
+z/OS Communications Server: IP User's Guide and Commands
+z/OS Communications Server: IPv6 Network and Application Design Guide
+z/OS Communications Server: New Function Summary
+z/OS Communications Server: Quick Reference
+z/OS Communications Server: SNA Customization
+z/OS Communications Server: SNA Diagnosis Vol 1, Techniques and Procedures
+z/OS Communications Server: SNA Diagnosis Vol 2, FFST Dumps and the VIT
+z/OS Communications Server: SNA Messages
+z/OS Communications Server: SNA Network Implementation Guide
+z/OS Communications Server: SNA Operation
+z/OS Communications Server: SNA Programmer's LU 6.2 Guide
+z/OS Communications Server: SNA Programmer's LU 6.2 Reference
+z/OS Communications Server: SNA Programming
+z/OS Communications Server: SNA Resource Definition Reference
+z/OS Communications Server: SNA Resource Definition Samples
+z/OS V2R1.0 Communications Server Glossary
+Education Assistant for z/OS Communications Server
+
+    z/OS
+    2.1.0
+
+Feedback
+Product list
+  z/OS Communications Server: IP Diagnosis Guide
+Previous topic | Next topic | Contents | Contact z/OS | Library | PDF
+
+
+Example log file
+
+z/OS Communications Server: IP Diagnosis Guide
+GC27-3652-02
+
+Figure 1 demonstrates some of the RSVP Agent processing. This log file was created using a LogLevel of 511.
+
+Lines with numbers displayed like  1  are annotations that are described following the log.
+Figure 1. RSVP Agent processing log
+
+ 01 
+03/22 08:51:01 INFO   :.main: *************** RSVP Agent started ***************
+ 02 
+03/22 08:51:01 INFO   :...locate_configFile: Specified configuration file: /u/user10/rsvpd1.conf
+03/22 08:51:01 INFO   :.main: Using log level 511
+03/22 08:51:01 INFO   :..settcpimage: Get TCP images rc - EDC8112I Operation not supported on socket.
+ 03 
+03/22 08:51:01 INFO   :..settcpimage: Associate with TCP/IP image name = TCPCS
+03/22 08:51:02 INFO   :..reg_process: registering process with the system
+03/22 08:51:02 INFO   :..reg_process: attempt OS/390 registration
+03/22 08:51:02 INFO   :..reg_process: return from registration rc=0
+ 04 
+03/22 08:51:06 TRACE  :...read_physical_netif: Home list entries returned = 7
+03/22 08:51:06 INFO   :...read_physical_netif: index #0, interface VLINK1 has address 129.1.1.1, ifidx 0
+03/22 08:51:06 INFO   :...read_physical_netif: index #1, interface TR1 has address 9.37.65.139, ifidx 1
+03/22 08:51:06 INFO   :...read_physical_netif: index #2, interface LINK11 has address 9.67.100.1, ifidx 2
+03/22 08:51:06 INFO   :...read_physical_netif: index #3, interface LINK12 has address 9.67.101.1, ifidx 3
+03/22 08:51:06 INFO   :...read_physical_netif: index #4, interface CTCD0 has address 9.67.116.98, ifidx 4
+03/22 08:51:06 INFO   :...read_physical_netif: index #5, interface CTCD2 has address 9.67.117.98, ifidx 5
+03/22 08:51:06 INFO   :...read_physical_netif: index #6, interface LOOPBACK has address 127.0.0.1, ifidx 0
+03/22 08:51:06 INFO   :....mailslot_create: creating mailslot for timer
+03/22 08:51:06 INFO   :...ma
