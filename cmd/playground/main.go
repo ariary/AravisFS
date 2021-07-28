@@ -20,16 +20,25 @@
 // output wanted:
 // test
 // ├── ansible
-// │   ├── bullit_conf
+// │   ├── bullit_conf					// "\t "
 // │   │   ├── brain.txt
 // │   │   ├── bullit_conf.yml.j2
+// │   │   ├── fuldir
+// │	 │   |	 ├── toto.c
+// │   │   |	 └── bullit.yml
 // │   │   └── bullit.yml
 // │   ├── cat.yaml
 // │   ├── kube-hunter.yaml
 // │   ├── report.j2
 // │   ├── result.json
 // │   ├── run.sh
-// │   └── toto.log
+// │   ├── toto.log
+// │   ├── slice
+// │   |	 ├── slice2
+// │   |	 |	 └── slice3
+// │   |	 └── slice2bis
+// │	 │    	 ├── toto.c
+// │   |       └── slice2bis.txt
 // ├── go
 // │   ├── hello-world
 // │   ├── hello-world.go
@@ -45,6 +54,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -65,6 +75,37 @@ func createNode(name string, nodeType string, dir string) Node {
 		Type: nodeType,
 		Dir:  dir}
 	return *n
+}
+
+func getTreeStructFromResourcesMap(resources map[string]string) Tree {
+	var tree Tree
+	var nodeTmp Node
+
+	// Browse map alphabetically
+	// first contruct key list in alphabtical order
+	keys := make([]string, 0)
+	for k, _ := range resources {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, name := range keys {
+		nodeTmp = createNode(name, resources[name], filepath.Dir(name))
+		tree.Nodes = append(tree.Nodes, nodeTmp)
+	}
+
+	return tree
+}
+
+func getNodeByName(name string, nodes []Node) (node Node, err error) {
+
+	for i := range nodes {
+		if nodes[i].Name == name {
+			node = nodes[i]
+			return node, nil
+		}
+	}
+	err = errors.New(fmt.Sprintf("getNodeByName: Node % v doesn't exist", name))
+	return node, err
 }
 
 // Print node name without prefix with the right indentation its position in the Tree.
@@ -105,28 +146,6 @@ func specialPrint(name string, last bool) {
 	}
 	fmt.Println(output)
 
-}
-
-func getTreeStructFromResourcesMap(resources map[string]string) Tree {
-	var tree Tree
-	var nodeTmp Node
-	for name, nodeType := range resources {
-		nodeTmp = createNode(name, nodeType, filepath.Dir(name))
-		tree.Nodes = append(tree.Nodes, nodeTmp)
-	}
-	return tree
-}
-
-func getNodeByName(name string, nodes []Node) (node Node, err error) {
-
-	for i := range nodes {
-		if nodes[i].Name == name {
-			node = nodes[i]
-			return node, nil
-		}
-	}
-	err = errors.New(fmt.Sprintf("getNodeByName: Node % v doesn't exist", name))
-	return node, err
 }
 
 func PrintAll(tree Tree, root string) {
@@ -185,6 +204,9 @@ func main() {
 	resources["test/ansible"] = "directory"
 	resources["test/ansible/toto.log"] = "file"
 	resources["test/ansible/run.sh"] = "file"
+	resources["test/ansible/bullit_conf/notemptydir"] = "directory"
+	resources["test/ansible/bullit_conf/notemptydir/brain.txt"] = "file"
+	resources["test/ansible/bullit_conf/notemptydir/emptydir"] = "directory"
 	resources["test/ansible/cat.yaml"] = "file"
 	resources["test/ansible/kube-hunter.yaml"] = "file"
 	resources["test/ansible/bullit_conf"] = "directory"
@@ -194,6 +216,13 @@ func main() {
 	resources["test/ansible/bullit_conf/brain.txt"] = "file"
 	resources["test/ansible/result.json"] = "file"
 	resources["test/ansible/report.j2"] = "file"
+	resources["test/ansible/slice"] = "directory"
+	resources["test/ansible/slice/slice2"] = "directory"
+	resources["test/ansible/slice/slice2/slice3"] = "directory"
+	resources["test/ansible/slice/slice2bis"] = "directory"
+	resources["test/ansible/slice/slice2bis/toto.c"] = "file"
+	resources["test/ansible/slice/slice2bis/slice2bis.txt"] = "file"
+	resources["test/ansible/bullit_conf/hello_world"] = "file"
 	resources["test/go"] = "directory"
 	resources["test/go/slice.go"] = "file"
 	resources["test/go/hello-world.go"] = "file"
