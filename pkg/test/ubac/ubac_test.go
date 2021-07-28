@@ -10,7 +10,7 @@ import (
 func TestTree(t *testing.T) {
 
 	// Construct tree test
-	tree := ubac.Tree("../../../test/arafs/encrypted.arafs")
+	tree := ubac.GetTreeFromFS("../../../test/arafs/encrypted.arafs")
 
 	resources := [8]string{
 		"AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA235ttcqjgwlrfQDRy+r2o07a",
