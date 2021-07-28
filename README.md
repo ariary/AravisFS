@@ -25,7 +25,7 @@ A fake encrypted file system 🔐 *Another non production-ready software*
  - [💺 Installation](#-installation)
  - [🚀 Usage](#-usage)
  - [📝 Spec](#-spec)
- - [🧙 How does it work?](#-how-does-it-works)
+ - [🧙 How does it work?](#-how-does-it-work)
  - [💭Limits/improvements](#limitsimprovements)
 	
 ## 🔦 Idea
