@@ -9,7 +9,7 @@ type Tree struct {
 	List []Node
 }
 
-func createNode(name string, resourceType string) Node {
+func CreateNode(name string, resourceType string) Node {
 
 	n := &Node{
 		Name: name,
