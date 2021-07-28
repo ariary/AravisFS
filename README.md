@@ -224,7 +224,7 @@ Previously we have our `ubac` listener launch on an accesible port on remote and
  4. The ubec listener perform the cat and return the encrypted result to `adret`
  5. `adret` decrypt it and print the result
 
-### How does the encrypted is modified ?
+### How does the fs is modified ?
 
 As the encrypted FS is represented in a JSON file format and `ubac` has no acknowledge about what is inside (and couldn't obtain), we must have 3 steps to modify the encrypted fs 
  1. Ask `ubac` to get the tree of the encrypted FS
