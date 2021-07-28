@@ -67,9 +67,10 @@ func createNode(name string, nodeType string, dir string) Node {
 	return *n
 }
 
-//Print node name without prefix. If it is the last element of a directory it print it with a special character behind
+// Print node name without prefix with the right indentation its position in the Tree.
+// If it is the last element of a directory it print it with a special character behind
 func specialPrint(name string, last bool) {
-	//calcul deepth (avec /)
+	// compute depth (using / counter)
 	// print consequently filepath.Base((node.Name)
 	depth := strings.Count(name, "/")
 	output := ""
@@ -79,6 +80,7 @@ func specialPrint(name string, last bool) {
 		output += filepath.Base(name)
 	} else {
 		if depth > 2 {
+			// TODO: add a parameter "inlastDirectory" and replace "|" with " " if it is true
 			if last {
 				output += strings.Repeat("   ", depth-2) + "|" + strings.Repeat("   ", 1)
 			} else {
@@ -147,23 +149,6 @@ func getNodeWithPrefix(prefix string, nodes []Node) []string {
 	return nodeWithPrefix
 }
 
-// Print all node with  a specific prefix ie node.Dir == prefix
-// Retrieve a list of all node
-// Theni terate over the list when we arrive at last PrintNode(node.Name,true)
-func PrintNodeWithprefix(prefix string, nodes []Node) {
-
-	// //retrieve node with this prefix
-	// nodeWithPrefix := getNodeWithPrefix(prefix, nodes)
-	// //iterate to print the last one differently
-	// for i := range nodeWithPrefix {
-	// 	last := (len(nodeWithPrefix)-1 == i)
-	// 	specialPrint(nodeWithPrefix[i], last)
-	// 	//recursivity
-	// 	PrintNode(nodeWithPrefix)
-	// }
-
-}
-
 //Print the tree under the root (except the root)
 func PrintNode(nodes []Node, node Node, last bool) {
 	if node.Type == "file" {
@@ -172,7 +157,10 @@ func PrintNode(nodes []Node, node Node, last bool) {
 		// specialPrint(node.Name, last)
 		// PrintNodeWithprefix(node.Name, nodes)
 
-		//Recursivity: print node under this node
+		// Recursivity: print node under this node
+		// Print all node with  a specific prefix ie node.Dir == prefix
+		// Retrieve a list of all node
+		// Then iterate over the list when we arrive at last PrintNode(node.Name,true)
 		nodeWithPrefix := getNodeWithPrefix(node.Name, nodes)
 		//iterate to print the last one differently
 		for i := range nodeWithPrefix {
