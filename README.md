@@ -3,6 +3,7 @@
 
 
 
+
 # AravisFS 🗻🌄
 
 A fake encrypted file system 🔐 *Another non production-ready software*
@@ -100,7 +101,7 @@ Idem as above with `ls` but change the `ubac` command with:
 #### Print  encrypted fs tree
 First retrieve encrypted tree from encrypted fs:
 
-    (remote) ubac tree myencryptedfs.arafs
+    (remote) ubac tree test/arafs/medium.arafs
     **We obtain the encrypted tree result! COPY THE RESULT**
    
   Then decrypt it to print it with (assume the fs was encrypted with the key "toto"):
@@ -156,13 +157,13 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 |----------|-----------------------------|----------------------|----------------------------|
 | ls       | encrypted_fs, darkened_path | encrypted_result     | Get encrytped `ls` result  |
 | cat      | encrypted_fs, darkened_path | encrypt_content_file | Get encrypted `cat` result |
-| tree      | encrypted_fs | encrypt_resources_tree | Get encrypted `tree` result (malformed) |
+| tree      | encrypted_fs | encrypt_resources_tree | Get encrypted `tree` result (malformed ie in json) |
 
 ### Target 2 - The future is now
 #### 🌄 
 | function | parameter | return | use                                                                  |
 |----------|-----------|--------|----------------------------------------------------------------------|
-| remotels, remotecat, etc   | host, port, path, key     |        | connt with `ubac`  listener to perform different function on the encrypted fs |
+| remotels, remotecat, etc   | host, port, path, key     |        | connect with `ubac`  listener to perform different function on the encrypted fs |
 
 #### 🗻
 | function | parameter | return | use                                                                  |
@@ -170,15 +171,21 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 | listen   | port      |        | Act like a server. Wait for request from ubac, process it, return it |
 
 ### target 3 - The world is yours
+#### 🌄 
+| function | parameter                   | return | use                       |
+|----------|-----------------------------|--------|---------------------------|
+| patch       | key,tree,parent_path,resource_path, action|        | provide patch that remove the resource in the fs (represented by the tree)   |
+
+
+`action` could be remove (`rm`), create a file (`touch`/`mkdir`), move a resource (`mv`), copy a ressource (`cp`)
+
+And probably theirs siblings `remotemv`  ,etc
 #### 🗻
 | function | parameter                   | return | use                       |
 |----------|-----------------------------|--------|---------------------------|
-| rm       | encrypted_fs, darkened_path |        | rm in the encrypted fs    |
-| touch    | encrypted_fs, darkened_path |        | touch in the encrypted fs |
-| mv       | encrypted_fs, darkened_path |        | mv in the encrypted fs    |
-| cp       | encrypted_fs, darkened_path |        | cp in the encrypted fs    |
+| applypatch| encrypted_fs, patch|        | apply a patch onto the encrypted fs    |
 
-And theirs siblings `remotemv`  ,etc
+
 
 ## 🧙 How does it work?
 Magic! (**soon explained**)
