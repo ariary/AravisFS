@@ -70,11 +70,12 @@ func main() {
 		//path parsing
 		if *treePath != "" {
 			ubac.PrintTree(*treePath)
+		} else if len(treeCmd.Args()) != 0 {
+			ubac.PrintTree(treeCmd.Arg(0))
 		} else {
 			fmt.Println("No encrypted fs precised. expected path for tree subcommand. see 'ubac help' to get help")
 			os.Exit(1)
 		}
-		ubac.PrintTree(*treePath)
 
 	case "help":
 		ubac.PrintHelp()
