@@ -39,12 +39,12 @@ func PrintHelp() {
 	// Contain all command function help messsage
 	mFunctionName := map[string]func(){
 		"PrintHelpMessage": PrintHelpMessage,
-		"PrintLpMessage":   PrintLsMessage,
+		"PrintLsMessage":   PrintLsMessage,
 		"PrintCatMessage":  PrintCatMessage,
 		"PrintTreeMessage": PrintTreeMessage,
 	}
 	// oredered them for printing
-	orderedFunctionName := []string{"PrintHelpMessage", "PrintLspMessage", "PrintCatMessage", "PrintTreeMessage"}
+	orderedFunctionName := []string{"PrintHelpMessage", "PrintLsMessage", "PrintCatMessage", "PrintTreeMessage"}
 
 	//print help message for all
 	for i := 0; i < len(orderedFunctionName); i++ {
