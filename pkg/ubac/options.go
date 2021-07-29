@@ -24,7 +24,7 @@ func PrintTreeMessage() {
 	fmt.Println(("tree: like tree command in encrypted fs. It shows the hierarchy of the filesytem"))
 	fmt.Println(("\tuse: ubac tree -path=<encryptedfs>.arfs"))
 	fmt.Println(("\tparameters required: path (-path), which is the .arafs location"))
-	fmt.Println(("\texample: ubac tree -path encrypted.arfs"))
+	fmt.Println(("\texample: ubac tree encrypted.arfs"))
 }
 
 func PrintCommandMessage(f func()) {

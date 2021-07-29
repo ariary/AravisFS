@@ -16,6 +16,7 @@ type Tree struct {
 	List []Node
 }
 
+// Create a Node for the Tree struct (ubac side). A Node contains the name of te resource and its type
 func CreateNode(name string, resourceType string) Node {
 
 	n := &Node{
@@ -24,6 +25,7 @@ func CreateNode(name string, resourceType string) Node {
 	return *n
 }
 
+// Add a node to a Tree (ubac struct)
 func (nodes *Tree) AddNode(n Node) []Node {
 	nodes.List = append(nodes.List, n)
 	return nodes.List
@@ -57,6 +59,7 @@ func GetTreeFromFS(filename string) string {
 	return string(treeJSON)
 }
 
+// Outuput the Tree struct from ubac
 func PrintTree(filename string) {
 	treeJSON := GetTreeFromFS(filename)
 
