@@ -2,6 +2,11 @@ package adret
 
 import "fmt"
 
+func PrintCommandMessage(f func()) {
+	f()
+	fmt.Println()
+}
+
 func PrintHelpMessage() {
 	fmt.Println("help: get help for adret utility and example")
 }
@@ -31,12 +36,20 @@ func PrintDecryptlsMessage() {
 	fmt.Println()
 }
 
-func PrintDecryptCatMessage() {
+func PrintDecryptcatMessage() {
 	fmt.Println(("decryptcat: use it to decrypt output of 'ubac cat' command. It enable us to perform a cat in encryted fs"))
 	fmt.Println(("\tuse: adret decryptcat -key=<secret> <ubac_cat_output>"))
 	fmt.Println(("\tparameters required: key (-key) and ubac_cat_output (-output)"))
 	fmt.Println(("\t💡 get output with 'ubac cat -path=<encryptedfs>.arfs <resource>'"))
 	fmt.Println(("\texample: adret decryptcat -key \"toto\" \"directory:AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA237KVk6le21X9+Fky1Fb98v61k+DQJivbwJosBKJ8FSD4YitHoo9GZf40l3HLHGTDjc=\""))
+	fmt.Println()
+}
+
+func PrintDecrypttreeMessage() {
+	fmt.Println(("decrypttree: use it to decrypt output of 'ubac tree' command. It show the hierarchy of the encryted fs"))
+	fmt.Println(("\tuse: adret decrypttree -key=<secret> <ubac_tree_output>"))
+	fmt.Println(("\tparameters required: key (-key) and ubac_tree_output (-output)"))
+	fmt.Println(("\t💡 get output with 'ubac tree -path=<encryptedfs>.arfs'"))
 	fmt.Println()
 }
 
@@ -51,7 +64,25 @@ func PrintHelp() {
 	fmt.Println()
 	PrintDecryptlsMessage()
 	fmt.Println()
-	PrintDecryptCatMessage()
+	PrintDecryptcatMessage()
 	fmt.Println()
+
+	// Contain all command function help messsage
+	mFunctionName := map[string]func(){
+		"PrintHelpMessage":        PrintHelpMessage,
+		"PrintDarkenpathMessage":  PrintDarkenpathMessage,
+		"PrintEncryptfsMessage":   PrintEncryptfsMessage,
+		"PrintDecryptlsMessage":   PrintDecryptlsMessage,
+		"PrintDecryptcatMessage":  PrintDecryptcatMessage,
+		"PrintDecrypttreeMessage": PrintDecrypttreeMessage,
+	}
+	// oredered them for printing
+	orderedFunctionName := []string{"PrintHelpMessage", "PrintDarkenpathMessage", "PrintEncryptfsMessage", "PrintDecryptlsMessage", "PrintDecryptcatMessage", "PrintDecrypttreeMessage"}
+
+	//print help message for all
+	for i := 0; i < len(orderedFunctionName); i++ {
+		functionName := orderedFunctionName[i]
+		PrintCommandMessage(mFunctionName[functionName])
+	}
 
 }

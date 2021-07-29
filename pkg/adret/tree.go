@@ -1,18 +1,73 @@
-package ubac
+package adret
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
-	"github.com/ariary/AravisFS/pkg/filesystem"
 	"github.com/ariary/AravisFS/pkg/ubac"
 )
 
-// Take the Tree (JSON format, from ubac) as input and return it in a struct that help to work with it
+// /!\ do not confuse with the Node & Tree struct of ubac package
+type Node struct {
+	Name   string
+	Type   string
+	Parent string
+}
+
+type Tree struct {
+	Nodes []Node
+}
+
+// Create a node from its name, its type and its parent directory
+func CreateNode(name string, nodeType string, dir string) Node {
+
+	n := &Node{
+		Name:   name,
+		Type:   nodeType,
+		Parent: dir}
+	return *n
+}
+
+// Get a Node by providing its name, an error is thrown if the Node isn't found
+func GetNodeByName(name string, nodes []Node) (node Node, err error) {
+
+	for i := range nodes {
+		if nodes[i].Name == name {
+			node = nodes[i]
+			return node, nil
+		}
+	}
+	err = errors.New(fmt.Sprintf("getNodeByName: Node % v doesn't exist", name))
+	return node, err
+}
+
+// Get tree structure from map. Map: key= resource name and value= resource type
+func GetTreeStructFromResourcesMap(resources map[string]string) Tree {
+	var tree Tree
+	var nodeTmp Node
+
+	// Browse map alphabetically
+	// first contruct key list in alphabtical order
+	keys := make([]string, 0)
+	for k, _ := range resources {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, name := range keys {
+		nodeTmp = CreateNode(name, resources[name], filepath.Dir(name))
+		tree.Nodes = append(tree.Nodes, nodeTmp)
+	}
+
+	return tree
+}
+
+// Take the Tree from ubac(JSON format) as input and return it in a struct that help to work with it
 func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
 	var ubacTree ubac.Tree
 	json.Unmarshal([]byte(treeJSON), &ubacTree)
@@ -29,6 +84,17 @@ func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
 
 	tree = GetTreeStructFromResourcesMap(nodesMap)
 	return tree
+}
+
+// Return all node with specific prefix/parent directory (ie prefix == node.Parent)
+func GetNodesWithPrefix(prefix string, nodes []Node) []string {
+	var nodesWithPrefix []string
+	for i := range nodes {
+		if nodes[i].Parent == prefix {
+			nodesWithPrefix = append(nodesWithPrefix, nodes[i].Name)
+		}
+	}
+	return nodesWithPrefix
 }
 
 // Function wich aim to imitate the tree command output
@@ -76,17 +142,6 @@ func specialPrint(name string, last bool, inlast bool) {
 	fmt.Println(output)
 }
 
-// Print the Tree struct in a fashion way (as tree command would do.. I hope)
-func PrintTree(tree Tree, root string) {
-	rootNode, err := filesystem.GetNodeByName(root, tree.Nodes)
-	if err != nil {
-		log.SetFlags(0)
-		log.Fatal(err)
-	}
-	specialPrint(root, true, false)
-	PrintNode(tree.Nodes, rootNode, false, false)
-}
-
 // (recursive) Print the tree under the Node (except the node itself)
 // Retrieve all node under if it is a directory and print it, nothing if it is a file
 func PrintNode(nodes []Node, node Node, last bool, inlast bool) {
@@ -97,7 +152,7 @@ func PrintNode(nodes []Node, node Node, last bool, inlast bool) {
 		// Print all node with  a specific prefix ie node.Dir == prefix
 		// Retrieve a list of all node
 		// Then iterate over the list when we arrive at last PrintNode(node.Name,true)
-		nodeWithPrefix := filesystem.GetNodesWithPrefix(node.Name, nodes)
+		nodeWithPrefix := GetNodesWithPrefix(node.Name, nodes)
 
 		inlast = last //if we are in last we must now call PrintNode with inlast at true, and conversely
 
@@ -106,7 +161,7 @@ func PrintNode(nodes []Node, node Node, last bool, inlast bool) {
 			last := (len(nodeWithPrefix)-1 == i)
 			specialPrint(nodeWithPrefix[i], last, inlast)
 			//!recursivity
-			node, err := getNodeByName(nodeWithPrefix[i], nodes)
+			node, err := GetNodeByName(nodeWithPrefix[i], nodes)
 			if err != nil {
 				log.SetFlags(0)
 				log.Fatal(err)
@@ -116,4 +171,27 @@ func PrintNode(nodes []Node, node Node, last bool, inlast bool) {
 	} else {
 		log.Fatal("Node/Resource with undefined type")
 	}
+}
+
+// Print the Tree struct (input) in a fashion way (as tree command would do.. I hope)
+func PrintTree(treeJSON string, key string) {
+	tree := GetTreeStructFromTreeJson(treeJSON, key)
+	if len(tree.Nodes) == 0 {
+		log.SetFlags(0)
+		log.Fatal("PrintTree: Failed to convert JSON to Tree structure")
+	}
+	rootSlice := GetNodesWithPrefix(".", tree.Nodes) // Normally only one
+	if len(rootSlice) == 0 {
+		log.SetFlags(0)
+		log.Fatal("PrintTree: Could not find root node in Tree structure")
+	}
+	root := rootSlice[0]
+	rootNode, err := GetNodeByName(root, tree.Nodes)
+	if err != nil {
+		log.SetFlags(0)
+		log.Fatal(err)
+	}
+
+	specialPrint(root, true, false)               //bool have no real impact for this case
+	PrintNode(tree.Nodes, rootNode, false, false) //bool have no real impact for this case
 }

@@ -31,6 +31,11 @@ func main() {
 	decryptcatOutput := decryptcatCmd.String("output", "", "output of ubac cat")
 	decryptcatKey := decryptcatCmd.String("key", "", "key used for decryption")
 
+	//decrypttree
+	decrypttreeCmd := flag.NewFlagSet("decrypttree", flag.ExitOnError)
+	decrypttreeOutput := decrypttreeCmd.String("output", "", "output of ubac tree")
+	decrypttreeKey := decrypttreeCmd.String("key", "", "key used for decryption")
+
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'adret help' to get help")
 		os.Exit(1)
@@ -109,6 +114,23 @@ func main() {
 			fmt.Println("expected data to decrypt for decryptcat subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
+	case "decrypttree":
+		decrypttreeCmd.Parse(os.Args[2:])
+
+		//key parsing
+		if *decrypttreeKey == "" {
+			fmt.Println("expected key for decrypttree subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//output parsing
+		if *decrypttreeOutput != "" {
+			adret.PrintTree(*decrypttreeOutput, *decrypttreeKey)
+		} else if len(decrypttreeCmd.Args()) != 0 {
+			adret.PrintTree(decrypttreeCmd.Arg(0), *decrypttreeKey)
+		} else {
+			fmt.Println("expected data to decrypt for decrypttree subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
 	case "help":
 		adret.PrintHelp()
 	default:
@@ -116,7 +138,4 @@ func main() {
 		os.Exit(1)
 	}
 
-	// test PrintLS
-	// lsUbacResult := "directory:AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA237KVk6le21X9+Fky1Fb98v61k+DQJivbwJosBKJ8FSD4YitHoo9GZf40l3HLHGTDjc="
-	// adret.PrintLS(lsUbacResult, key)
 }

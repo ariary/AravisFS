@@ -2,6 +2,11 @@ package ubac
 
 import "fmt"
 
+func PrintCommandMessage(f func()) {
+	f()
+	fmt.Println()
+}
+
 func PrintHelpMessage() {
 	fmt.Println("help: get help for ubac utility and example")
 }
@@ -27,11 +32,6 @@ func PrintTreeMessage() {
 	fmt.Println(("\texample: ubac tree encrypted.arfs"))
 }
 
-func PrintCommandMessage(f func()) {
-	f()
-	fmt.Println()
-}
-
 func PrintHelp() {
 	fmt.Println("ubac utility is used to interact with encrypted fs (provided by adret utility). As every data manipulate is encrypted you can use it in a non-trusted environement")
 	fmt.Println("Available commands:")
@@ -39,7 +39,7 @@ func PrintHelp() {
 	// Contain all command function help messsage
 	mFunctionName := map[string]func(){
 		"PrintHelpMessage": PrintHelpMessage,
-		"PrintLspMessage":  PrintLsMessage,
+		"PrintLpMessage":   PrintLsMessage,
 		"PrintCatMessage":  PrintCatMessage,
 		"PrintTreeMessage": PrintTreeMessage,
 	}
