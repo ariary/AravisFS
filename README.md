@@ -241,7 +241,7 @@ A `Node` on ubac side is:
 |--|--|
 |🔐name  | type|
 
-On adret side, it is the same concept. A tree is a list of Node but the `Node` contains another field `Parent` which is the resource parent directery ( the resource is represented by `name` field in Node):
+On adret side, it is the same concept. A tree is a list of Node but the `Node` contains another field `Parent` which is the resource parent directory ( the resource is represented by `name` field in Node):
 |  |  |	 |
 |--|--|--|
 |🔐name  | type |🔐Parent|
