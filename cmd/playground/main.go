@@ -1,255 +1,133 @@
-// test
-// test/ansible
-// test/ansible/toto.log
-// test/ansible/run.sh
-// test/ansible/cat.yaml
-// test/ansible/kube-hunter.yaml
-// test/ansible/bullit_conf
-// test/ansible/bullit_conf/bullit.yml
-// test/ansible/bullit_conf/bullit_conf.yml.j2
-// test/ansible/bullit_conf/brain.txt
-// test/ansible/result.json
-// test/ansible/report.j2
-// test/go
-// test/go/slice.go
-// test/go/hello-world.go
-// test/go/hello-world
-// test/pentest
-// test/pentest/ftp-server.py
-
-// output wanted:
-// test
-// ├── ansible
-// │   ├── bullit_conf					// "\t "
-// │   │   ├── brain.txt
-// │   │   ├── bullit_conf.yml.j2
-// │   │   ├── fuldir
-// │	 │   |	 ├── toto.c
-// │   │   |	 └── bullit.yml
-// │   │   └── bullit.yml
-// │   ├── cat.yaml
-// │   ├── kube-hunter.yaml
-// │   ├── report.j2
-// │   ├── result.json
-// │   ├── run.sh
-// │   ├── toto.log
-// │   ├── slice
-// │   |	 ├── slice2
-// │   |	 |	 └── slice3
-// │   |	 └── slice2bis
-// │	 │    	 ├── toto.c
-// │   |       └── slice2bis.txt
-// ├── go
-// │   ├── hello-world
-// │   ├── hello-world.go
-// │   └── slice.go
-// └── pentest
-//     └── ftp-server.py
-
 package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+	"io"
 	"log"
-	"path/filepath"
-	"sort"
-	"strings"
+	"net"
+	"strconv"
 )
 
-type Node struct {
-	Name string
-	Type string
-	Dir  string
+const LS = "ls"
+
+type BodyLs struct {
+	Path         string `json:"path"`
+	ResourceName string `json:"name"`
 }
 
-type Tree struct {
-	Nodes []Node
+func createBodyLs(path string, resourceName string) BodyLs {
+
+	b := &BodyLs{
+		Path:         path,
+		ResourceName: resourceName}
+	return *b
 }
 
-func createNode(name string, nodeType string, dir string) Node {
-
-	n := &Node{
-		Name: name,
-		Type: nodeType,
-		Dir:  dir}
-	return *n
+type RequestLs struct {
+	Name string `json:"name"`
+	Body BodyLs `json:"body"`
 }
 
-func getTreeStructFromResourcesMap(resources map[string]string) Tree {
-	var tree Tree
-	var nodeTmp Node
+func CreateRequestLs(body BodyLs) RequestLs {
 
-	// Browse map alphabetically
-	// first contruct key list in alphabtical order
-	keys := make([]string, 0)
-	for k, _ := range resources {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	for _, name := range keys {
-		nodeTmp = createNode(name, resources[name], filepath.Dir(name))
-		tree.Nodes = append(tree.Nodes, nodeTmp)
-	}
-
-	return tree
+	r := &RequestLs{
+		Name: LS,
+		Body: body}
+	return *r
 }
 
-func getNodeByName(name string, nodes []Node) (node Node, err error) {
+//pour l'instant affiche plus tard enverra
+func GetRequestLsJSON(path string, resourceName string) string {
+	body := createBodyLs(path, resourceName)
+	request := CreateRequestLs(body)
 
-	for i := range nodes {
-		if nodes[i].Name == name {
-			node = nodes[i]
-			return node, nil
-		}
-	}
-	err = errors.New(fmt.Sprintf("getNodeByName: Node % v doesn't exist", name))
-	return node, err
-}
-
-// Print node name without prefix with the right indentation its position in the Tree.
-// If it is the last element of a directory it print it with a special character behind
-// If it is in a directory which is "the last element" it print one "|" less
-func specialPrint(name string, last bool, inlast bool) {
-	// compute depth (using / counter)
-	// print consequently filepath.Base((node.Name)
-	depth := strings.Count(name, "/")
-	//fmt.Println(name + ":" + strconv.Itoa(depth) + "," + strconv.FormatBool(inlast))
-	output := ""
-
-	//determine the appropriate characters
-	var lastCharacter string
-	var inlastCharacter string
-
-	tab := "   " //tabulate character
-	if last {
-		lastCharacter = "└── "
-	} else {
-		lastCharacter = "├── "
-	}
-
-	if inlast {
-		inlastCharacter = ""
-	} else {
-		inlastCharacter = "|"
-	}
-
-	if depth != 0 {
-		//if not root path
-		if depth == 1 {
-			output += lastCharacter
-		}
-		if depth == 2 {
-			output += inlastCharacter + tab + lastCharacter
-		}
-		if depth > 2 {
-			output += strings.Repeat("|"+tab, depth-2) + inlastCharacter + tab + lastCharacter
-		}
-
-	}
-	output += filepath.Base(name) //whatever happens
-
-	fmt.Println(output)
-}
-
-func PrintAll(tree Tree, root string) {
-	rootNode, err := getNodeByName(root, tree.Nodes)
+	requestLs, err := json.Marshal(request)
 	if err != nil {
-		log.SetFlags(0)
-		log.Fatal(err)
+		panic(err)
 	}
-	specialPrint(root, true, false)
-	PrintNode(tree.Nodes, rootNode, false, false)
+
+	return string(requestLs)
 }
 
-func getNodeWithPrefix(prefix string, nodes []Node) []string {
-	var nodeWithPrefix []string
-	for i := range nodes {
-		if nodes[i].Dir == prefix {
-			nodeWithPrefix = append(nodeWithPrefix, nodes[i].Name)
-		}
-	}
-	return nodeWithPrefix
+type Request struct {
+	Name string `json:"name"`
+	Body string `json:"type"`
 }
 
-// (recursive) Print the tree under the Node (except the node itself)
-// Retrieve all node under if it is a directory and print it, nothing if it is a file
-func PrintNode(nodes []Node, node Node, last bool, inlast bool) {
-	if node.Type == "file" {
-		// the Node has already been printed
-	} else if node.Type == "directory" {
-		// Recursivity: print node under this node
-		// Print all node with  a specific prefix ie node.Dir == prefix
-		// Retrieve a list of all node
-		// Then iterate over the list when we arrive at last PrintNode(node.Name,true)
-		nodeWithPrefix := getNodeWithPrefix(node.Name, nodes)
-
-		inlast = last //if we are in last we must now call PrintNode with inlast at true, and conversely
-
-		//iterate to print the last one differently
-		for i := range nodeWithPrefix {
-			last := (len(nodeWithPrefix)-1 == i)
-			specialPrint(nodeWithPrefix[i], last, inlast)
-			//!recursivity
-			node, err := getNodeByName(nodeWithPrefix[i], nodes)
-			if err != nil {
-				log.SetFlags(0)
-				log.Fatal(err)
-			}
-			PrintNode(nodes, node, last, inlast)
+// Put a listener for adret call. It parse the request and call the appropriate function consequently
+// ex: nohup adret listen -por=20080 &
+func UbacListen(port int) {
+	// Bind to TCP port 20080 on all interfaces.
+	listener, err := net.Listen("tcp", ":"+strconv.Itoa(port))
+	if err != nil {
+		log.Fatalln("Unable to bind to port")
+	}
+	log.Println("Listening on 0.0.0.0:", port)
+	for {
+		// Wait for connection. Create net.Conn on connection established.
+		conn, err := listener.Accept()
+		log.Println("Received connection")
+		if err != nil {
+			log.Fatalln("Unable to accept connection")
 		}
-	} else {
-		log.Fatal("Node/Resource with undefined type")
+		// Handle the connection. Using goroutine for concurrency.
+		go echo(conn)
+	}
+}
+
+// echo is a handler function that simply echoes received data.
+func echo(conn net.Conn) {
+	defer conn.Close()
+
+	// Create a buffer to store received data.
+	b := make([]byte, 512)
+	for {
+		// Receive data via conn.Read into a buffer.
+		size, err := conn.Read(b[0:])
+		if err == io.EOF {
+			log.Println("Client disconnected")
+			break
+		}
+		if err != nil {
+			log.Println("Unexpected error")
+			break
+		}
+		log.Printf("Received %d bytes: %s", size, string(b))
+
+		// Send data via conn.Write.
+		log.Println("Writing data")
+		if _, err := conn.Write(b[0:size]); err != nil {
+			log.Fatalln("Unable to write data")
+		}
 	}
 }
 
 func main() {
-	resources := make(map[string]string)
-	resources["test"] = "directory"
-	resources["test/ansible"] = "directory"
-	resources["test/ansible/toto.log"] = "file"
-	resources["test/ansible/run.sh"] = "file"
-	resources["test/ansible/bullit_conf/notemptydir"] = "directory"
-	resources["test/ansible/bullit_conf/notemptydir/brain.txt"] = "file"
-	resources["test/ansible/bullit_conf/notemptydir/emptydir"] = "directory"
-	resources["test/ansible/cat.yaml"] = "file"
-	resources["test/ansible/kube-hunter.yaml"] = "file"
-	resources["test/ansible/bullit_conf"] = "directory"
-	resources["test/ansible/bullit_conf/bullit.yml"] = "file"
-	resources["test/ansible/bullit_conf/bullit_conf.yml.j2"] = "file"
-	resources["test/ansible/bullit_conf/emptydir"] = "directory"
-	resources["test/ansible/bullit_conf/brain.txt"] = "file"
-	resources["test/ansible/result.json"] = "file"
-	resources["test/ansible/report.j2"] = "file"
-	resources["test/ansible/slice"] = "directory"
-	resources["test/ansible/slice/slice2"] = "directory"
-	resources["test/ansible/slice/slice2/slice3"] = "directory"
-	resources["test/ansible/slice/slice2bis"] = "directory"
-	resources["test/ansible/slice/slice2bis/toto.c"] = "file"
-	resources["test/ansible/slice/slice2bis/slice2bis.txt"] = "file"
-	resources["test/ansible/bullit_conf/hello_world"] = "file"
-	resources["test/go"] = "directory"
-	resources["test/go/slice.go"] = "file"
-	resources["test/go/hello-world.go"] = "file"
-	resources["test/pentest"] = "directory"
-	resources["test/pentest/ftp-server.py"] = "file"
+	fmt.Println(GetRequestLsJSON("encyrpted.arafs", "toto/tata"))
+	//equal {"name":"ls","body":{"path":"encyrpted.arafs","name":"toto/tata"}}
 
-	fmt.Println(resources["test/ansible"])
-	tree := getTreeStructFromResourcesMap(resources)
-	//print tree struct test
-	treeJSON, _ := json.Marshal(tree)
-	fmt.Println(string(treeJSON))
+	//adret side
+	request := GetRequestLsJSON("encyrpted.arafs", "toto/tata")
 
-	//test specialPrint
-	// specialPrint("test/ansible/bullit_conf/brain.txt", false)
-	// specialPrint("test/pentest/ftp-server.py", false)
-	// specialPrint("test/ansible/bullit_conf/brain.txt", true)
-	// specialPrint("test", true)
-	// specialPrint("test/ansible/toto.log", true)
+	//ubac side
+	requestOnUbacSide := Request{}
+	json.Unmarshal([]byte(request), &requestOnUbacSide)
+	fmt.Println(requestOnUbacSide.Name)
+	if requestOnUbacSide.Name == LS {
+		//this is a ls request => build requestLS struct to parse it
+		requestLs, err := json.Marshal(requestOnUbacSide.Body)
+		if err != nil {
+			panic(err)
+		}
+		bodyLs := BodyLs{}
+		json.Unmarshal(requestLs, &bodyLs)
 
-	// general test
-	fmt.Println()
-	fmt.Println("Tree test")
-	PrintAll(tree, "test")
+		//now call Printls
+		fmt.Println("(on ubac side) path: ", bodyLs.Path)
+		fmt.Println("(on ubac side) resource name: ", bodyLs.ResourceName)
+	}
+
+	//UbacListen(20080)
+
 }
