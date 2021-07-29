@@ -184,6 +184,8 @@ func PrintTree(treeJSON string, key string) {
 	if len(rootSlice) == 0 {
 		log.SetFlags(0)
 		log.Fatal("PrintTree: Could not find root node in Tree structure")
+	} else if len(rootSlice) > 1 {
+		fmt.Println("WARNING: found multiple root nodes")
 	}
 	root := rootSlice[0]
 	rootNode, err := GetNodeByName(root, tree.Nodes)

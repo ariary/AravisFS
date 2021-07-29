@@ -29,6 +29,10 @@ func ParseLsDirectoryContent(content string, key string) []string {
 func ParseLsContent(result string, key string) string {
 	//file or directory output?
 	resultParsed := strings.SplitN(result, ":", 2)
+	if len(resultParsed) != 2 {
+		log.SetFlags(0)
+		log.Fatal("ParseLsContent: failed to parse the input (must be '<Type>:<ubac_ls_output>'")
+	}
 	resourceType := resultParsed[0]
 	content := resultParsed[1]
 	if resourceType == filesystem.DIRECTORY {
