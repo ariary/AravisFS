@@ -1,14 +1,10 @@
 package filesystem
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"path/filepath"
 	"sort"
-
-	"github.com/ariary/AravisFS/pkg/encrypt"
-	"github.com/ariary/AravisFS/pkg/ubac"
 )
 
 // /!\ do not confuse with the Node & Tree struct of ubac package
@@ -26,9 +22,9 @@ type Tree struct {
 func CreateNode(name string, nodeType string, dir string) Node {
 
 	n := &Node{
-		Name: name,
-		Type: nodeType,
-		Dir:  dir}
+		Name:   name,
+		Type:   nodeType,
+		Parent: dir}
 	return *n
 }
 
@@ -43,25 +39,6 @@ func GetNodeByName(name string, nodes []Node) (node Node, err error) {
 	}
 	err = errors.New(fmt.Sprintf("getNodeByName: Node % v doesn't exist", name))
 	return node, err
-}
-
-// Take the Tree (JSON format, from ubac) as input and return it in a struct that help to work with it
-func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
-	var ubacTree ubac.Tree
-	json.Unmarshal([]byte(treeJSON), &ubacTree)
-	ubacNodes := ubacTree.List
-
-	nodesMap := make(map[string]string)
-	// fill nodesMap: key = name, value = type
-	for i := 0; i < len(ubacNodes); i++ {
-		//don't forget to decrypt it
-		name := string(encrypt.DecryptStringFromUbac(ubacNodes[i].Name, key))
-		resourceType := ubacNodes[i].Type
-		nodesMap[name] = resourceType
-	}
-
-	tree = GetTreeStructFromResourcesMap(nodesMap)
-	return tree
 }
 
 // Get tree structure from map. Map: key= resource name and value= resource type

@@ -1,13 +1,35 @@
 package ubac
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"path/filepath"
 	"strings"
 
+	"github.com/ariary/AravisFS/pkg/encrypt"
 	"github.com/ariary/AravisFS/pkg/filesystem"
+	"github.com/ariary/AravisFS/pkg/ubac"
 )
+
+// Take the Tree (JSON format, from ubac) as input and return it in a struct that help to work with it
+func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
+	var ubacTree ubac.Tree
+	json.Unmarshal([]byte(treeJSON), &ubacTree)
+	ubacNodes := ubacTree.List
+
+	nodesMap := make(map[string]string)
+	// fill nodesMap: key = name, value = type
+	for i := 0; i < len(ubacNodes); i++ {
+		//don't forget to decrypt it
+		name := string(encrypt.DecryptStringFromUbac(ubacNodes[i].Name, key))
+		resourceType := ubacNodes[i].Type
+		nodesMap[name] = resourceType
+	}
+
+	tree = GetTreeStructFromResourcesMap(nodesMap)
+	return tree
+}
 
 // Function wich aim to imitate the tree command output
 // It prints the node name without prefix with the right indentation compare to its position in the Tree.

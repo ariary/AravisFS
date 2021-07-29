@@ -12,12 +12,16 @@ func main() {
 	//ls
 	lsCmd := flag.NewFlagSet("ls", flag.ExitOnError)
 	lsResource := lsCmd.String("resource", "", "encrypted resource path to search in encrypted fs")
-	lsPath := lsCmd.String("path", "", "path to encrypted fs (.arafs)")
+	lsPath := lsCmd.String("path", "", "path to the encrypted fs location (.arafs)")
 
 	//cat
 	catCmd := flag.NewFlagSet("cat", flag.ExitOnError)
 	catResource := catCmd.String("resource", "", "encrypted resource path to search in encrypted fs")
-	catPath := catCmd.String("path", "", "path to encrypted fs (.arafs)")
+	catPath := catCmd.String("path", "", "path to the encrypted fs location")
+
+	//tree
+	treeCmd := flag.NewFlagSet("tree", flag.ExitOnError)
+	treePath := treeCmd.String("path", "", "path to the encrypted fs location")
 
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'ubac help' to get help")
@@ -60,6 +64,18 @@ func main() {
 			fmt.Println("expected resource to print content with cat subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
+	case "tree":
+		treeCmd.Parse(os.Args[2:])
+
+		//path parsing
+		if *treePath != "" {
+			ubac.PrintTree(*treePath)
+		} else {
+			fmt.Println("No encrypted fs precised. expected path for tree subcommand. see 'ubac help' to get help")
+			os.Exit(1)
+		}
+		ubac.PrintTree(*treePath)
+
 	case "help":
 		ubac.PrintHelp()
 	default:

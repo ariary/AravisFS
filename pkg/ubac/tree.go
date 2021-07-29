@@ -34,7 +34,6 @@ func (nodes *Tree) AddNode(n Node) []Node {
 // it also could have returned the content of each file, but it is like returning the whole fs (which is not a good idea)
 // Node list is in json format
 func GetTreeFromFS(filename string) string {
-
 	resourcesList, err := GetResourceList(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -53,7 +52,7 @@ func GetTreeFromFS(filename string) string {
 	}
 
 	// Tree to JSON
-	treeJSON, _ := json.Marshal(resources)
+	treeJSON, _ := json.Marshal(tree)
 
 	return string(treeJSON)
 }
