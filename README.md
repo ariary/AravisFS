@@ -100,7 +100,7 @@ Idem as above with `ls` but change the `ubac` command with:
 #### Print  encrypted fs tree
 First retrieve encrypted tree from encrypted fs:
 
-    (remote) ubac tree -path=myencryptedfs.arafs
+    (remote) ubac tree myencryptedfs.arafs
     **We obtain the encrypted tree result! COPY THE RESULT**
    
   Then decrypt it to print it with (assume the fs was encrypted with the key "toto"):
@@ -236,11 +236,17 @@ As the encrypted FS is represented in a JSON file format and `ubac` has no ackno
 ##### Tree
 Tree is a containaing all the Resource in the ecrypted fs. It is a `Node` list
 
-A `Node` is:
-|  |  ||
+A `Node` on ubac side is:
+|  |  |
+|--|--|
+|🔐name  | type|
+
+On adret side, it is the same concept. A tree is a list of Node but the `Node` contains another field `Parent` which is the resource parent directery ( the resource is represented by `name` field in Node):
+|  |  |	 |
 |--|--|--|
-|🔐name  | type |🔐Dir|
-where `Dir` is the prefix of the resource name
+|🔐name  | type |🔐Parent|
+
+where `Parent` is the prefix of the resource name (ie resource parent directory).
 
 ##### Patch
 Patch is used to inform `ubac` which resources it will change. So it contains 3 list: `to_delete` for resources that must be removed, `to_add` for resources that must be added, `to_change` for resources that must be change (theirs contents).
