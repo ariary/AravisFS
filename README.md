@@ -167,7 +167,8 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 #### 🌄 
 | function | parameter | return | use                                                                  |
 |----------|-----------|--------|----------------------------------------------------------------------|
-| remotels, remotecat, etc   | host, port, path, key     |        | connect with `ubac`  listener to perform different function on the encrypted fs |
+| configremote   | host, port     |   cmdline_setting_envvar     | return command line to set env var which will be used to dial with remote ubac |
+| remotels, remotecat, etc   | resource_name, key    |    remote_command_result_decrypted    | connect with `ubac`  listener to perform different function on the encrypted fs and print the decrypted result|
 
 #### 🗻
 | function | parameter | return | use                                                                  |
