@@ -238,9 +238,9 @@ Previously we have our `ubac` listener launch on an accesible port on remote and
 
 ### How does the fs is modified ?
 
-As the encrypted FS is represented in a JSON file format and `ubac` has no acknowledge about what is inside (and couldn't obtain), we must have 3 steps to modify the encrypted fs 
+As the encrypted FS is represented in a JSON file format and `ubac` has no acknowledge about what is inside (and couldn't obtain), we must have 5 steps to modify the encrypted fs 
  1. Ask `ubac` to get the tree of the encrypted FS
- 2. `Darkenpath` the parent directory of the resource which will be modified
+ 2. `Darkenpath` the parent directory of the resource which will be modified (or added)
  3. Ask `ubac` content of the parent directory (to modify it also)
  4. With the tree, craft the patch to apply on the FS with `adret`. Patch depend of the logic (if you want to remove, add a ressource etc)
  5. Provide the patch to `ubac` to apply it on the FS
