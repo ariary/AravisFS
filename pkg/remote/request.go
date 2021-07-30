@@ -4,7 +4,7 @@ type BodyLs struct {
 	ResourceName string `json:"name"`
 }
 
-func createBodyLs(path string, resourceName string) BodyLs {
+func CreateBodyLs(resourceName string) BodyLs {
 
 	b := &BodyLs{
 		ResourceName: resourceName}
