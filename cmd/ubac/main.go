@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/ariary/AravisFS/pkg/ubac"
 )
@@ -22,6 +23,11 @@ func main() {
 	//tree
 	treeCmd := flag.NewFlagSet("tree", flag.ExitOnError)
 	treePath := treeCmd.String("path", "", "path to the encrypted fs location")
+
+	//listen
+	listenCmd := flag.NewFlagSet("listen", flag.ExitOnError)
+	listenPort := listenCmd.String("port", "", "listener port")
+	listenPath := listenCmd.String("path", "", "path to the encrypted fs location (.arafs)")
 
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'ubac help' to get help")
@@ -76,7 +82,32 @@ func main() {
 			fmt.Println("No encrypted fs precised. expected path for tree subcommand. see 'ubac help' to get help")
 			os.Exit(1)
 		}
-
+	case "listen":
+		listenCmd.Parse(os.Args[2:])
+		//path parsing
+		if *listenPath == "" {
+			fmt.Println("No encrypted fs precised. expected path for listen subcommand. see 'ubac help' to get help")
+			os.Exit(1)
+		}
+		//resource parsing
+		if *listenPort != "" {
+			port_int, err := strconv.Atoi(*listenPort)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			ubac.Listen(port_int, *listenPath)
+		} else if len(listenCmd.Args()) != 0 {
+			port_int, err := strconv.Atoi(listenCmd.Arg(0))
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			ubac.Listen(port_int, *listenPath)
+		} else {
+			//use default port
+			ubac.Listen(4444, *listenPath)
+		}
 	case "help":
 		ubac.PrintHelp()
 	default:

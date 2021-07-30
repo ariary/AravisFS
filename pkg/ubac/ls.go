@@ -2,9 +2,7 @@ package ubac
 
 import (
 	"encoding/base64"
-	"errors"
 	"fmt"
-	"log"
 
 	"github.com/ariary/AravisFS/pkg/filesystem"
 )
@@ -16,38 +14,28 @@ import (
 // And an error if the if the file is not retrieved or the resource Type is not a file or directory
 // Behind the scene: retrieve the list of resource, iterate over and compare each resource name with the
 // one provided.
-func Ls(resourcename string, filename string) (content string, resourceType string, err error) {
+func Ls(resourcename string, filename string) (lscontent string) {
 
 	resource := GetResourceInFS(resourcename, filename)
 
 	if resource.Type == "" { // resource == nil doesn't work
-		err = errors.New(fmt.Sprintf("ls: cannot access %v: No such file or directory", resourcename))
-		return "", "", err
+		return fmt.Sprintf("ls: cannot access %v: No such file or directory", resourcename)
 	}
-	if resource.Type == filesystem.DIRECTORY {
+	if resource.Type == filesystem.DIRECTORY || resource.Type == filesystem.FILE {
 		// //TO DO: specify if it is a file or directory
-		content = base64.StdEncoding.EncodeToString(resource.Content)
-		resourceType = filesystem.DIRECTORY
-		return content, resourceType, nil
+		content := base64.StdEncoding.EncodeToString(resource.Content)
+		resourceType := filesystem.DIRECTORY
+		lscontent = resourceType + ":" + content
+		return lscontent
 
-	} else if resource.Type == filesystem.FILE {
-		content = base64.StdEncoding.EncodeToString(resource.Name)
-		resourceType = filesystem.FILE
-		return content, resourceType, nil
 	} else {
-		err = errors.New(fmt.Sprintf("ls: invalid resource type %v for resource %v", resource.Type, resourcename))
-		return "", "", err
+		return fmt.Sprintf("ls: invalid resource type %v for resource %v", resource.Type, resourcename)
 	}
 }
 
 func PrintLs(resourcename string, filename string) {
-	content, resourceType, err := Ls(resourcename, filename)
+	content := Ls(resourcename, filename)
 
-	if err != nil {
-		log.SetFlags(0)
-		log.Fatal(err)
-	} else {
-		fmt.Println(resourceType + ":" + content)
-	}
+	fmt.Println(content)
 
 }

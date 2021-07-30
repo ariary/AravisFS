@@ -43,7 +43,7 @@ func GetNodeByName(name string, nodes []Node) (node Node, err error) {
 			return node, nil
 		}
 	}
-	err = errors.New(fmt.Sprintf("getNodeByName: Node % v doesn't exist", name))
+	err = errors.New(fmt.Sprintf("getNodeByName: Node %s doesn't exist", name))
 	return node, err
 }
 

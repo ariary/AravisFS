@@ -32,24 +32,47 @@ func PrintTreeMessage() {
 	fmt.Println(("\texample: ubac tree encrypted.arfs"))
 }
 
+func PrintListenMessage() {
+	fmt.Println(("listen: launch http server waiting for adret request on specified port. It take the path of the encrypted fs on which we will apply commmand"))
+	fmt.Println(("\tuse: ubac listen -path=<encryptedfs>.arfs <port>"))
+	fmt.Println(("\tparameters required: path (-path), which is the .arafs location, and port (default 4444)"))
+	fmt.Println(("\texample: ubac listen -path=encrypted.arfs"))
+}
+
 func PrintHelp() {
 	fmt.Println("ubac utility is used to interact with encrypted fs (provided by adret utility). As every data manipulate is encrypted you can use it in a non-trusted environement")
 	fmt.Println("Available commands:")
+	PrintCommandMessage(PrintHelpMessage)
 
+	//READ COMMAND
+	fmt.Println("READ ACCESS COMMAND")
 	// Contain all command function help messsage
-	mFunctionName := map[string]func(){
-		"PrintHelpMessage": PrintHelpMessage,
+	mFunctionNameRead := map[string]func(){
 		"PrintLsMessage":   PrintLsMessage,
 		"PrintCatMessage":  PrintCatMessage,
 		"PrintTreeMessage": PrintTreeMessage,
 	}
 	// oredered them for printing
-	orderedFunctionName := []string{"PrintHelpMessage", "PrintLsMessage", "PrintCatMessage", "PrintTreeMessage"}
+	orderedFunctionNameRead := []string{"PrintLsMessage", "PrintCatMessage", "PrintTreeMessage"}
 
 	//print help message for all
-	for i := 0; i < len(orderedFunctionName); i++ {
-		functionName := orderedFunctionName[i]
-		PrintCommandMessage(mFunctionName[functionName])
+	for i := 0; i < len(orderedFunctionNameRead); i++ {
+		functionName := orderedFunctionNameRead[i]
+		PrintCommandMessage(mFunctionNameRead[functionName])
 	}
 
+	//REMOTE COMMAND
+	fmt.Println("REMOTE COMMAND")
+	// Contain all command function help messsage
+	mFunctionNameremote := map[string]func(){
+		"PrintListenMessage": PrintListenMessage,
+	}
+	// oredered them for printing
+	orderedFunctionNameRemote := []string{"PrintListenMessage"}
+
+	//print help message for all
+	for i := 0; i < len(orderedFunctionNameRemote); i++ {
+		functionName := orderedFunctionNameRemote[i]
+		PrintCommandMessage(mFunctionNameremote[functionName])
+	}
 }
