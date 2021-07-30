@@ -7,6 +7,13 @@ func PrintCommandMessage(f func()) {
 	fmt.Println()
 }
 
+func PrintMapInOrder(m map[string]func(), order []string) {
+	for i := 0; i < len(order); i++ {
+		functionName := order[i]
+		PrintCommandMessage(m[functionName])
+	}
+}
+
 func PrintHelpMessage() {
 	fmt.Println("help: get help for adret utility and example")
 }
@@ -53,36 +60,61 @@ func PrintDecrypttreeMessage() {
 	fmt.Println()
 }
 
+func PrintConfigremoteMessage() {
+	fmt.Println(("configremote: enable to configurate the port and hostname of the remote ubac listener. It is equivalent to 'export REMOTE_UBAC_LISTER=<hostname>:<port>"))
+	fmt.Println(("\tuse: eval `adret configremote -port=<ubac_port> -host=<ubac_hostanme>`"))
+	fmt.Println(("\tparameters required: port (-port) and hostname (-host) (ubac is listening on hostname:port"))
+	fmt.Println()
+}
+
+func PrintRemotelsMessage() {
+	fmt.Println(("remotels: perform a ls on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs"))
+	fmt.Println(("\tuse: adret remotels -key=<key> <resource_name>"))
+	fmt.Println(("\tparameters required: key (-key) use for encryption/decryption resource_name (-resource) which is the resource on which we want to perform the ls command"))
+	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_LISTER envar (w/ 'adret configremote') before"))
+	fmt.Println()
+}
+
+//Print all help messages (all available command and their use)
 func PrintHelp() {
 	fmt.Println("adret utility is used to perform FS encrytion and decrypt data from fs encrypted (from ubac utility)")
 	fmt.Println("Available commands:")
-	PrintHelpMessage()
-	fmt.Println()
-	PrintDarkenpathMessage()
-	fmt.Println()
-	PrintEncryptfsMessage()
-	fmt.Println()
-	PrintDecryptlsMessage()
-	fmt.Println()
-	PrintDecryptcatMessage()
-	fmt.Println()
+	PrintCommandMessage(PrintHelpMessage)
 
+	//ENCRYPTION COMMAND
+	fmt.Println("ENCRYPTION COMMAND")
 	// Contain all command function help messsage
-	mFunctionName := map[string]func(){
-		"PrintHelpMessage":        PrintHelpMessage,
-		"PrintDarkenpathMessage":  PrintDarkenpathMessage,
-		"PrintEncryptfsMessage":   PrintEncryptfsMessage,
+	mFunctionNameEncryption := map[string]func(){
+		"PrintDarkenpathMessage": PrintDarkenpathMessage,
+		"PrintEncryptfsMessage":  PrintEncryptfsMessage,
+	}
+	// oredered them for printing
+	orderedFunctionNameEncryption := []string{"PrintDarkenpathMessage", "PrintEncryptfsMessage"}
+	//print help message for all
+	PrintMapInOrder(mFunctionNameEncryption, orderedFunctionNameEncryption)
+
+	//READ COMMAND
+	fmt.Println("READ ACCESS COMMAND")
+
+	mFunctionNameRead := map[string]func(){
 		"PrintDecryptlsMessage":   PrintDecryptlsMessage,
 		"PrintDecryptcatMessage":  PrintDecryptcatMessage,
 		"PrintDecrypttreeMessage": PrintDecrypttreeMessage,
 	}
-	// oredered them for printing
-	orderedFunctionName := []string{"PrintHelpMessage", "PrintDarkenpathMessage", "PrintEncryptfsMessage", "PrintDecryptlsMessage", "PrintDecryptcatMessage", "PrintDecrypttreeMessage"}
 
-	//print help message for all
-	for i := 0; i < len(orderedFunctionName); i++ {
-		functionName := orderedFunctionName[i]
-		PrintCommandMessage(mFunctionName[functionName])
+	orderedFunctionNameRead := []string{"PrintDecryptlsMessage", "PrintDecryptcatMessage", "PrintDecrypttreeMessage"}
+
+	PrintMapInOrder(mFunctionNameRead, orderedFunctionNameRead)
+
+	//REMOTE COMMAND
+	fmt.Println("REMOTE COMMAND")
+	// Contain all command function help messsage
+	mFunctionNameRemote := map[string]func(){
+		"PrintConfigremoteMessage": PrintConfigremoteMessage,
+		"PrintRemotelsMessage":     PrintRemotelsMessage,
 	}
-
+	// oredered them for printing
+	orderedFunctionNameRemote := []string{"PrintConfigremoteMessage", "PrintRemotelsMessage"}
+	//print help message for all
+	PrintMapInOrder(mFunctionNameRemote, orderedFunctionNameRemote)
 }

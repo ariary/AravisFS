@@ -36,6 +36,16 @@ func main() {
 	decrypttreeOutput := decrypttreeCmd.String("output", "", "output of ubac tree")
 	decrypttreeKey := decrypttreeCmd.String("key", "", "key used for decryption")
 
+	//configremote
+	configremoteCmd := flag.NewFlagSet("configremote", flag.ExitOnError)
+	configremotePort := configremoteCmd.String("port", "", "listener ubac port")
+	configremoteHost := configremoteCmd.String("host", "", "listener ubac hostname")
+
+	//remotels
+	remotelsCmd := flag.NewFlagSet("remotels", flag.ExitOnError)
+	remotelsResource := remotelsCmd.String("resource", "", "name of the resource (in clear-text)")
+	remotelsKey := remotelsCmd.String("key", "", "key used for encryption/decryption")
+
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'adret help' to get help")
 		os.Exit(1)
@@ -129,6 +139,39 @@ func main() {
 			adret.PrintTree(decrypttreeCmd.Arg(0), *decrypttreeKey)
 		} else {
 			fmt.Println("expected data to decrypt for decrypttree subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+	case "configremote":
+		configremoteCmd.Parse(os.Args[2:])
+
+		//port parsing
+		if *configremotePort == "" {
+			fmt.Println("expected port for configremote subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//host parsing
+		if *configremoteHost != "" {
+			adret.ConfigRemote(*configremoteHost, *configremotePort)
+		} else if len(configremoteCmd.Args()) != 0 {
+			adret.ConfigRemote(configremoteCmd.Arg(0), *configremotePort)
+		} else {
+			fmt.Println("expected hostname for configremote subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+	case "remotels":
+		remotelsCmd.Parse(os.Args[2:])
+		//key parsing
+		if *remotelsKey == "" {
+			fmt.Println("expected key for remotels subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//output parsing
+		if *remotelsResource != "" {
+			adret.RemoteLs(*remotelsResource, *remotelsKey)
+		} else if len(remotelsCmd.Args()) != 0 {
+			adret.RemoteLs(remotelsCmd.Arg(0), *remotelsKey)
+		} else {
+			fmt.Println("expected data to decrypt for decryptls subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
 	case "help":
