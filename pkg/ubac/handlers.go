@@ -43,7 +43,11 @@ func RemoteLs(path string) http.HandlerFunc {
 			return
 		}
 
-		lsContent := Ls(body.ResourceName, path)
+		lsContent, err := Ls(body.ResourceName, path)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+		}
 
 		fmt.Fprintf(w, lsContent)
 	}

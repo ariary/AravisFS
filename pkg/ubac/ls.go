@@ -2,7 +2,9 @@ package ubac
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
+	"os"
 
 	"github.com/ariary/AravisFS/pkg/filesystem"
 )
@@ -14,27 +16,33 @@ import (
 // And an error if the if the file is not retrieved or the resource Type is not a file or directory
 // Behind the scene: retrieve the list of resource, iterate over and compare each resource name with the
 // one provided.
-func Ls(resourcename string, filename string) (lscontent string) {
+func Ls(resourcename string, filename string) (lscontent string, err error) {
 
 	resource := GetResourceInFS(resourcename, filename)
 
 	if resource.Type == "" { // resource == nil doesn't work
-		return fmt.Sprintf("ls: cannot access %v: No such file or directory", resourcename)
+		err = errors.New(fmt.Sprintf("ls: cannot access %v: No such file or directory", resourcename))
+		return "", err
 	}
 	if resource.Type == filesystem.DIRECTORY || resource.Type == filesystem.FILE {
 		// //TO DO: specify if it is a file or directory
 		content := base64.StdEncoding.EncodeToString(resource.Content)
 		resourceType := filesystem.DIRECTORY
 		lscontent = resourceType + ":" + content
-		return lscontent
+		return lscontent, nil
 
 	} else {
-		return fmt.Sprintf("ls: invalid resource type %v for resource %v", resource.Type, resourcename)
+		err = errors.New(fmt.Sprintf("ls: invalid resource type %v for resource %v", resource.Type, resourcename))
+		return "", err
 	}
 }
 
 func PrintLs(resourcename string, filename string) {
-	content := Ls(resourcename, filename)
+	content, err := Ls(resourcename, filename)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	fmt.Println(content)
 

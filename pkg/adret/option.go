@@ -56,7 +56,7 @@ func PrintDecrypttreeMessage() {
 	fmt.Println(("decrypttree: use it to decrypt output of 'ubac tree' command. It show the hierarchy of the encryted fs"))
 	fmt.Println(("\tuse: adret decrypttree -key=<secret> <ubac_tree_output>"))
 	fmt.Println(("\tparameters required: key (-key) and ubac_tree_output (-output)"))
-	fmt.Println(("\t💡 get output with 'ubac tree -path=<encryptedfs>.arfs'"))
+	fmt.Println(("\t💡 get output with 'adret decrypttree -key=toto <ubac_tree_output>'"))
 	fmt.Println()
 }
 

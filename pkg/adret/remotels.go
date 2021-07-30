@@ -45,11 +45,13 @@ func RemoteLs(resourceName string, key string) {
 	defer resp.Body.Close()
 
 	//decrypt the reponse to show ls result
-	if !strings.Contains(resp.Status, "200") {
-		panic("Response code from ubac http server different from 200")
-	}
-	//To do: catch error when ls does not retrieve resource
 
 	bodyRes, _ := ioutil.ReadAll(resp.Body)
+
+	if !strings.Contains(resp.Status, "200") {
+		fmt.Println(string(bodyRes))
+		//panic("Response code from ubac http server different from 200")
+	}
+
 	PrintLs(string(bodyRes), key)
 }
