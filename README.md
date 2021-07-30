@@ -118,19 +118,21 @@ If you want to interact with your remote encrypted fs more fluidly
  - my encrypted fs + `ubac`on remote
  - remote is accesible on port `<ip>:<port>`
  - `adret` on local 
+ - have the `key` which encrypt the fs
 
+#### List folder content from remote encrypted fs
+Start your `ubac` listener on the remote where the encrypted fs is :
 
-Start your `ubac` listener in the same location where the encrypted fs is:
+    (remote) $ ubac listen -path="./test/arafs/encrypted.arafs" 4444
+	** IT WILL LAUNCH AN HTTP SERVER WAITING FOR REQUEST ON PORT 4444***
 
-    (remote) $ ubac -listen <port>
+An local machine configure your environment variable to dial with remote ubac listenerConnect to the listener with your local machine:
 
-Connect to the listener with your local machine:
-
-    (local) $ adret -connect <ip>:<port>
+    (local) $ eval `adret configremote -port="4444" -host=<remote_ubac_hostname>`
 
 I can now interact directly with my encrypted fs on my local machine and obtain direct result:
 
-    (remote) $ adret -remotecat /random/topath/file
+    (remote) $ adret remotels -key=toto test/mytestfolder
 
 ### ✂️ Manipulate encrypted fs
 #### Remove a file from encrypted fs
