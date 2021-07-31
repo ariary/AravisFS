@@ -134,6 +134,11 @@ I can now interact directly with my encrypted fs on my local machine and obtain 
 
     (remote) $ adret remotels -key=toto test/mytestfolder
 
+#### List folder content from remote encrypted fs
+Launch ` ubac` listener and config local host wit `adret` like [above](#List folder content from remote encrypted fs) and launch `remotecat`:
+
+    (remote) $ adret remotecat -key=toto test/mytestfolder/toto.txt
+
 ### ✂️ Manipulate encrypted fs
 #### Remove a file from encrypted fs
     (remote) ubac -rm darkpath myencryptedfs.arafs
