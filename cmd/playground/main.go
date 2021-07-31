@@ -30,7 +30,7 @@ func RemoteLs(resourceName string, key string) {
 	darkenresourceName := encrypt.DarkenPath(resourceName, key)
 
 	//create body
-	body, err := json.Marshal(remote.CreateBodyLs(darkenresourceName))
+	body, err := json.Marshal(remote.CreateBodyRead(darkenresourceName))
 	if err != nil {
 		panic(err)
 	}

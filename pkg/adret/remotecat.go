@@ -13,16 +13,16 @@ import (
 	"github.com/ariary/AravisFS/pkg/remote"
 )
 
-// Perform ls on a remote listening ubac (proxing to encrypted fs)
-// First craft the request, send it (the request instruct ubac to perform a ls)
+// Perform cat on a remote listening ubac (proxing to encrypted fs)
+// First craft the request, send it (the request instruct ubac to perform a cat)
 // take the reponse and decrypt it
-func RemoteLs(resourceName string, key string) {
+func RemoteCat(resourceName string, key string) {
 	url := os.Getenv("REMOTE_UBAC_URL")
 	if url == "" {
 		fmt.Println("Configure REMOTE_UBAC_URL envar with `adret configremote` before launching remotels. see `adret help`")
 		os.Exit(1)
 	}
-	endpoints := url + "ls"
+	endpoints := url + "cat"
 
 	darkenresourceName := encrypt.DarkenPath(resourceName, key)
 
@@ -44,7 +44,7 @@ func RemoteLs(resourceName string, key string) {
 	}
 	defer resp.Body.Close()
 
-	//decrypt the reponse to show ls result
+	//decrypt the reponse to show cat result
 
 	bodyRes, _ := ioutil.ReadAll(resp.Body)
 
@@ -54,5 +54,5 @@ func RemoteLs(resourceName string, key string) {
 		//panic("Response code from ubac http server different from 200")
 	}
 
-	PrintLs(string(bodyRes), key)
+	PrintCat(string(bodyRes), key)
 }

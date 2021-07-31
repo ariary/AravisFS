@@ -1,12 +1,12 @@
 package remote
 
-type BodyLs struct {
+type BodyRead struct {
 	ResourceName string `json:"name"`
 }
 
-func CreateBodyLs(resourceName string) BodyLs {
+func CreateBodyRead(resourceName string) BodyRead {
 
-	b := &BodyLs{
+	b := &BodyRead{
 		ResourceName: resourceName}
 	return *b
 }

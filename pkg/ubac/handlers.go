@@ -1,9 +1,7 @@
 package ubac
 
 import (
-	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/ariary/AravisFS/pkg/remote"
@@ -16,10 +14,11 @@ import (
 func Endpoints(w http.ResponseWriter, r *http.Request) {
 	endpoints := "endpoints\n"
 	endpoints += "ls\n"
+	endpoints += "cat\n"
 	fmt.Fprintf(w, endpoints)
 }
 
-// LS PART
+// READ ACCESS HANDLER PART
 
 // handler for ls function. Waiting request with JSON body with this structure {"name":"..."}
 // where name is the name of the resource on which we apply the ls
@@ -28,18 +27,10 @@ func Endpoints(w http.ResponseWriter, r *http.Request) {
 func RemoteLs(path string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//like this we could use path in RemoteLs Handler
+		var body remote.BodyRead
+		err := remote.DecodeBodyRead(w, r, &body)
 
-		var body remote.BodyLs
-
-		err := remote.DecodeJSONBody(w, r, &body)
 		if err != nil {
-			var mr *remote.MalformedRequest
-			if errors.As(err, &mr) {
-				http.Error(w, mr.Msg, mr.Status)
-			} else {
-				log.Println(err.Error())
-				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			}
 			return
 		}
 
@@ -50,5 +41,30 @@ func RemoteLs(path string) http.HandlerFunc {
 		}
 
 		fmt.Fprintf(w, lsContent)
+	}
+}
+
+// CAT PART
+
+// handler for cat function. Waiting request with JSON body with this structure {"name":"..."}
+// where name is the name of the resource on which we apply the ls
+// test it example:
+func RemoteCat(path string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//like this we could use path in RemoteLs Handler
+		var body remote.BodyRead
+		err := remote.DecodeBodyRead(w, r, &body)
+
+		if err != nil {
+			return
+		}
+
+		catContent, err := Cat(body.ResourceName, path)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+		}
+
+		fmt.Fprintf(w, catContent)
 	}
 }

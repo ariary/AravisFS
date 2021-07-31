@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 
@@ -78,4 +79,20 @@ func DecodeJSONBody(w http.ResponseWriter, r *http.Request, dst interface{}) err
 	}
 
 	return nil
+}
+
+//use to decode a body for read access command (cat & ls)
+func DecodeBodyRead(w http.ResponseWriter, r *http.Request, body interface{}) (err error) {
+	err = DecodeJSONBody(w, r, &body)
+	if err != nil {
+		var mr *MalformedRequest
+		if errors.As(err, &mr) {
+			http.Error(w, mr.Msg, mr.Status)
+		} else {
+			log.Println(err.Error())
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
+
+	}
+	return err
 }

@@ -16,7 +16,8 @@ func Listen(port int, path string) {
 	mux := http.NewServeMux()
 	//Add handlers
 	mux.HandleFunc("/endpoints", Endpoints)
-	mux.HandleFunc("/ls", RemoteLs(path)) //ls
+	mux.HandleFunc("/ls", RemoteLs(path))   //ls
+	mux.HandleFunc("/cat", RemoteCat(path)) //cat
 
 	log.Println("Waiting for remote command over encrypted fs (", path, ") on port", port, ":...")
 	err := http.ListenAndServe(":"+strconv.Itoa(port), mux)

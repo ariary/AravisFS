@@ -46,6 +46,11 @@ func main() {
 	remotelsResource := remotelsCmd.String("resource", "", "name of the resource (in clear-text)")
 	remotelsKey := remotelsCmd.String("key", "", "key used for encryption/decryption")
 
+	//remotecat
+	remotecatCmd := flag.NewFlagSet("remotecat", flag.ExitOnError)
+	remotecatResource := remotecatCmd.String("resource", "", "name of the resource (in clear-text)")
+	remotecatKey := remotecatCmd.String("key", "", "key used for encryption/decryption")
+
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'adret help' to get help")
 		os.Exit(1)
@@ -172,6 +177,22 @@ func main() {
 			adret.RemoteLs(remotelsCmd.Arg(0), *remotelsKey)
 		} else {
 			fmt.Println("expected data to decrypt for decryptls subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+	case "remotecat":
+		remotecatCmd.Parse(os.Args[2:])
+		//key parsing
+		if *remotecatKey == "" {
+			fmt.Println("expected key for remotecat subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//output parsing
+		if *remotecatResource != "" {
+			adret.RemoteCat(*remotecatResource, *remotecatKey)
+		} else if len(remotecatCmd.Args()) != 0 {
+			adret.RemoteCat(remotecatCmd.Arg(0), *remotecatKey)
+		} else {
+			fmt.Println("expected data to decrypt for decryptcat subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
 	case "help":

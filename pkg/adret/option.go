@@ -75,6 +75,14 @@ func PrintRemotelsMessage() {
 	fmt.Println()
 }
 
+func PrintRemotecatMessage() {
+	fmt.Println(("remotecat: perform a cat on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs"))
+	fmt.Println(("\tuse: adret remotecat -key=<key> <resource_name>"))
+	fmt.Println(("\tparameters required: key (-key) use for encryption/decryption resource_name (-resource) which is the resource on which we want to perform the cat command"))
+	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_LISTER envar (w/ 'adret configremote') before"))
+	fmt.Println()
+}
+
 //Print all help messages (all available command and their use)
 func PrintHelp() {
 	fmt.Println("adret utility is used to perform FS encrytion and decrypt data from fs encrypted (from ubac utility)")
@@ -112,9 +120,10 @@ func PrintHelp() {
 	mFunctionNameRemote := map[string]func(){
 		"PrintConfigremoteMessage": PrintConfigremoteMessage,
 		"PrintRemotelsMessage":     PrintRemotelsMessage,
+		"PrintRemotecatMessage":    PrintRemotecatMessage,
 	}
 	// oredered them for printing
-	orderedFunctionNameRemote := []string{"PrintConfigremoteMessage", "PrintRemotelsMessage"}
+	orderedFunctionNameRemote := []string{"PrintConfigremoteMessage", "PrintRemotelsMessage", "PrintRemotecatMessage"}
 	//print help message for all
 	PrintMapInOrder(mFunctionNameRemote, orderedFunctionNameRemote)
 }
