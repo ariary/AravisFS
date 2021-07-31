@@ -3,8 +3,10 @@ package adret
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
+	"github.com/ariary/AravisFS/pkg/remote"
 )
 
 // Parse the cat result received from ubac utility
@@ -26,4 +28,22 @@ func PrintCat(result string, key string) {
 		log.Fatal("Failed to parse cat result")
 	}
 
+}
+
+// Perform cat on a remote listening ubac (proxing to encrypted fs)
+// First craft the request, send it (the request instruct ubac to perform a cat)
+// take the reponse and decrypt it
+func RemoteCat(resourceName string, key string) {
+	url := os.Getenv("REMOTE_UBAC_URL")
+	if url == "" {
+		fmt.Println("Configure REMOTE_UBAC_URL envar with `adret configremote` before launching remotels. see `adret help`")
+		os.Exit(1)
+	}
+	endpoint := url + "cat"
+
+	darkenresourceName := encrypt.DarkenPath(resourceName, key)
+
+	bodyRes := remote.SendReadrequest(darkenresourceName, endpoint)
+	//decrypt the reponse to show cat result
+	PrintCat(string(bodyRes), key)
 }

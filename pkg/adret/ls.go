@@ -4,11 +4,13 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
 	"github.com/ariary/AravisFS/pkg/filesystem"
+	"github.com/ariary/AravisFS/pkg/remote"
 )
 
 // Parse the directory content retrieve from encrypted fs (w/ ubac for example)
@@ -66,4 +68,22 @@ func PrintLs(result string, key string) {
 		log.Fatal("Failed to parse ls result")
 	}
 
+}
+
+// Perform ls on a remote listening ubac (proxing to encrypted fs)
+// First craft the request, send it (the request instruct ubac to perform a ls)
+// take the reponse and decrypt it
+func RemoteLs(resourceName string, key string) {
+	url := os.Getenv("REMOTE_UBAC_URL")
+	if url == "" {
+		fmt.Println("Configure REMOTE_UBAC_URL envar with `adret configremote` before launching remotels. see `adret help`")
+		os.Exit(1)
+	}
+	endpoint := url + "ls"
+
+	darkenresourceName := encrypt.DarkenPath(resourceName, key)
+
+	bodyRes := remote.SendReadrequest(darkenresourceName, endpoint)
+	//decrypt the reponse to show cat result
+	PrintLs(string(bodyRes), key)
 }

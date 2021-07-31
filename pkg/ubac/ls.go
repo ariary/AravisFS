@@ -24,13 +24,17 @@ func Ls(resourcename string, filename string) (lscontent string, err error) {
 		err = errors.New(fmt.Sprintf("ls: cannot access %v: No such file or directory", resourcename))
 		return "", err
 	}
-	if resource.Type == filesystem.DIRECTORY || resource.Type == filesystem.FILE {
-		// //TO DO: specify if it is a file or directory
+	if resource.Type == filesystem.DIRECTORY {
 		content := base64.StdEncoding.EncodeToString(resource.Content)
 		resourceType := filesystem.DIRECTORY
 		lscontent = resourceType + ":" + content
 		return lscontent, nil
 
+	} else if resource.Type == filesystem.FILE {
+		content := base64.StdEncoding.EncodeToString(resource.Name)
+		resourceType := filesystem.FILE
+		lscontent = resourceType + ":" + content
+		return lscontent, nil
 	} else {
 		err = errors.New(fmt.Sprintf("ls: invalid resource type %v for resource %v", resource.Type, resourcename))
 		return "", err
