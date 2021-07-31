@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
+	"github.com/ariary/AravisFS/pkg/remote"
 	"github.com/ariary/AravisFS/pkg/ubac"
 )
 
@@ -196,4 +198,20 @@ func PrintTree(treeJSON string, key string) {
 
 	specialPrint(root, true, false)               //bool have no real impact for this case
 	PrintNode(tree.Nodes, rootNode, false, false) //bool have no real impact for this case
+}
+
+// Perform tree on a remote listening ubac (proxing to encrypted fs)
+// First craft the request, send it (the request instruct ubac to perform a tree)
+// take the reponse and decrypt it
+func RemoteTree(key string) {
+	url := os.Getenv("REMOTE_UBAC_URL")
+	if url == "" {
+		fmt.Println("Configure REMOTE_UBAC_URL envar with `adret configremote` before launching remotels. see `adret help`")
+		os.Exit(1)
+	}
+	endpoint := url + "tree"
+
+	bodyRes := remote.SendReadrequest("", endpoint)
+	//decrypt the reponse to show cat result
+	PrintTree(bodyRes, key)
 }

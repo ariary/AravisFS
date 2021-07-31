@@ -51,6 +51,10 @@ func main() {
 	remotecatResource := remotecatCmd.String("resource", "", "name of the resource (in clear-text)")
 	remotecatKey := remotecatCmd.String("key", "", "key used for encryption/decryption")
 
+	//remotetree
+	remotetreeCmd := flag.NewFlagSet("remotetree", flag.ExitOnError)
+	remotetreeKey := remotetreeCmd.String("key", "", "key used for encryption/decryption")
+
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'adret help' to get help")
 		os.Exit(1)
@@ -195,6 +199,14 @@ func main() {
 			fmt.Println("expected data to decrypt for decryptcat subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
+	case "remotetree":
+		remotetreeCmd.Parse(os.Args[2:])
+		//key parsing
+		if *remotetreeKey == "" {
+			fmt.Println("expected key for remotetree subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		adret.RemoteTree(*remotetreeKey)
 	case "help":
 		adret.PrintHelp()
 	default:

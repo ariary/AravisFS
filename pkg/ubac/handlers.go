@@ -47,11 +47,10 @@ func RemoteLs(path string) http.HandlerFunc {
 // CAT PART
 
 // handler for cat function. Waiting request with JSON body with this structure {"name":"..."}
-// where name is the name of the resource on which we apply the ls
-// test it example:
+// where name is the name of the resource on which we apply the cat
 func RemoteCat(path string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//like this we could use path in RemoteLs Handler
+		//read body request
 		var body remote.BodyRead
 		err := remote.DecodeBodyRead(w, r, &body)
 
@@ -66,5 +65,17 @@ func RemoteCat(path string) http.HandlerFunc {
 		}
 
 		fmt.Fprintf(w, catContent)
+	}
+}
+
+// handler for tree function. Waiting GET request with no body on /tree endpoint
+// return a json which is the tree of the encrypted fs
+// test example: curl -X GET http://localhost:4444/tree
+func RemoteTree(path string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		treeContent := GetTreeFromFS(path)
+
+		fmt.Fprintf(w, treeContent)
 	}
 }

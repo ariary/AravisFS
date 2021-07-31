@@ -45,5 +45,5 @@ func RemoteCat(resourceName string, key string) {
 
 	bodyRes := remote.SendReadrequest(darkenresourceName, endpoint)
 	//decrypt the reponse to show cat result
-	PrintCat(string(bodyRes), key)
+	PrintCat(bodyRes, key)
 }

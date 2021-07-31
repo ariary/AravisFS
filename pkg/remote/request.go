@@ -24,10 +24,19 @@ func CreateBodyRead(resourceName string) BodyRead {
 // Create a request for a read command (cat or ls) and return the response body
 // Errors are handled in the function
 func SendReadrequest(darkenresourceName string, endpoint string) string {
-	//create body
-	body, err := json.Marshal(CreateBodyRead(darkenresourceName))
-	if err != nil {
-		panic(err)
+	//Create body
+	var body []byte
+	if darkenresourceName != "" {
+		//logically a tree request, we don't need a body request
+		body = nil
+
+	} else {
+		//cat or ls
+		var err error
+		body, err = json.Marshal(CreateBodyRead(darkenresourceName))
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	//perform request
