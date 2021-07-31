@@ -110,7 +110,7 @@ First retrieve encrypted tree from encrypted fs:
 
    
 
-### 🤖 Automatize a bit 
+### 🤖 Automate a bit 
 If you want to interact with your remote encrypted fs more fluidly
 
 **Prerequisites**
