@@ -18,6 +18,7 @@ func PrintHelpMessage() {
 	fmt.Println("help: get help for adret utility and example")
 }
 
+//Encrypt
 func PrintDarkenpathMessage() {
 	fmt.Println(("darkenpath: use it to encrypt a path with the key"))
 	fmt.Println(("\tuse: adret darkenpath -key=<secret> <path>"))
@@ -31,9 +32,11 @@ func PrintEncryptfsMessage() {
 	fmt.Println(("\tuse: adret encryptfs -key=<secret> <path>"))
 	fmt.Println(("\tparameters required: key (-key) and path (-path)"))
 	fmt.Println(("\texample: adret encryptfs -key \"toto\" \"test/toto/titi\""))
+	fmt.Println("\t⚠ To be able to print the tree later, launch the command on the same location of the directory you want to encrypt (ie. path must be in you current directory when you launch the command")
 	fmt.Println()
 }
 
+//Read access
 func PrintDecryptlsMessage() {
 	fmt.Println(("decryptls: use it to decrypt output of 'ubac ls' command. It enable us to perform a ls in encryted fs"))
 	fmt.Println(("\tuse: adret decryptls -key=<secret> <ubac_ls_output>"))
@@ -57,9 +60,11 @@ func PrintDecrypttreeMessage() {
 	fmt.Println(("\tuse: adret decrypttree -key=<secret> <ubac_tree_output>"))
 	fmt.Println(("\tparameters required: key (-key) and ubac_tree_output (-output)"))
 	fmt.Println(("\t💡 get output with 'adret decrypttree -key=toto <ubac_tree_output>'"))
+	fmt.Println("\t⚠ To be able to print the tree, the fs has to be built in the same directory where the `adret encryptfs` command was run(see adret encryptfs")
 	fmt.Println()
 }
 
+//Remote
 func PrintConfigremoteMessage() {
 	fmt.Println(("configremote: enable to configurate the port and hostname of the remote ubac listener. It is equivalent to 'export REMOTE_UBAC_LISTER=<hostname>:<port>"))
 	fmt.Println(("\tuse: eval `adret configremote -port=<ubac_port> -host=<ubac_hostanme>`"))
@@ -76,10 +81,19 @@ func PrintRemotelsMessage() {
 }
 
 func PrintRemotecatMessage() {
-	fmt.Println(("remotecat: perform a cat on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs"))
-	fmt.Println(("\tuse: adret remotecat -key=<key> <resource_name>"))
-	fmt.Println(("\tparameters required: key (-key) use for encryption/decryption resource_name (-resource) which is the resource on which we want to perform the cat command"))
+	fmt.Println("remotecat: perform a cat on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs")
+	fmt.Println("\tuse: adret remotecat -key=<key> <resource_name>")
+	fmt.Println("\tparameters required: key (-key) use for encryption/decryption resource_name (-resource) which is the resource on which we want to perform the cat command")
+	fmt.Println("\t💡 Lauch ubac listener and set REMOTE_UBAC_LISTER envar (w/ 'adret configremote') before")
+	fmt.Println()
+}
+
+func PrintRemotetreeMessage() {
+	fmt.Println("remotetree: perform a tree on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs")
+	fmt.Println("\tuse: adret remotree -key=<key>")
+	fmt.Println("\tparameters required: key (-key) use for encryption/decryption ")
 	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_LISTER envar (w/ 'adret configremote') before"))
+	fmt.Println("\t⚠ To be able to print the tree, the fs has to be built in the same directory where the `adret encryptfs` command was run(see adret encryptfs")
 	fmt.Println()
 }
 
@@ -121,9 +135,10 @@ func PrintHelp() {
 		"PrintConfigremoteMessage": PrintConfigremoteMessage,
 		"PrintRemotelsMessage":     PrintRemotelsMessage,
 		"PrintRemotecatMessage":    PrintRemotecatMessage,
+		"PrintRemotetreeMessage":   PrintRemotetreeMessage,
 	}
 	// oredered them for printing
-	orderedFunctionNameRemote := []string{"PrintConfigremoteMessage", "PrintRemotelsMessage", "PrintRemotecatMessage"}
+	orderedFunctionNameRemote := []string{"PrintConfigremoteMessage", "PrintRemotelsMessage", "PrintRemotecatMessage", "PrintRemotetreeMessage"}
 	//print help message for all
 	PrintMapInOrder(mFunctionNameRemote, orderedFunctionNameRemote)
 }
