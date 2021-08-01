@@ -88,7 +88,8 @@ func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
 	return tree
 }
 
-// Return all node with specific prefix/parent directory (ie prefix == node.Parent)
+// Return all nodes with specific prefix/parent directory (ie prefix == node.Parent)
+// It enables us to retrieve all nodes irectly under a specified one (with depth=depth_nodes+1)
 func GetNodesWithPrefix(prefix string, nodes []Node) []string {
 	var nodesWithPrefix []string
 	for i := range nodes {
@@ -97,6 +98,18 @@ func GetNodesWithPrefix(prefix string, nodes []Node) []string {
 		}
 	}
 	return nodesWithPrefix
+}
+
+// Return all nodes under the prefix/parent directory (ie node.Parent begin w/ prefix)
+// It enables us to retrieve all nodes under a specified one
+func GetNodesUnder(prefix string, nodes []Node) []string {
+	var nodesUnder []string
+	for i := range nodes {
+		if strings.HasPrefix(nodes[i].Parent, prefix) {
+			nodesUnder = append(nodesUnder, nodes[i].Name)
+		}
+	}
+	return nodesUnder
 }
 
 // Function wich aim to imitate the tree command output

@@ -6,6 +6,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/ariary/AravisFS/pkg/adret"
 	"github.com/ariary/AravisFS/pkg/encrypt"
 	"github.com/ariary/AravisFS/pkg/filesystem"
 )
@@ -42,14 +43,55 @@ func TestEncrypt(t *testing.T) {
 	}
 }
 
-func TestFileSystem(t *testing.T) {
+// Equal tells whether a and b contain the same elements.
+// A nil argument is equivalent to an empty slice.
+func Equal(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+func TestGetNodeUnder(t *testing.T) {
+	prefix := "je/suis/"
+
+	nodes := []adret.Node{
+		adret.CreateNode("je/suis", "", "je"),
+		adret.CreateNode("je/suisaussi/tmp.txt", "file", "je/suisaussi"),
+		adret.CreateNode("je/suis/ton/fils/oo", "", "je/suis/ton/fils"),
+		adret.CreateNode("fake/je/suis/ton/fils/oo", "", "fake/je/suis/ton/fils"),
+		adret.CreateNode("je/suis/aussi/tonfils", "", "je/suis/aussi"),
+		adret.CreateNode("je/suis/tonpapa/oupas", "", "je/suis/tonpapa"),
+		adret.CreateNode("je/suis/doncjepense", "", "je/suis/"),
+		adret.CreateNode("je/nesuis/pas/ton/fils/pointtxt", "", "je/nesuis/pas/ton/fils"),
+	}
+
+	children := adret.GetNodesUnder(prefix, nodes)
+
+	expected := []string{
+		"je/suis/ton/fils/oo",
+		"je/suis/aussi/tonfils",
+		"je/suis/tonpapa/oupas",
+		"je/suis/doncjepense",
+	}
+
+	if !Equal(expected, children) {
+		t.Errorf("GetNodeUnder failed, got: %v, want: %v.", children, expected)
+	}
+}
+
+func TestTree(t *testing.T) {
 	path := "../../../test/mytestfolder/titi"
 	prefix := path + "/"
 	key := "riruhferiuh9898"
 	contentEnc := filesystem.GetDirectoryContent(path, key)
 	content := encrypt.DecryptByte(contentEnc, key)
 
-	expected := prefix + "tutu" + "\\" + prefix + "tutu.txt" + "\\" + prefix + "utut.txt"
+	expected := prefix + "tutu.txt" + "\\" + prefix + "utut.txt"
 
 	if expected != string(content) {
 		t.Errorf("GetDirectoryContent failed, got: %v, want: %v.", string(content), expected)
