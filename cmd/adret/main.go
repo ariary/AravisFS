@@ -176,9 +176,9 @@ func main() {
 		}
 		//output parsing
 		if *remotelsResource != "" {
-			adret.RemoteLs(*remotelsResource, *remotelsKey)
+			adret.PrintRemoteLs(*remotelsResource, *remotelsKey)
 		} else if len(remotelsCmd.Args()) != 0 {
-			adret.RemoteLs(remotelsCmd.Arg(0), *remotelsKey)
+			adret.PrintRemoteLs(remotelsCmd.Arg(0), *remotelsKey)
 		} else {
 			fmt.Println("expected data to decrypt for decryptls subcommand. see 'adret help' to get help")
 			os.Exit(1)

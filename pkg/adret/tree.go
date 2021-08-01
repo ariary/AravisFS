@@ -228,3 +228,27 @@ func RemoteTree(key string) {
 	//decrypt the reponse to show cat result
 	PrintTree(bodyRes, key)
 }
+
+// UTILS FOR INTERACTIVE CLI
+
+//connect with remote FS and check if the resource is inside
+// ask /tree endpoint of remote ubac and search resource within
+func RemoteExist(resourceName string, key string) bool {
+	//TODO
+	return true
+}
+
+//connect with remote FS and check if the resource is a directory
+// ask /tree endpoint of remote ubac and determine if the resource is a directory
+func RemoteIsDir(resourceName string, key string) bool {
+	//TODO
+	return true
+}
+
+// Retrieve tree of remote ubac listener and determine the base root dir of it
+// ie the resource with the minimum depth
+func RemoteRootDir(key string) string {
+	//TODO
+	result := "test/mytestfolder"
+	return result
+}

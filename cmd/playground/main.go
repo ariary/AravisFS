@@ -21,12 +21,15 @@ var ctx *FSContext
 var suggestions = []prompt.Suggest{
 	// General
 	{"exit", "Exit adret-prompt"},
-	{"configkey", "set the key used to decrypt the fs"},
 	{"help", "get help method"},
 
+	//key
+	{"keyconfig", "set the key used to decrypt the fs"},
+	{"keyprint", "print the current key"},
+
 	// Command on ubac
-	{"cd", "Change path"},
 	{"connect", "Connect to the configured Ubac"}, //in fact launch get and see if there is result
+	{"cd", "Change path"},
 
 	// Read Method
 
@@ -49,17 +52,50 @@ func executor(in string) {
 	case "exit":
 		fmt.Println("Bye!")
 		os.Exit(0)
-	case "configkey":
+	case "keyconfig":
 		if len(blocks) < 2 {
 			fmt.Println("please enter the key")
 		} else {
 			ctx.key = blocks[1]
 		}
 		return
+	case "keyprint":
+		fmt.Println(ctx.key)
+		return
+	case "connect":
+		//TODO see if host is alive
+		fmt.Println("Checking if host is alive...")
+		//TODO retrieve root dir
+		fmt.Println("Retrieve root dir of encrypted fs...")
+		ctx.path = adret.RemoteRootDir(ctx.key)
+		return
 	case "ls":
+		if ctx.key == "" {
+			fmt.Println("Please set the key to decrypt fs with keyconfig")
+			return
+		}
 		fmt.Println(ctx.path)
 		fmt.Println(ctx.key)
-		adret.RemoteLs(ctx.path, ctx.key)
+		adret.PrintRemoteLs(ctx.path, ctx.key)
+		return
+	case "cd":
+		//TODO: "cd"-> root et "cd -"--->previous
+		if len(blocks) < 2 {
+			return
+		} else {
+			//test if dir exist (TODO test if it is effectively a directory)
+			//ie have a function Exist + IsDir renvoie vrai si la resource est de type dir
+			// ubac & adret side
+			newPath := ctx.path + "/" + blocks[1]
+			if !adret.RemoteExist(newPath, ctx.key) {
+				fmt.Sprintf("cd: %v: No such file or directory", blocks[1])
+			} else if !adret.RemoteIsDir(newPath, ctx.key) {
+				fmt.Sprintf("cd: %v: Not a directory", blocks[1])
+			} else {
+				ctx.path = newPath
+			}
+		}
+		return
 		// case "cd":
 		// 	if len(blocks) < 2 {
 		// 		ctx.url.Path = "/"
@@ -121,8 +157,7 @@ func main() {
 		fmt.Println("Launch adret-interactive with hostname and port ('adret-interactive <ubac-hostname> <ubac_port>'")
 		os.Exit(1)
 	}
-	// basePath := "" //retrieve root path of encrypted FS
-	basePath := "test/mytestfolder"
+	basePath := "" //retrieve root path of encrypted FS
 
 	url := "http://" + os.Args[1] + ":" + os.Args[2] + "/"
 	os.Setenv("REMOTE_UBAC_URL", url)
