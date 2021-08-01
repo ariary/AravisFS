@@ -146,7 +146,7 @@ Launch ` ubac` listener and config local host wit `adret` like [above](#list-fol
 Use `-mv`, `-touch` etc the same way you could use it in unix system
 
 ## 📝 Spec
-### Target 1 - MVP
+### Target 1 - MVP - Basic utility on FS
 
 #### 🌄 Adret
 | function    | parameter | return         | use                                                                 
@@ -166,8 +166,7 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 | cat      | encrypted_fs, darkened_path | encrypt_content_file | Get encrypted `cat` result |
 | tree      | encrypted_fs | encrypt_resources_tree | Get encrypted `tree` result (malformed ie in json) |
 
-### Target 2 - The future is now 
-**📍HERE WE ARE**
+### Target 2 - The future is now - Remote interaction with FS
 
 #### 🌄 
 | function | parameter | return | use                                                                  |
@@ -180,7 +179,9 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 |----------|-----------|--------|----------------------------------------------------------------------|
 | listen   | port      |        | Act like a server. Wait for request from ubac, process it, return it |
 
-### target 3 - The world is yours
+### target 3 - The world is yours - Manipulate FS
+**📍HERE WE ARE**
+
 #### 🌄 
 | function | parameter                   | return | use                       |
 |----------|-----------------------------|--------|---------------------------|
@@ -195,7 +196,8 @@ And probably theirs siblings `remotemv`  ,etc
 |----------|-----------------------------|--------|---------------------------|
 | applypatch| encrypted_fs, patch|        | apply a patch onto the encrypted fs    |
 
-
+### target 4 - Infinity - Interactive prompt w/ FS
+Build a cli intereactive prompt  for adret (see https://github.com/c-bata/go-prompt or maybe  https://github.com/manifoldco/promptui)
 
 ## 🧙 How does it work?
 Magic!
@@ -287,4 +289,5 @@ Patch is used to inform `ubac` which resources it will change. So it contains 3 
 - launch `adret` in the same directory of the fs you want to encrypt *Otherwise it will keep prefix like "../" etc, (see filesystem.GetDirectoryContent)*
 - for `adret decrypt cat` we could not `cat` big file. *It is due to the fact that we take the encrypted content to show from command-line. Hence we are limited by `ARG_MAX` length (`getconf ARG_MAX`to know the value). For such reason avoid embedding binary file (or try to compress it using `upx` command before). This limitation applies for all command in fact*
 - file permissions
+- CLi flag and command parsing is homemade (see [cobra](https://github.com/spf13/cobra) to improve/facilitate)
 
