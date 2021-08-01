@@ -1,82 +1,142 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"os"
+	"strings"
 
 	"github.com/ariary/AravisFS/pkg/adret"
-	"github.com/ariary/AravisFS/pkg/encrypt"
-	"github.com/ariary/AravisFS/pkg/remote"
+	prompt "github.com/c-bata/go-prompt"
 )
 
-///// Ubac side
-// Use to config the information aboute remote ubac listener to avoid to mentionned them in
-// CLI after
-func ConfigRemote(hostname string, port string) {
-	urlUbac := "http://" + hostname + ":" + port + "/"
-	os.Setenv("REMOTE_UBAC_URL", urlUbac)
-	fmt.Println("REMOTE_UBAC_URL:", os.Getenv("REMOTE_UBAC_URL"))
+type FSContext struct {
+	path    string
+	urlUbac string
+	key     string
 }
 
-//Perform ls on a remote listening ubac (proxing to encrypted fs)
-func RemoteLs(resourceName string, key string) {
-	endpoints := os.Getenv("REMOTE_UBAC_URL") + "ls"
-	fmt.Println(endpoints)
+var ctx *FSContext
 
-	darkenresourceName := encrypt.DarkenPath(resourceName, key)
+// See https://github.com/eliangcs/http-prompt/blob/master/http_prompt/completion.py
+var suggestions = []prompt.Suggest{
+	// General
+	{"exit", "Exit adret-prompt"},
+	{"configkey", "set the key used to decrypt the fs"},
+	{"help", "get help method"},
 
-	//create body
-	body, err := json.Marshal(remote.CreateBodyRead(darkenresourceName))
-	if err != nil {
-		panic(err)
+	// Command on ubac
+	{"cd", "Change path"},
+	{"connect", "Connect to the configured Ubac"}, //in fact launch get and see if there is result
+
+	// Read Method
+
+	{"ls", "list directory contents on remote encrypted fs"},
+}
+
+func livePrefix() (string, bool) {
+	if ctx.path == "/" {
+		return "", false
 	}
+	return ctx.path + "> ", true
+}
 
-	//perform requets
-	req, err := http.NewRequest("POST", endpoints, bytes.NewBuffer(body))
-	if err != nil {
-		panic(err)
-	}
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
+func executor(in string) {
+	in = strings.TrimSpace(in)
 
-	//do smtg with response
-	fmt.Println("response Status:", resp.Status)
-	// fmt.Println("response Headers:", resp.Header)
-	bodyRes, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(bodyRes))
-	adret.PrintLs(string(bodyRes), key)
+	// var method, body string
+	blocks := strings.Split(in, " ")
+	switch blocks[0] {
+	case "exit":
+		fmt.Println("Bye!")
+		os.Exit(0)
+	case "configkey":
+		if len(blocks) < 2 {
+			fmt.Println("please enter the key")
+		} else {
+			ctx.key = blocks[1]
+		}
+		return
+	case "ls":
+		fmt.Println(ctx.path)
+		fmt.Println(ctx.key)
+		adret.RemoteLs(ctx.path, ctx.key)
+		// case "cd":
+		// 	if len(blocks) < 2 {
+		// 		ctx.url.Path = "/"
+		// 	} else {
+		// 		ctx.url.Path = path.Join(ctx.url.Path, blocks[1])
+		// 	}
+		// 	return
+		// case "get", "delete":
+		// 	method = strings.ToUpper(blocks[0])
+		// case "post", "put", "patch":
+		// 	if len(blocks) < 2 {
+		// 		fmt.Println("please set request body.")
+		// 		return
+		// 	}
+		// 	body = strings.Join(blocks[1:], " ")
+		// 	method = strings.ToUpper(blocks[0])
+	}
+	// if method != "" {
+	// 	req, err := http.NewRequest(method, ctx.url.String(), strings.NewReader(body))
+	// 	if err != nil {
+	// 		fmt.Println("err: " + err.Error())
+	// 		return
+	// 	}
+	// 	req.Header = ctx.header
+	// 	res, err := ctx.client.Do(req)
+	// 	if err != nil {
+	// 		fmt.Println("err: " + err.Error())
+	// 		return
+	// 	}
+	// 	result, err := ioutil.ReadAll(res.Body)
+	// 	if err != nil {
+	// 		fmt.Println("err: " + err.Error())
+	// 		return
+	// 	}
+	// 	fmt.Printf("%s\n", result)
+	// 	ctx.header = http.Header{}
+	// 	return
+	// }
+
+	// if h := strings.Split(in, ":"); len(h) == 2 {
+	// 	// Handling HTTP Header
+	// 	ctx.header.Add(strings.TrimSpace(h[0]), strings.Trim(h[1], ` '"`))
+	// } else {
+	// 	fmt.Println("Sorry, I don't understand.")
+	// }
+}
+
+func completer(in prompt.Document) []prompt.Suggest {
+	w := in.GetWordBeforeCursor()
+	if w == "" {
+		return []prompt.Suggest{}
+	}
+	return prompt.FilterHasPrefix(suggestions, w, true)
 }
 
 func main() {
-	//./ubac listen --path=./test/arafs/encrypted.arafs
-	// url := "http://localhost:4444/ls"
-	// key := "toto"
 
-	// var jsonStr = []byte(`{"name":"AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA237KVk6le4+fERV81xq4dTDo0PnkM3M="}`)
-	// req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
-	// req.Header.Set("Content-Type", "application/json")
+	if len(os.Args) != 3 {
+		fmt.Println("Launch adret-interactive with hostname and port ('adret-interactive <ubac-hostname> <ubac_port>'")
+		os.Exit(1)
+	}
+	// basePath := "" //retrieve root path of encrypted FS
+	basePath := "test/mytestfolder"
 
-	// client := &http.Client{}
-	// resp, err := client.Do(req)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer resp.Body.Close()
+	url := "http://" + os.Args[1] + ":" + os.Args[2] + "/"
+	os.Setenv("REMOTE_UBAC_URL", url)
+	ctx = &FSContext{
+		path:    basePath,
+		urlUbac: url,
+	}
 
-	// fmt.Println("response Status:", resp.Status)
-	// // fmt.Println("response Headers:", resp.Header)
-	// body, _ := ioutil.ReadAll(resp.Body)
-	// fmt.Println("response Body:", string(body))
-	// adret.PrintLs(string(body), key)
-
-	ConfigRemote("localhost", "4444")
-	RemoteLs("test/mytestfolder", "toto")
+	p := prompt.New(
+		executor,
+		completer,
+		prompt.OptionPrefix(basePath+"> "),
+		prompt.OptionLivePrefix(livePrefix),
+		prompt.OptionTitle("adret-prompt"),
+	)
+	p.Run()
 }

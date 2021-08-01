@@ -13,30 +13,30 @@ func PrintHelpMessage() {
 
 func PrintLsMessage() {
 	fmt.Println(("ls: like ls in encrypted fs"))
-	fmt.Println(("\tuse: ubac ls -path=<encryptedfs>.arfs <resource>"))
+	fmt.Println(("\tuse: ubac ls -path=<encryptedfs>.arafs <resource>"))
 	fmt.Println(("\tparameters required: path (-path) and resource (-resource). Resource is obtained by adret utility"))
-	fmt.Println(("\texample: ubac ls -path encrypted.arfs \"AAAAAAAAAAAAAAAAsFt3LbDTrKVIllwFtQLUTuE=\""))
+	fmt.Println(("\texample: ubac ls -path encrypted.arafs \"AAAAAAAAAAAAAAAAsFt3LbDTrKVIllwFtQLUTuE=\""))
 }
 
 func PrintCatMessage() {
 	fmt.Println(("cat: like cat in encrypted fs"))
-	fmt.Println(("\tuse: ubac cat -path=<encryptedfs>.arfs <resource>"))
+	fmt.Println(("\tuse: ubac cat -path=<encryptedfs>.arafs <resource>"))
 	fmt.Println(("\tparameters required: path (-path) and resource (-resource). Resource is obtained by adret utility"))
-	fmt.Println(("\texample: ubac cat -path encrypted.arfs \"AAAAAAAAAAAAAAAAsFt3LbDTrKVIllwFtQLUTuE=\""))
+	fmt.Println(("\texample: ubac cat -path encrypted.arafs \"AAAAAAAAAAAAAAAAsFt3LbDTrKVIllwFtQLUTuE=\""))
 }
 
 func PrintTreeMessage() {
 	fmt.Println(("tree: like tree command in encrypted fs. It shows the hierarchy of the filesytem"))
-	fmt.Println(("\tuse: ubac tree -path=<encryptedfs>.arfs"))
+	fmt.Println(("\tuse: ubac tree -path=<encryptedfs>.arafs"))
 	fmt.Println(("\tparameters required: path (-path), which is the .arafs location"))
-	fmt.Println(("\texample: ubac tree encrypted.arfs"))
+	fmt.Println(("\texample: ubac tree encrypted.arafs"))
 }
 
 func PrintListenMessage() {
 	fmt.Println(("listen: launch http server waiting for adret request on specified port. It take the path of the encrypted fs on which we will apply commmand"))
-	fmt.Println(("\tuse: ubac listen -path=<encryptedfs>.arfs <port>"))
+	fmt.Println(("\tuse: ubac listen -path=<encryptedfs>.arafs <port>"))
 	fmt.Println(("\tparameters required: path (-path), which is the .arafs location, and port (default 4444)"))
-	fmt.Println(("\texample: ubac listen -path=encrypted.arfs"))
+	fmt.Println(("\texample: ubac listen -path=encrypted.arafs"))
 }
 
 func PrintHelp() {

@@ -50,7 +50,7 @@ func PrintDecryptcatMessage() {
 	fmt.Println(("decryptcat: use it to decrypt output of 'ubac cat' command. It enable us to perform a cat in encryted fs"))
 	fmt.Println(("\tuse: adret decryptcat -key=<secret> <ubac_cat_output>"))
 	fmt.Println(("\tparameters required: key (-key) and ubac_cat_output (-output)"))
-	fmt.Println(("\t💡 get output with 'ubac cat -path=<encryptedfs>.arfs <resource>'"))
+	fmt.Println(("\t💡 get output with 'ubac cat -path=<encryptedfs>.arafs <resource>'"))
 	fmt.Println(("\texample: adret decryptcat -key \"toto\" \"directory:AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA237KVk6le21X9+Fky1Fb98v61k+DQJivbwJosBKJ8FSD4YitHoo9GZf40l3HLHGTDjc=\""))
 	fmt.Println()
 }
@@ -67,7 +67,7 @@ func PrintDecrypttreeMessage() {
 //Remote
 func PrintConfigremoteMessage() {
 	fmt.Println(("configremote: enable to configurate the port and hostname of the remote ubac listener. It is equivalent to 'export REMOTE_UBAC_LISTER=<hostname>:<port>"))
-	fmt.Println(("\tuse: eval `adret configremote -port=<ubac_port> -host=<ubac_hostanme>`"))
+	fmt.Println(("\tuse: eval `adret configremote -port=<ubac_port> -host=<ubac_hostname>`"))
 	fmt.Println(("\tparameters required: port (-port) and hostname (-host) (ubac is listening on hostname:port"))
 	fmt.Println()
 }

@@ -15,7 +15,6 @@ type BodyRead struct {
 }
 
 func CreateBodyRead(resourceName string) BodyRead {
-
 	b := &BodyRead{
 		ResourceName: resourceName}
 	return *b
@@ -26,10 +25,9 @@ func CreateBodyRead(resourceName string) BodyRead {
 func SendReadrequest(darkenresourceName string, endpoint string) string {
 	//Create body
 	var body []byte
-	if darkenresourceName != "" {
+	if darkenresourceName == "" {
 		//logically a tree request, we don't need a body request
 		body = nil
-
 	} else {
 		//cat or ls
 		var err error
@@ -38,7 +36,6 @@ func SendReadrequest(darkenresourceName string, endpoint string) string {
 			panic(err)
 		}
 	}
-
 	//perform request
 	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(body))
 	if err != nil {

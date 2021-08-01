@@ -84,6 +84,7 @@ func RemoteLs(resourceName string, key string) {
 	darkenresourceName := encrypt.DarkenPath(resourceName, key)
 
 	bodyRes := remote.SendReadrequest(darkenresourceName, endpoint)
+
 	//decrypt the reponse to show cat result
 	PrintLs(bodyRes, key)
 }
