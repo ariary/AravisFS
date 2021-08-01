@@ -167,7 +167,6 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 | tree      | encrypted_fs | encrypt_resources_tree | Get encrypted `tree` result (malformed ie in json) |
 
 ### Target 2 - The future is now 
-**📍HERE WE ARE**
 
 #### 🌄 
 | function | parameter | return | use                                                                  |
@@ -181,6 +180,8 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 | listen   | port      |        | Act like a server. Wait for request from ubac, process it, return it |
 
 ### target 3 - The world is yours
+**📍HERE WE ARE**
+
 #### 🌄 
 | function | parameter                   | return | use                       |
 |----------|-----------------------------|--------|---------------------------|
