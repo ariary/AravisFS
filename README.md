@@ -179,7 +179,7 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 |----------|-----------|--------|----------------------------------------------------------------------|
 | listen   | port      |        | Act like a server. Wait for request from ubac, process it, return it |
 
-### target 3 - The world is yours - Manipulate FS
+### Target 3 - The world is yours - Manipulate FS
 **📍HERE WE ARE**
 
 #### 🌄 
@@ -196,8 +196,11 @@ And probably theirs siblings `remotemv`  ,etc
 |----------|-----------------------------|--------|---------------------------|
 | applypatch| encrypted_fs, patch|        | apply a patch onto the encrypted fs    |
 
-### target 4 - Infinity - Interactive prompt w/ FS
-Build a cli intereactive prompt  for adret (see https://github.com/c-bata/go-prompt or maybe  https://github.com/manifoldco/promptui)
+### Target 4 - Infinity - Interactive prompt w/ FS
+Build a cli intereactive prompt  for adret: **`adretctl`**. It is used to dial with an `ubac` listener in an interactive way.
+(Soon use explained)
+
+
 
 ## 🧙 How does it work?
 Magic!
