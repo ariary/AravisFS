@@ -1,9 +1,4 @@
 
-
-
-
-
-
 # AravisFS 🗻🌄
 
 A remote fake encrypted filesystem  🔐 *Another non production-ready software*
@@ -58,7 +53,10 @@ For this purpose we use 2 utilities, each on different side:
  To build `adret` :
 
      make build_adret
+ To build `adretctl` :
 
+     make build_adretclt
+	    
 Idem, to build `ubac`:
 
     make build_ubac
@@ -179,7 +177,12 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 |----------|-----------|--------|----------------------------------------------------------------------|
 | listen   | port      |        | Act like a server. Wait for request from ubac, process it, return it |
 
-### Target 3 - The world is yours - Manipulate FS
+### Target 4 - to the infinite - Interactive prompt w/ FS
+Build a interactive prompt cli for adret: **`adretctl`**. It is used to dial with an `ubac` listener in an interactive way.
+
+it must reimplemet the already present function (`ls`, `cat`,`tree`) and add some more context to browse the the remote encrypted filesystem (`cd`)
+
+### Target 4 - The world is yours - Manipulate FS
 **📍HERE WE ARE**
 
 #### 🌄 
@@ -196,9 +199,8 @@ And probably theirs siblings `remotemv`  ,etc
 |----------|-----------------------------|--------|---------------------------|
 | applypatch| encrypted_fs, patch|        | apply a patch onto the encrypted fs    |
 
-### Target 4 - Infinity - Interactive prompt w/ FS
-Build a interactive prompt cli for adret: **`adretctl`**. It is used to dial with an `ubac` listener in an interactive way.
-(Soon use explained)
+
+
 
 
 
@@ -293,4 +295,3 @@ Patch is used to inform `ubac` which resources it will change. So it contains 3 
 - for `adret decrypt cat` we could not `cat` big file. *It is due to the fact that we take the encrypted content to show from command-line. Hence we are limited by `ARG_MAX` length (`getconf ARG_MAX`to know the value). For such reason avoid embedding binary file (or try to compress it using `upx` command before). This limitation applies for all command in fact*
 - file permissions
 - CLi flag and command parsing is homemade (see [cobra](https://github.com/spf13/cobra) to improve/facilitate)
-
