@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 	"strings"
 
@@ -24,7 +25,7 @@ type FSContext struct {
 
 var ctx *FSContext
 
-// See https://github.com/eliangcs/http-prompt/blob/master/http_prompt/completion.py
+// suggestions list
 var suggestions = []prompt.Suggest{
 	// General
 	{"exit", "Exit adretctl"},
@@ -40,9 +41,11 @@ var suggestions = []prompt.Suggest{
 
 	// Read Method
 	{"ls", "list directory contents on remote encrypted fs"},
-	{"cat", "print file content on remote encrypte fs resource"},
+	{"cat", "print file content on remote encrypted fs resource"},
+	{"tree", "print tree of remote encrypte fs"},
 }
 
+//Prefix for the prompt
 func livePrefix() (string, bool) {
 	if ctx.path == "/" {
 		return "", false
@@ -59,15 +62,13 @@ func hasKey(ctx FSContext) bool {
 	return true
 }
 
+//perform at each loop
 func executor(in string) {
 	in = strings.TrimSpace(in)
 
 	// var method, body string
 	blocks := strings.Split(in, " ")
 	switch blocks[0] {
-	case "exit":
-		fmt.Println("Bye!🕶")
-		os.Exit(0)
 	case "keyconfig":
 		if len(blocks) < 2 {
 			fmt.Println("please enter the key")
@@ -146,39 +147,25 @@ func executor(in string) {
 		}
 		adret.PrintRemoteCat(path, ctx.key)
 		return
+	case "tree":
+		if !hasKey(*ctx) {
+			return
+		}
+		adret.RemoteTree(ctx.key)
+		return
+	case "help":
+		fmt.Println("available commands: keyconfig, keyprint, connect, ls, cat, tree")
+		return
+	case "exit":
+		fmt.Println("Bye!🕶")
+		handleExit()
+		os.Exit(0)
 	default:
 		fmt.Printf("Unknown command: %s", blocks[0])
 		fmt.Println()
 		return
 	}
-	// if method != "" {
-	// 	req, err := http.NewRequest(method, ctx.url.String(), strings.NewReader(body))
-	// 	if err != nil {
-	// 		fmt.Println("err: " + err.Error())
-	// 		return
-	// 	}
-	// 	req.Header = ctx.header
-	// 	res, err := ctx.client.Do(req)
-	// 	if err != nil {
-	// 		fmt.Println("err: " + err.Error())
-	// 		return
-	// 	}
-	// 	result, err := ioutil.ReadAll(res.Body)
-	// 	if err != nil {
-	// 		fmt.Println("err: " + err.Error())
-	// 		return
-	// 	}
-	// 	fmt.Printf("%s\n", result)
-	// 	ctx.header = http.Header{}
-	// 	return
-	// }
 
-	// if h := strings.Split(in, ":"); len(h) == 2 {
-	// 	// Handling HTTP Header
-	// 	ctx.header.Add(strings.TrimSpace(h[0]), strings.Trim(h[1], ` '"`))
-	// } else {
-	// 	fmt.Println("Sorry, I don't understand.")
-	// }
 }
 
 func completer(in prompt.Document) []prompt.Suggest {
@@ -189,7 +176,16 @@ func completer(in prompt.Document) []prompt.Suggest {
 	return prompt.FilterHasPrefix(suggestions, w, true)
 }
 
+//Function launch when adrectl exit. Mainly use to prevent https://github.com/c-bata/go-prompt/issues/228
+func handleExit() {
+	rawModeOff := exec.Command("/bin/stty", "-raw", "echo")
+	rawModeOff.Stdin = os.Stdin
+	_ = rawModeOff.Run()
+	rawModeOff.Wait()
+}
+
 func main() {
+	defer handleExit()
 
 	if len(os.Args) != 3 && os.Getenv("REMOTE_UBAC_URL") == "" {
 		fmt.Println("Launch adretctl with hostname and port ('adretclt <ubac-hostname> <ubac_port>' or defined envar REMOTE_UBAC_URL ")
