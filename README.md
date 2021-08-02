@@ -177,8 +177,8 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 |----------|-----------|--------|----------------------------------------------------------------------|
 | listen   | port      |        | Act like a server. Wait for request from ubac, process it, return it |
 
-### Target 4 - to the infinite - Interactive prompt w/ FS
-Build a interactive prompt cli for adret: **`adretctl`**. It is used to dial with an `ubac` listener in an interactive way.
+### Target 4 - to the infinite - Interactive prompt w/ FS (CLI)
+Build a interactive prompt CLI for adret: **`adretctl`**. It is used to dial with an `ubac` listener in an interactive way.
 
 it must reimplemet the already present function (`ls`, `cat`,`tree`) and add some more context to browse the the remote encrypted filesystem (`cd`)
 
