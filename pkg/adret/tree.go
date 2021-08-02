@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
+	"github.com/ariary/AravisFS/pkg/filesystem"
 	"github.com/ariary/AravisFS/pkg/remote"
 	"github.com/ariary/AravisFS/pkg/ubac"
 )
@@ -226,6 +227,17 @@ func RemoteGetTreeJSON() string {
 	return treeJSON
 }
 
+// Return the Node list of the remote tree
+func RemoteGetNodes(key string) []Node {
+	treeJSON := RemoteGetTreeJSON()
+	tree := GetTreeStructFromTreeJson(treeJSON, key)
+	if len(tree.Nodes) == 0 {
+		log.SetFlags(0)
+		log.Fatal("PrintTree: Failed to convert JSON to Tree structure")
+	}
+	return tree.Nodes
+}
+
 // Perform tree on a remote listening ubac (proxing to encrypted fs)
 // First craft the request, send it (the request instruct ubac to perform a tree)
 // take the reponse and decrypt it
@@ -241,15 +253,24 @@ func RemoteTree(key string) {
 //connect with remote FS and check if the resource is inside
 // ask /tree endpoint of remote ubac and search resource within
 func RemoteExist(resourceName string, key string) bool {
-	//TODO
-	return true
+	nodes := RemoteGetNodes(key)
+	_, err := GetNodeByName(resourceName, nodes)
+	return err == nil
 }
 
 //connect with remote FS and check if the resource is a directory
 // ask /tree endpoint of remote ubac and determine if the resource is a directory
 func RemoteIsDir(resourceName string, key string) bool {
-	//TODO
-	return true
+	//retrieve node
+	nodes := RemoteGetNodes(key)
+	node, err := GetNodeByName(resourceName, nodes)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//determine if it is a dir
+
+	return node.Type == filesystem.DIRECTORY
 }
 
 // Return root directory path of ecrypted fs.
@@ -257,15 +278,9 @@ func RemoteIsDir(resourceName string, key string) bool {
 // ie the resource with the minimum depth
 func RemoteRootDir(key string) (rootDir string, err error) {
 	//retrieve tree
-	treeJSON := RemoteGetTreeJSON()
-	tree := GetTreeStructFromTreeJson(treeJSON, key)
-	if len(tree.Nodes) == 0 {
-		log.SetFlags(0)
-		log.Fatal("PrintTree: Failed to convert JSON to Tree structure")
-	}
+	nodes := RemoteGetNodes(key)
 
 	//determine root node (ie with depth=min)
-	nodes := tree.Nodes
 	minDepth := 1000
 	for i := range nodes {
 		//TODO: handle case where a file/direcgtory have / in its name
@@ -281,7 +296,6 @@ func RemoteRootDir(key string) (rootDir string, err error) {
 	if rootDir == "" {
 		err = errors.New("RemoteRootDir: failed to retrieve root dir from remote tree")
 	}
-	//TODO
-	// result := "test/mytestfolder"
+
 	return rootDir, err
 }

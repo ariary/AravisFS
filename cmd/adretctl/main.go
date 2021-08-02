@@ -103,7 +103,13 @@ func executor(in string) {
 		if !hasKey(*ctx) {
 			return
 		}
-		adret.PrintRemoteLs(ctx.path, ctx.key)
+		var path string
+		if len(blocks) == 2 {
+			path = ctx.path + "/" + blocks[1]
+		} else {
+			path = ctx.path
+		}
+		adret.PrintRemoteLs(path, ctx.key)
 		return
 	case "cd":
 		//TODO: special case: "cd"-> root et "cd -"--->previous
