@@ -192,9 +192,9 @@ func main() {
 		}
 		//output parsing
 		if *remotecatResource != "" {
-			adret.RemoteCat(*remotecatResource, *remotecatKey)
+			adret.PrintRemoteCat(*remotecatResource, *remotecatKey)
 		} else if len(remotecatCmd.Args()) != 0 {
-			adret.RemoteCat(remotecatCmd.Arg(0), *remotecatKey)
+			adret.PrintRemoteCat(remotecatCmd.Arg(0), *remotecatKey)
 		} else {
 			fmt.Println("expected data to decrypt for decryptcat subcommand. see 'adret help' to get help")
 			os.Exit(1)

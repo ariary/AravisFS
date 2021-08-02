@@ -33,7 +33,7 @@ func PrintCat(result string, key string) {
 // Perform cat on a remote listening ubac (proxing to encrypted fs)
 // First craft the request, send it (the request instruct ubac to perform a cat)
 // take the reponse and decrypt it
-func RemoteCat(resourceName string, key string) {
+func RemoteCat(resourceName string, key string) string {
 	url := os.Getenv("REMOTE_UBAC_URL")
 	if url == "" {
 		fmt.Println("Configure REMOTE_UBAC_URL envar with `adret configremote` before launching remotels. see `adret help`")
@@ -45,5 +45,11 @@ func RemoteCat(resourceName string, key string) {
 
 	bodyRes := remote.SendReadrequest(darkenresourceName, endpoint)
 	//decrypt the reponse to show cat result
-	PrintCat(bodyRes, key)
+	return ParseCatContent(bodyRes, key)
+}
+
+// Print the result of a cat on a remote listening ubac (proxing to encrypted fs)
+func PrintRemoteCat(resourceName string, key string) {
+	result := RemoteCat(resourceName, key)
+	fmt.Println(result)
 }

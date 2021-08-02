@@ -27,7 +27,7 @@ var ctx *FSContext
 // See https://github.com/eliangcs/http-prompt/blob/master/http_prompt/completion.py
 var suggestions = []prompt.Suggest{
 	// General
-	{"exit", "Exit adret-prompt"},
+	{"exit", "Exit adretctl"},
 	{"help", "get help method"},
 
 	//key
@@ -39,8 +39,8 @@ var suggestions = []prompt.Suggest{
 	{"cd", "Change the  working directory in encrypted fs. (Do not support full path)"},
 
 	// Read Method
-
 	{"ls", "list directory contents on remote encrypted fs"},
+	{"cat", "print file content on remote encrypte fs resource"},
 }
 
 func livePrefix() (string, bool) {
@@ -66,7 +66,7 @@ func executor(in string) {
 	blocks := strings.Split(in, " ")
 	switch blocks[0] {
 	case "exit":
-		fmt.Println("Bye!")
+		fmt.Println("Bye!🕶")
 		os.Exit(0)
 	case "keyconfig":
 		if len(blocks) < 2 {
@@ -133,23 +133,23 @@ func executor(in string) {
 				ctx.path = newPath
 			}
 		}
+	case "cat":
+		if !hasKey(*ctx) {
+			return
+		}
+		var path string
+		if len(blocks) == 2 {
+			path = ctx.path + "/" + blocks[1]
+		} else {
+			fmt.Println("Please provide a file to cat command to print its result")
+			return
+		}
+		adret.PrintRemoteCat(path, ctx.key)
 		return
-		// case "cd":
-		// 	if len(blocks) < 2 {
-		// 		ctx.url.Path = "/"
-		// 	} else {
-		// 		ctx.url.Path = path.Join(ctx.url.Path, blocks[1])
-		// 	}
-		// 	return
-		// case "get", "delete":
-		// 	method = strings.ToUpper(blocks[0])
-		// case "post", "put", "patch":
-		// 	if len(blocks) < 2 {
-		// 		fmt.Println("please set request body.")
-		// 		return
-		// 	}
-		// 	body = strings.Join(blocks[1:], " ")
-		// 	method = strings.ToUpper(blocks[0])
+	default:
+		fmt.Printf("Unknown command: %s", blocks[0])
+		fmt.Println()
+		return
 	}
 	// if method != "" {
 	// 	req, err := http.NewRequest(method, ctx.url.String(), strings.NewReader(body))
@@ -191,15 +191,28 @@ func completer(in prompt.Document) []prompt.Suggest {
 
 func main() {
 
-	if len(os.Args) != 3 {
-		fmt.Println("Launch adretctl with hostname and port ('adret-interactive <ubac-hostname> <ubac_port>'")
+	if len(os.Args) != 3 && os.Getenv("REMOTE_UBAC_URL") == "" {
+		fmt.Println("Launch adretctl with hostname and port ('adretclt <ubac-hostname> <ubac_port>' or defined envar REMOTE_UBAC_URL ")
 		os.Exit(1)
 	}
-	basePath := "" //retrieve root path of encrypted FS
-	hostname := os.Args[1]
-	port := os.Args[2]
-	url := "http://" + hostname + ":" + port + "/"
-	os.Setenv("REMOTE_UBAC_URL", url)
+
+	//launch config loading
+	basePath := ""
+	var url, port, hostname string
+	if os.Getenv("REMOTE_UBAC_URL") != "" {
+		//envar exist
+		url = os.Getenv("REMOTE_UBAC_URL")
+		fqdn := strings.Split(url, "/")[2]
+		hostname = strings.Split(fqdn, ":")[0]
+		port = strings.Split(fqdn, ":")[1]
+	} else {
+		//retrieve root path of encrypted FS
+		hostname = os.Args[1]
+		port = os.Args[2]
+		url = "http://" + hostname + ":" + port + "/"
+		os.Setenv("REMOTE_UBAC_URL", url)
+	}
+
 	u := &UrlUbac{
 		hostname: hostname,
 		port:     port,
