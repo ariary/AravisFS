@@ -113,6 +113,25 @@ func GetNodesUnder(prefix string, nodes []Node) []string {
 	return nodesUnder
 }
 
+// Return true if the resource/node specified is of type directory
+func IsDir(resourceName string, nodes []Node) bool {
+	node, err := GetNodeByName(resourceName, nodes)
+	if err != nill {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	return node.Type == filesystem.DIRECTORY
+}
+
+//connect with remote FS and check if the resource is a directory
+// ask /tree endpoint of remote ubac and determine if the resource is a directory
+func RemoteIsDir(resourceName string, key string) bool {
+	//retrieve node
+	nodes := RemoteGetNodes(key)
+
+	return IsDir(resourceName, nodes)
+}
+
 // Function wich aim to imitate the tree command output
 // It prints the node name without prefix with the right indentation compare to its position in the Tree.
 // If it is the last element of a directory it print it with a special character behind
@@ -256,21 +275,6 @@ func RemoteExist(resourceName string, key string) bool {
 	nodes := RemoteGetNodes(key)
 	_, err := GetNodeByName(resourceName, nodes)
 	return err == nil
-}
-
-//connect with remote FS and check if the resource is a directory
-// ask /tree endpoint of remote ubac and determine if the resource is a directory
-func RemoteIsDir(resourceName string, key string) bool {
-	//retrieve node
-	nodes := RemoteGetNodes(key)
-	node, err := GetNodeByName(resourceName, nodes)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//determine if it is a dir
-
-	return node.Type == filesystem.DIRECTORY
 }
 
 // Return root directory path of ecrypted fs.
