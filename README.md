@@ -197,7 +197,7 @@ And probably theirs siblings `remotemv`  ,etc
 | applypatch| encrypted_fs, patch|        | apply a patch onto the encrypted fs    |
 
 ### Target 4 - Infinity - Interactive prompt w/ FS
-Build a cli intereactive prompt  for adret: **`adretctl`**. It is used to dial with an `ubac` listener in an interactive way.
+Build a interactive prompt cli for adret: **`adretctl`**. It is used to dial with an `ubac` listener in an interactive way.
 (Soon use explained)
 
 
