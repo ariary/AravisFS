@@ -89,7 +89,7 @@ func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
 }
 
 // Return all nodes with specific prefix/parent directory (ie prefix == node.Parent)
-// It enables us to retrieve all nodes irectly under a specified one (with depth=depth_nodes+1)
+// It enables us to retrieve all nodes directly under a specified one (with depth=depth_nodes+1)
 func GetNodesWithPrefix(prefix string, nodes []Node) []string {
 	var nodesWithPrefix []string
 	for i := range nodes {
@@ -213,18 +213,25 @@ func PrintTree(treeJSON string, key string) {
 	PrintNode(tree.Nodes, rootNode, false, false) //bool have no real impact for this case
 }
 
-// Perform tree on a remote listening ubac (proxing to encrypted fs)
-// First craft the request, send it (the request instruct ubac to perform a tree)
-// take the reponse and decrypt it
-func RemoteTree(key string) {
+// Retrieve the tree in JSON struct from remote (ubac listener)
+func RemoteGetTreeJSON() string {
 	url := os.Getenv("REMOTE_UBAC_URL")
 	if url == "" {
-		fmt.Println("Configure REMOTE_UBAC_URL envar with `adret configremote` before launching remotels. see `adret help`")
+		fmt.Println("Configure REMOTE_UBAC_URL envar with `adret configremote` or set it in adretctl. see `adret help`")
 		os.Exit(1)
 	}
 	endpoint := url + "tree"
 
-	bodyRes := remote.SendReadrequest("", endpoint)
+	treeJSON := remote.SendReadrequest("", endpoint)
+	return treeJSON
+}
+
+// Perform tree on a remote listening ubac (proxing to encrypted fs)
+// First craft the request, send it (the request instruct ubac to perform a tree)
+// take the reponse and decrypt it
+func RemoteTree(key string) {
+	bodyRes := RemoteGetTreeJSON()
+
 	//decrypt the reponse to show cat result
 	PrintTree(bodyRes, key)
 }
@@ -245,10 +252,36 @@ func RemoteIsDir(resourceName string, key string) bool {
 	return true
 }
 
-// Retrieve tree of remote ubac listener and determine the base root dir of it
+// Return root directory path of ecrypted fs.
+// First, it retrieves tree of remote ubac listener and determines the base root dir name of it
 // ie the resource with the minimum depth
-func RemoteRootDir(key string) string {
+func RemoteRootDir(key string) (rootDir string, err error) {
+	//retrieve tree
+	treeJSON := RemoteGetTreeJSON()
+	tree := GetTreeStructFromTreeJson(treeJSON, key)
+	if len(tree.Nodes) == 0 {
+		log.SetFlags(0)
+		log.Fatal("PrintTree: Failed to convert JSON to Tree structure")
+	}
+
+	//determine root node (ie with depth=min)
+	nodes := tree.Nodes
+	minDepth := 1000
+	for i := range nodes {
+		//TODO: handle case where a file/direcgtory have / in its name
+		nodeNameTmp := nodes[i].Name
+		tmpDepth := strings.Count(nodeNameTmp, "/")
+		if minDepth > tmpDepth {
+			minDepth = tmpDepth
+			rootDir = nodeNameTmp
+		}
+	}
+
+	//error handling
+	if rootDir == "" {
+		err = errors.New("RemoteRootDir: failed to retrieve root dir from remote tree")
+	}
 	//TODO
-	result := "test/mytestfolder"
-	return result
+	// result := "test/mytestfolder"
+	return rootDir, err
 }

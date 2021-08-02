@@ -50,6 +50,15 @@ func livePrefix() (string, bool) {
 	return ctx.path + "> ", true
 }
 
+//Check if context key is defined
+func hasKey(ctx FSContext) bool {
+	if ctx.key == "" {
+		fmt.Println("Please set the key used for encryption/decryption with keyconfig")
+		return false
+	}
+	return true
+}
+
 func executor(in string) {
 	in = strings.TrimSpace(in)
 
@@ -70,41 +79,50 @@ func executor(in string) {
 		fmt.Println(ctx.key)
 		return
 	case "connect":
-		//TODO see if host is alive
+		//check if host is alive
 		fmt.Printf("Checking if host   (%s) is alive...", ctx.urlUbac.url)
 		fmt.Println()
 		_, err := http.Get(ctx.urlUbac.url) //could also use net.DialTimeout
 		if err != nil {
 			fmt.Println("Get: connect: connection refused. Please make sure you're ubac listener is up and adrectl well configured")
-			os.Exit(1)
-		}
-		//TODO retrieve root dir
-		fmt.Println("Retrieve root dir of encrypted fs...")
-		ctx.path = adret.RemoteRootDir(ctx.key)
-		return
-	case "ls":
-		if ctx.key == "" {
-			fmt.Println("Please set the key to decrypt fs with keyconfig")
 			return
 		}
-		fmt.Println(ctx.path)
-		fmt.Println(ctx.key)
+		//retrieve root dir
+		fmt.Println("Retrieve root dir of encrypted fs...")
+		if !hasKey(*ctx) {
+			return
+		}
+		root, err := adret.RemoteRootDir(ctx.key)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		ctx.path = root
+		return
+	case "ls":
+		if !hasKey(*ctx) {
+			return
+		}
 		adret.PrintRemoteLs(ctx.path, ctx.key)
 		return
 	case "cd":
-		//TODO: "cd"-> root et "cd -"--->previous
+		//TODO: special case: "cd"-> root et "cd -"--->previous
 		if len(blocks) < 2 {
 			return
 		} else {
-			//TODO: special case cd -
 			//test if dir exist (TODO test if it is effectively a directory)
 			//ie have a function Exist + IsDir renvoie vrai si la resource est de type dir
 			// ubac & adret side
+			if !hasKey(*ctx) {
+				return
+			}
 			newPath := path.Clean(ctx.path + "/" + blocks[1])
 			if !adret.RemoteExist(newPath, ctx.key) {
-				fmt.Sprintf("cd: %v: No such file or directory", blocks[1])
+				fmt.Printf("cd: %v: No such file or directory", blocks[1])
+				fmt.Println()
 			} else if !adret.RemoteIsDir(newPath, ctx.key) {
-				fmt.Sprintf("cd: %v: Not a directory", blocks[1])
+				fmt.Printf("cd: %v: Not a directory", blocks[1])
+				fmt.Println()
 			} else {
 				ctx.path = newPath
 			}
@@ -168,7 +186,7 @@ func completer(in prompt.Document) []prompt.Suggest {
 func main() {
 
 	if len(os.Args) != 3 {
-		fmt.Println("Launch adret-interactive with hostname and port ('adret-interactive <ubac-hostname> <ubac_port>'")
+		fmt.Println("Launch adretctl with hostname and port ('adret-interactive <ubac-hostname> <ubac_port>'")
 		os.Exit(1)
 	}
 	basePath := "" //retrieve root path of encrypted FS
@@ -192,7 +210,7 @@ func main() {
 		completer,
 		prompt.OptionPrefix(basePath+"> "),
 		prompt.OptionLivePrefix(livePrefix),
-		prompt.OptionTitle("adret-prompt"),
+		prompt.OptionTitle("adretctl"),
 	)
 	p.Run()
 }
