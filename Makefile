@@ -18,6 +18,9 @@ endif
 build_adret:
 	@echo "build in ${PWD}";go build -o adret cmd/adret/main.go
 
+build_adretctl:
+	@echo "build in ${PWD}";go build -o adretctl cmd/adretctl/main.go
+
 build_ubac:
 	@echo "build in ${PWD}";go build -o ubac cmd/ubac/main.go
 
