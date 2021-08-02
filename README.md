@@ -254,8 +254,9 @@ As the encrypted FS is represented in a JSON file format and `ubac` has no ackno
  1. Ask `ubac` to get the tree of the encrypted FS
  2. `Darkenpath` the parent directory of the resource which will be modified (or added)
  3. Ask `ubac` content of the parent directory (to modify it also)
- 4. With the tree, craft the patch to apply on the FS with `adret`. Patch depend of the logic (if you want to remove, add a ressource etc)
- 5. Provide the patch to `ubac` to apply it on the FS
+   * if the resource is a directory, it will use the tree to delete all resources under it (which the Tree structure we won't have to launch it recursively)
+ 5. With the tree, craft the patch to apply on the FS with `adret`. Patch depend of the logic (if you want to remove, add a ressource etc)
+ 6. Provide the patch to `ubac` to apply it on the FS
 
 ##### Tree
 Tree is a containaing all the Resource in the ecrypted fs. It is a `Node` list
