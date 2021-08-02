@@ -70,7 +70,7 @@ func TestGetNodeUnder(t *testing.T) {
 		adret.CreateNode("je/nesuis/pas/ton/fils/pointtxt", "", "je/nesuis/pas/ton/fils"),
 	}
 
-	children := adret.GetNodesUnder(prefix, nodes)
+	children := adret.GetDescendantNodes(prefix, nodes)
 
 	expected := []string{
 		"je/suis/ton/fils/oo",

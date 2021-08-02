@@ -91,7 +91,7 @@ func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
 
 // Return all nodes with specific prefix/parent directory (ie prefix == node.Parent)
 // It enables us to retrieve all nodes directly under a specified one (with depth=depth_nodes+1)
-func GetNodesWithPrefix(prefix string, nodes []Node) []string {
+func GetChildrenNodes(prefix string, nodes []Node) []string {
 	var nodesWithPrefix []string
 	for i := range nodes {
 		if nodes[i].Parent == prefix {
@@ -103,7 +103,7 @@ func GetNodesWithPrefix(prefix string, nodes []Node) []string {
 
 // Return all nodes under the prefix/parent directory (ie node.Parent begin w/ prefix)
 // It enables us to retrieve all nodes under a specified one
-func GetNodesUnder(prefix string, nodes []Node) []string {
+func GetDescendantNodes(prefix string, nodes []Node) []string {
 	var nodesUnder []string
 	for i := range nodes {
 		if strings.HasPrefix(nodes[i].Parent, prefix) {
@@ -116,7 +116,7 @@ func GetNodesUnder(prefix string, nodes []Node) []string {
 // Return true if the resource/node specified is of type directory
 func IsDir(resourceName string, nodes []Node) bool {
 	node, err := GetNodeByName(resourceName, nodes)
-	if err != nill {
+	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -187,7 +187,7 @@ func PrintNode(nodes []Node, node Node, last bool, inlast bool) {
 		// Print all node with  a specific prefix ie node.Dir == prefix
 		// Retrieve a list of all node
 		// Then iterate over the list when we arrive at last PrintNode(node.Name,true)
-		nodeWithPrefix := GetNodesWithPrefix(node.Name, nodes)
+		nodeWithPrefix := GetChildrenNodes(node.Name, nodes)
 
 		inlast = last //if we are in last we must now call PrintNode with inlast at true, and conversely
 
@@ -215,7 +215,7 @@ func PrintTree(treeJSON string, key string) {
 		log.SetFlags(0)
 		log.Fatal("PrintTree: Failed to convert JSON to Tree structure")
 	}
-	rootSlice := GetNodesWithPrefix(".", tree.Nodes) // Normally only one
+	rootSlice := GetChildrenNodes(".", tree.Nodes) // Normally only one
 	if len(rootSlice) == 0 {
 		log.SetFlags(0)
 		log.Fatal("PrintTree: Could not find root node in Tree structure")
