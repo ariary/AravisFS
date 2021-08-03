@@ -24,12 +24,15 @@ func CreateResource(filename []byte, resourceType string, content []byte) Resour
 	return *r
 }
 
+// Add a resource in the resource list
 func (resources *ResourceList) AddResource(r Resource) []Resource {
 	resources.List = append(resources.List, r)
 	return resources.List
 }
 
-//Remove a resource in the resource list by its name (iterate over the list and delte element when it is found)
+// Remove a resource in the resource list by searching it by its name.
+// iterate over the list and delete element when it is found)
+// (its name = base64(encrypted(real_name)))
 func (resources *ResourceList) RemoveResourceFromName(resourceName string) []Resource {
 	for i, resource := range resources.List {
 		resourceNameDrakened := base64.StdEncoding.EncodeToString(resource.Name)
@@ -41,10 +44,12 @@ func (resources *ResourceList) RemoveResourceFromName(resourceName string) []Res
 	return resources.List
 }
 
-func (resources *ResourceList) ChangeResourceContentFromName(resourceName string, content string) []Resource {
+// Change the content of a resource by searching it by its name. (its name = base64(encrypted(real_name)))
+func (resources *ResourceList) ChangeResourceContentFromName(resourceName string, content []byte) []Resource {
 	for i, resource := range resources.List {
-		if string(resource.Name) == resourceName {
-			resources.List[i].Content = []byte(content) // ou resource.content
+		resourceNameDrakened := base64.StdEncoding.EncodeToString(resource.Name)
+		if resourceNameDrakened == resourceName {
+			resources.List[i].Content = content // ou resource.content
 			break
 		}
 	}

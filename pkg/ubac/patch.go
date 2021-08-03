@@ -1,8 +1,10 @@
 package ubac
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/ariary/AravisFS/pkg/filesystem"
 )
@@ -20,7 +22,12 @@ func ApplyPatch(patch string, filename string) (err error) {
 	//apply resources change
 	changeMap := patchStruct.ChangeMap
 	for resourceName, content := range changeMap {
-		resources.ChangeResourceContentFromName(resourceName, content)
+		contentDec, err := base64.StdEncoding.DecodeString(content)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		resources.ChangeResourceContentFromName(resourceName, contentDec)
 	}
 	//apply remove resources
 	removeList := patchStruct.RemoveList
