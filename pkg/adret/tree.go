@@ -24,7 +24,8 @@ type Node struct {
 }
 
 type Tree struct {
-	Nodes []Node
+	Nodes    []Node
+	rootNode string
 }
 
 // Create a node from its name, its type and its parent directory
@@ -66,6 +67,15 @@ func GetTreeStructFromResourcesMap(resources map[string]string) Tree {
 		nodeTmp = CreateNode(name, resources[name], filepath.Dir(name))
 		tree.Nodes = append(tree.Nodes, nodeTmp)
 	}
+
+	//get root node
+	rootNode, err := GetRootDir(tree.Nodes)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	tree.rootNode = rootNode
 
 	return tree
 }
@@ -130,6 +140,38 @@ func RemoteIsDir(resourceName string, key string) bool {
 	nodes := RemoteGetNodes(key)
 
 	return IsDir(resourceName, nodes)
+}
+
+//Return root directory path of nodes list
+func GetRootDir(nodes []Node) (rootDir string, err error) {
+	//determine root node (ie with depth=min)
+	minDepth := 1000
+	for i := range nodes {
+		//TODO: handle case where a file/direcgtory have / in its name
+		nodeNameTmp := nodes[i].Name
+		tmpDepth := strings.Count(nodeNameTmp, "/")
+		if minDepth > tmpDepth {
+			minDepth = tmpDepth
+			rootDir = nodeNameTmp
+		}
+	}
+
+	//error handling
+	if rootDir == "" {
+		err = errors.New("RemoteRootDir: failed to retrieve root dir from remote tree")
+	}
+
+	return rootDir, err
+}
+
+// Return root directory path of ecrypted fs.
+// First, it retrieves tree of remote ubac listener and determines the base root dir name of it
+// ie the resource with the minimum depth
+func RemoteGetRootDir(key string) (rootDir string, err error) {
+	//retrieve tree
+	nodes := RemoteGetNodes(key)
+
+	return GetRootDir(nodes)
 }
 
 // Function wich aim to imitate the tree command output
@@ -275,31 +317,4 @@ func RemoteExist(resourceName string, key string) bool {
 	nodes := RemoteGetNodes(key)
 	_, err := GetNodeByName(resourceName, nodes)
 	return err == nil
-}
-
-// Return root directory path of ecrypted fs.
-// First, it retrieves tree of remote ubac listener and determines the base root dir name of it
-// ie the resource with the minimum depth
-func RemoteRootDir(key string) (rootDir string, err error) {
-	//retrieve tree
-	nodes := RemoteGetNodes(key)
-
-	//determine root node (ie with depth=min)
-	minDepth := 1000
-	for i := range nodes {
-		//TODO: handle case where a file/direcgtory have / in its name
-		nodeNameTmp := nodes[i].Name
-		tmpDepth := strings.Count(nodeNameTmp, "/")
-		if minDepth > tmpDepth {
-			minDepth = tmpDepth
-			rootDir = nodeNameTmp
-		}
-	}
-
-	//error handling
-	if rootDir == "" {
-		err = errors.New("RemoteRootDir: failed to retrieve root dir from remote tree")
-	}
-
-	return rootDir, err
 }

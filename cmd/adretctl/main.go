@@ -93,7 +93,7 @@ func executor(in string) {
 		if !hasKey(*ctx) {
 			return
 		}
-		root, err := adret.RemoteRootDir(ctx.key)
+		root, err := adret.RemoteGetRootDir(ctx.key)
 		if err != nil {
 			fmt.Println(err)
 			return

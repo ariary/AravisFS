@@ -81,5 +81,15 @@ func main() {
 	fmt.Println("Remove list:", patch.RemoveList)
 	fmt.Println("Change map:", patch.ChangeMap)
 	fmt.Println("Add list:", patch.AddList)
+	fmt.Println()
+	patch2 := adret.GetRmPatch("toto", tree, "test/ansible/report.j2")
+	fmt.Println("Remove list:", patch2.RemoveList)
+	fmt.Println("Change map:", patch2.ChangeMap)
+	fmt.Println("Add list:", patch2.AddList)
+	fmt.Println()
+	patch3 := adret.GetRmPatch("toto", tree, "test/")
+	fmt.Println("Remove list:", patch3.RemoveList)
+	fmt.Println("Change map:", patch3.ChangeMap)
+	fmt.Println("Add list:", patch3.AddList)
 
 }
