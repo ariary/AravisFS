@@ -39,7 +39,7 @@ func main() {
 	//encryptrm
 	encryptrmCmd := flag.NewFlagSet("encryptrm", flag.ExitOnError)
 	encryptrmOutput := encryptrmCmd.String("tree", "", "output of ubac tree")
-	encryptrmKey := decrypttreeCmd.String("key", "", "key used for decryption")
+	encryptrmKey := encryptrmCmd.String("key", "", "key used for decryption")
 	encryptrmPath := encryptrmCmd.String("path", "", "resource to rm")
 
 	//configremote
@@ -172,10 +172,10 @@ func main() {
 		//path parsing
 		if *encryptrmPath != "" {
 			adret.PrintRmPatch(*encryptrmKey, *encryptrmOutput, *encryptrmPath)
-		} else if len(decrypttreeCmd.Args()) != 0 {
+		} else if len(encryptrmCmd.Args()) != 0 {
 			adret.PrintRmPatch(*encryptrmKey, *encryptrmOutput, encryptrmCmd.Arg(0))
 		} else {
-			fmt.Println("expected data to decrypt for decrypttree subcommand. see 'adret help' to get help")
+			fmt.Println("expected resource to rmt for encryptrm subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
 	case "configremote":
