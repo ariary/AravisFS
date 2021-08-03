@@ -3,6 +3,7 @@ package adret
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"path"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
@@ -16,6 +17,12 @@ func GetRmPatch(key string, tree Tree, resourceName string) filesystem.Patch {
 	resourceName = path.Clean(resourceName)
 	var removeList []string
 	changeMap := make(map[string]string)
+
+	//check if resource exist
+	if !Exist(resourceName, tree.Nodes) {
+		fmt.Println(fmt.Sprintf("rm: cannot remove '%v': No such file or directory", resourceName))
+		os.Exit(1)
+	}
 
 	//add the resource to remove list
 	resourceNameEnc := encrypt.DarkenPath(resourceName, key)

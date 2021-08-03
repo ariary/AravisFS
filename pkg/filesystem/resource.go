@@ -1,5 +1,7 @@
 package filesystem
 
+import "encoding/base64"
+
 type Resource struct {
 	Name    []byte `json:"name"`
 	Type    string `json:"type"`
@@ -27,9 +29,11 @@ func (resources *ResourceList) AddResource(r Resource) []Resource {
 	return resources.List
 }
 
+//Remove a resource in the resource list by its name (iterate over the list and delte element when it is found)
 func (resources *ResourceList) RemoveResourceFromName(resourceName string) []Resource {
 	for i, resource := range resources.List {
-		if string(resource.Name) == resourceName {
+		resourceNameDrakened := base64.StdEncoding.EncodeToString(resource.Name)
+		if resourceNameDrakened == resourceName {
 			resources.List = append(resources.List[:i], resources.List[i+1:]...)
 			break
 		}

@@ -97,8 +97,12 @@ func main() {
 	//Apply
 	treeJSON := ubac.GetTreeFromFS("encrypted.arafs")
 	tree := adret.GetTreeStructFromTreeJson(treeJSON, "toto")
+	fmt.Println("tree:", tree)
 	patch := adret.GetRmPatchString("toto", tree, "test/mytestfolder/titi")
 	fmt.Println(patch)
-	//bac.ApplyPatch(patch, "./test/arafs/encrypted.arafs")
+	ubac.ApplyPatch(patch, "encrypted.arafs")
+	treeJSONAfter := ubac.GetTreeFromFS("encrypted.arafs")
+	treeAfter := adret.GetTreeStructFromTreeJson(treeJSONAfter, "toto")
+	fmt.Println("tree after:", treeAfter)
 
 }

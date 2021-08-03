@@ -123,6 +123,21 @@ func GetDescendantNodes(prefix string, nodes []Node) []string {
 	return nodesUnder
 }
 
+// UTILS FOR INTERACTIVE CLI
+
+// answer wether a resource exists in the tree or not
+func Exist(resourceName string, nodes []Node) bool {
+	_, err := GetNodeByName(resourceName, nodes)
+	return err == nil
+}
+
+//connect with remote FS and check if the resource is inside
+// ask /tree endpoint of remote ubac and search resource within
+func RemoteExist(resourceName string, key string) bool {
+	nodes := RemoteGetNodes(key)
+	return Exist(resourceName, nodes)
+}
+
 // Return true if the resource/node specified is of type directory
 func IsDir(resourceName string, nodes []Node) bool {
 	node, err := GetNodeByName(resourceName, nodes)
@@ -173,6 +188,8 @@ func RemoteGetRootDir(key string) (rootDir string, err error) {
 
 	return GetRootDir(nodes)
 }
+
+//PRINTING/CORE TREE FUNCTION
 
 // Function wich aim to imitate the tree command output
 // It prints the node name without prefix with the right indentation compare to its position in the Tree.
@@ -307,14 +324,4 @@ func RemoteTree(key string) {
 
 	//decrypt the reponse to show cat result
 	PrintTree(bodyRes, key)
-}
-
-// UTILS FOR INTERACTIVE CLI
-
-//connect with remote FS and check if the resource is inside
-// ask /tree endpoint of remote ubac and search resource within
-func RemoteExist(resourceName string, key string) bool {
-	nodes := RemoteGetNodes(key)
-	_, err := GetNodeByName(resourceName, nodes)
-	return err == nil
 }
