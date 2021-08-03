@@ -80,7 +80,7 @@ func GetTreeStructFromResourcesMap(resources map[string]string) Tree {
 	return tree
 }
 
-// Take the Tree from ubac(JSON format) as input and return it in a struct that help to work with it
+// Take the Tree from ubac(JSON string format) as input and return it in a struct with decrypted name that help to work with it
 func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
 	var ubacTree ubac.Tree
 	json.Unmarshal([]byte(treeJSON), &ubacTree)
