@@ -76,8 +76,14 @@ func GetRmPatchString(key string, tree Tree, resourceName string) string {
 	patchJSON, err := json.Marshal(patch)
 
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println(err)
 	}
 
 	return string(patchJSON)
+}
+
+func PrintRmPatch(key string, treeJSON string, resourceName string) {
+	tree := GetTreeStructFromTreeJson(treeJSON, key)
+	patch := GetRmPatchString(key, tree, resourceName)
+	fmt.Println(patch)
 }

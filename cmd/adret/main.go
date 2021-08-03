@@ -36,6 +36,12 @@ func main() {
 	decrypttreeOutput := decrypttreeCmd.String("output", "", "output of ubac tree")
 	decrypttreeKey := decrypttreeCmd.String("key", "", "key used for decryption")
 
+	//encryptrm
+	encryptrmCmd := flag.NewFlagSet("encryptrm", flag.ExitOnError)
+	encryptrmOutput := encryptrmCmd.String("tree", "", "output of ubac tree")
+	encryptrmKey := decrypttreeCmd.String("key", "", "key used for decryption")
+	encryptrmPath := encryptrmCmd.String("path", "", "resource to rm")
+
 	//configremote
 	configremoteCmd := flag.NewFlagSet("configremote", flag.ExitOnError)
 	configremotePort := configremoteCmd.String("port", "", "listener ubac port")
@@ -146,6 +152,28 @@ func main() {
 			adret.PrintTree(*decrypttreeOutput, *decrypttreeKey)
 		} else if len(decrypttreeCmd.Args()) != 0 {
 			adret.PrintTree(decrypttreeCmd.Arg(0), *decrypttreeKey)
+		} else {
+			fmt.Println("expected data to decrypt for decrypttree subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+	case "encryptrm":
+		encryptrmCmd.Parse(os.Args[2:])
+
+		//key parsing
+		if *encryptrmKey == "" {
+			fmt.Println("expected key for encryptrm subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//tree parsing
+		if *encryptrmOutput == "" {
+			fmt.Println("expected tree output from ubac for encryptrm subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//path parsing
+		if *encryptrmPath != "" {
+			adret.PrintRmPatch(*encryptrmKey, *encryptrmOutput, *encryptrmPath)
+		} else if len(decrypttreeCmd.Args()) != 0 {
+			adret.PrintRmPatch(*encryptrmKey, *encryptrmOutput, encryptrmCmd.Arg(0))
 		} else {
 			fmt.Println("expected data to decrypt for decrypttree subcommand. see 'adret help' to get help")
 			os.Exit(1)

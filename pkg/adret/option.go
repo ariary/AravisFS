@@ -59,8 +59,18 @@ func PrintDecrypttreeMessage() {
 	fmt.Println(("decrypttree: use it to decrypt output of 'ubac tree' command. It show the hierarchy of the encryted fs"))
 	fmt.Println(("\tuse: adret decrypttree -key=<secret> <ubac_tree_output>"))
 	fmt.Println(("\tparameters required: key (-key) and ubac_tree_output (-output)"))
-	fmt.Println(("\t💡 get output with 'adret decrypttree -key=toto <ubac_tree_output>'"))
+	fmt.Println(("\t💡 get output with 'ubac tree -path=<encryptedfs>.arafs'"))
 	fmt.Println("\t⚠ To be able to print the tree, the fs has to be built in the same directory where the `adret encryptfs` command was run(see adret encryptfs")
+	fmt.Println()
+}
+
+//Write access
+
+func PrintRmPatchMessage() {
+	fmt.Println(("encryptrm: return a patch to provide to ubac to remove a resource on encrypted fs."))
+	fmt.Println(("\tuse: adret encryptrm -key=<secret> -tree=<ubac_tree_output> <path>"))
+	fmt.Println(("\tparameters required: key (-key) and ubac_tree_output (-output)"))
+	fmt.Println(("\t💡 You first need to retrieve the tree of the encrypted fs using ubac 'ubac tree -path=<encryptedfs>.arafs'"))
 	fmt.Println()
 }
 
@@ -127,6 +137,17 @@ func PrintHelp() {
 	orderedFunctionNameRead := []string{"PrintDecryptlsMessage", "PrintDecryptcatMessage", "PrintDecrypttreeMessage"}
 
 	PrintMapInOrder(mFunctionNameRead, orderedFunctionNameRead)
+
+	//WRITE COMMAND
+	fmt.Println("WRITE ACCESS COMMAND")
+
+	mFunctionNameWrite := map[string]func(){
+		"PrintRmPatchMessage": PrintRmPatchMessage,
+	}
+
+	orderedFunctionNameWrite := []string{"PrintRmPatchMessage"}
+
+	PrintMapInOrder(mFunctionNameWrite, orderedFunctionNameWrite)
 
 	//REMOTE COMMAND
 	fmt.Println("REMOTE COMMAND")
