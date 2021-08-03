@@ -7,9 +7,20 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
 )
+
+var muFile sync.Mutex
+
+func OverwriteFSFile(filename string, resources ResourceList) {
+	file, _ := json.MarshalIndent(resources, "", " ")
+	// file, _ := json.Marshal(resources)
+	muFile.Lock()
+	defer muFile.Unlock()
+	_ = ioutil.WriteFile(filename, file, 0644)
+}
 
 func WriteFSFile(resources ResourceList) {
 	file, _ := json.MarshalIndent(resources, "", " ")
@@ -83,8 +94,8 @@ func CreateAravisFS(path string, key string) {
 				resourceType = FILE
 				resourceContent = encrypt.EncryptFile(path, key)
 			}
-			r := createResource(pathEncrypted, resourceType, resourceContent)
-			resources.Addresource(r)
+			r := CreateResource(pathEncrypted, resourceType, resourceContent)
+			resources.AddResource(r)
 			return nil
 		})
 	if err != nil {

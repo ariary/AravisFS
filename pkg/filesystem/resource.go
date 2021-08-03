@@ -13,7 +13,7 @@ type ResourceList struct {
 	List []Resource
 }
 
-func createResource(filename []byte, resourceType string, content []byte) Resource {
+func CreateResource(filename []byte, resourceType string, content []byte) Resource {
 
 	r := &Resource{
 		Name:    filename,
@@ -22,7 +22,27 @@ func createResource(filename []byte, resourceType string, content []byte) Resour
 	return *r
 }
 
-func (resources *ResourceList) Addresource(r Resource) []Resource {
+func (resources *ResourceList) AddResource(r Resource) []Resource {
 	resources.List = append(resources.List, r)
+	return resources.List
+}
+
+func (resources *ResourceList) RemoveResourceFromName(resourceName string) []Resource {
+	for i, resource := range resources.List {
+		if string(resource.Name) == resourceName {
+			resources.List = append(resources.List[:i], resources.List[i+1:]...)
+			break
+		}
+	}
+	return resources.List
+}
+
+func (resources *ResourceList) ChangeResourceContentFromName(resourceName string, content string) []Resource {
+	for i, resource := range resources.List {
+		if string(resource.Name) == resourceName {
+			resources.List[i].Content = []byte(content) // ou resource.content
+			break
+		}
+	}
 	return resources.List
 }

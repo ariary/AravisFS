@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ariary/AravisFS/pkg/adret"
+	"github.com/ariary/AravisFS/pkg/ubac"
 )
 
 // test
@@ -65,31 +66,39 @@ func main() {
 	resources["test/pentest"] = "directory"
 	resources["test/pentest/ftp-server.py"] = "file"
 
-	fmt.Println(resources["test/ansible"])
-	tree := adret.GetTreeStructFromResourcesMap(resources)
+	//tree := adret.GetTreeStructFromResourcesMap(resources)
 	//print tree struct test
 	// treeJSON, _ := json.Marshal(tree)
 	// fmt.Println(string(treeJSON))
 
 	//isDir
-	dir := adret.IsDir("test/pentest", tree.Nodes)
-	notdir := adret.IsDir("test/ansible/slice/slice2bis/slice2bis.txt", tree.Nodes)
-	fmt.Println("dir:", dir, "not dir:", notdir)
+	// dir := adret.IsDir("test/pentest", tree.Nodes)
+	// notdir := adret.IsDir("test/ansible/slice/slice2bis/slice2bis.txt", tree.Nodes)
+	// fmt.Println("dir:", dir, "not dir:", notdir)
 
 	//GetRmPatch
-	patch := adret.GetRmPatch("toto", tree, "test/ansible/bullit_conf")
-	fmt.Println("Remove list:", patch.RemoveList)
-	fmt.Println("Change map:", patch.ChangeMap)
-	fmt.Println("Add list:", patch.AddList)
-	fmt.Println()
-	patch2 := adret.GetRmPatch("toto", tree, "test/ansible/report.j2")
-	fmt.Println("Remove list:", patch2.RemoveList)
-	fmt.Println("Change map:", patch2.ChangeMap)
-	fmt.Println("Add list:", patch2.AddList)
-	fmt.Println()
-	patch3 := adret.GetRmPatch("toto", tree, "test/")
-	fmt.Println("Remove list:", patch3.RemoveList)
-	fmt.Println("Change map:", patch3.ChangeMap)
-	fmt.Println("Add list:", patch3.AddList)
+	// patch := adret.GetRmPatch("toto", tree, "test/ansible/bullit_conf")
+	// fmt.Println("Remove list:", patch.RemoveList)
+	// fmt.Println("Change map:", patch.ChangeMap)
+	// fmt.Println("Add list:", patch.AddList)
+	// fmt.Println()
+	// patch2 := adret.GetRmPatch("toto", tree, "test/ansible/report.j2")
+	// fmt.Println("Remove list:", patch2.RemoveList)
+	// fmt.Println("Change map:", patch2.ChangeMap)
+	// fmt.Println("Add list:", patch2.AddList)
+	// fmt.Println()
+	// patch3 := adret.GetRmPatch("toto", tree, "test/")
+	// fmt.Println("Remove list:", patch3.RemoveList)
+	// fmt.Println("Change map:", patch3.ChangeMap)
+	// fmt.Println("Add list:", patch3.AddList)
+
+	// patch_string := adret.GetRmPatchString("toto", tree, "test/ansible/bullit_conf")
+
+	//Apply
+	treeJSON := ubac.GetTreeFromFS("encrypted.arafs")
+	tree := adret.GetTreeStructFromTreeJson(treeJSON, "toto")
+	patch := adret.GetRmPatchString("toto", tree, "test/mytestfolder/titi")
+	fmt.Println(patch)
+	//bac.ApplyPatch(patch, "./test/arafs/encrypted.arafs")
 
 }

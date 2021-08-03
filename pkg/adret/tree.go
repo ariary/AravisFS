@@ -111,7 +111,7 @@ func GetChildrenNodes(prefix string, nodes []Node) []string {
 	return nodesWithPrefix
 }
 
-// Return all nodes under the prefix/parent directory (ie node.Parent begin w/ prefix)
+// Return all nodes name under the prefix/parent directory (ie node.Parent begin w/ prefix)
 // It enables us to retrieve all nodes under a specified one
 func GetDescendantNodes(prefix string, nodes []Node) []string {
 	var nodesUnder []string

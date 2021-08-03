@@ -50,7 +50,7 @@ func EncryptString(filename string, key string) []byte {
 }
 
 // Return the path encrypted as it appears in the encrypted fs
-// As we use JSON.MArshall to embed resource in fs and the resource name,
+// As we use JSON.Marshall to embed resource in fs and the resource name,
 // which is the path encrypted, is a []byte it is encoded with base64
 // In that way , to obtain path as it appear in FS we encrypt it and then encode
 // it using base64

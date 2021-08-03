@@ -1,19 +1,25 @@
 package adret
 
 import (
+	"encoding/json"
+	"fmt"
 	"path"
+
+	"github.com/ariary/AravisFS/pkg/encrypt"
+	"github.com/ariary/AravisFS/pkg/filesystem"
 )
 
 //provide the patch to remove a resource on ubac side
 // the patch is a json string with 3 arrays: to_add,to_delete and to_change
 //all the info within structure are encrypted after to be put in patch
-func GetRmPatch(key string, tree Tree, resourceName string) Patch {
+func GetRmPatch(key string, tree Tree, resourceName string) filesystem.Patch {
 	resourceName = path.Clean(resourceName)
 	var removeList []string
 	changeMap := make(map[string]string)
 
 	//add the resource to remove list
-	removeList = append(removeList, resourceName)
+	resourceNameEnc := encrypt.DarkenPath(resourceName, key)
+	removeList = append(removeList, resourceNameEnc)
 
 	//modify parent content (remove resource from it)
 	if tree.rootNode != resourceName { //check if resource isn't the root node (no parent)
@@ -37,15 +43,34 @@ func GetRmPatch(key string, tree Tree, resourceName string) Patch {
 				newParentContent = newParentContent + "\\" + resource
 			}
 		}
-		// newParentContentByte:= encrypt.EncryptString(newParentContent, key)
+		newParentContentEnc := encrypt.DarkenPath(newParentContent, key)
+		parentNameEnc := encrypt.DarkenPath(parentName, key)
 		// changeMap[parentName] = newParentContentByte
-		changeMap[parentName] = newParentContent
+		changeMap[parentNameEnc] = newParentContentEnc
 	}
 
 	//delete all resource under if it is a directory
 	if IsDir(resourceName, tree.Nodes) {
-		removeList = append(removeList, GetDescendantNodes(resourceName, tree.Nodes)...)
+		descendantNodes := GetDescendantNodes(resourceName, tree.Nodes)
+		//add encruypted name of descendant to removeList
+		for _, nodeName := range descendantNodes {
+			removeList = append(removeList, encrypt.DarkenPath(nodeName, key))
+		}
+
+	}
+	//enc
+
+	return filesystem.CreatePatch(nil, removeList, changeMap)
+}
+
+//provide the patch (string) to remove a resource on ubac side
+func GetRmPatchString(key string, tree Tree, resourceName string) string {
+	patch := GetRmPatch(key, tree, resourceName)
+	patchJSON, err := json.Marshal(patch)
+
+	if err != nil {
+		fmt.Println("Error:", err)
 	}
 
-	return createPatch(nil, removeList, changeMap)
+	return string(patchJSON)
 }
