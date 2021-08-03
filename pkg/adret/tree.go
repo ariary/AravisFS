@@ -83,7 +83,11 @@ func GetTreeStructFromResourcesMap(resources map[string]string) Tree {
 // Take the Tree from ubac(JSON string format) as input and return it in a struct with decrypted name that help to work with it
 func GetTreeStructFromTreeJson(treeJSON string, key string) (tree Tree) {
 	var ubacTree ubac.Tree
-	json.Unmarshal([]byte(treeJSON), &ubacTree)
+	err := json.Unmarshal([]byte(treeJSON), &ubacTree)
+	if err != nil {
+		fmt.Println("GetTreeStructFromTreeJson:", err)
+		os.Exit(1)
+	}
 	ubacNodes := ubacTree.List
 
 	nodesMap := make(map[string]string)
@@ -182,6 +186,7 @@ func GetRootDir(nodes []Node) (rootDir string, err error) {
 // Return root directory path of ecrypted fs.
 // First, it retrieves tree of remote ubac listener and determines the base root dir name of it
 // ie the resource with the minimum depth
+
 func RemoteGetRootDir(key string) (rootDir string, err error) {
 	//retrieve tree
 	nodes := RemoteGetNodes(key)
@@ -274,21 +279,27 @@ func PrintTree(treeJSON string, key string) {
 		log.SetFlags(0)
 		log.Fatal("PrintTree: Failed to convert JSON to Tree structure")
 	}
-	rootSlice := GetChildrenNodes(".", tree.Nodes) // Normally only one
-	if len(rootSlice) == 0 {
-		log.SetFlags(0)
-		log.Fatal("PrintTree: Could not find root node in Tree structure")
-	} else if len(rootSlice) > 1 {
-		fmt.Println("WARNING: found multiple root nodes")
-	}
-	root := rootSlice[0]
-	rootNode, err := GetNodeByName(root, tree.Nodes)
+	// rootSlice := GetChildrenNodes(".", tree.Nodes) // Normally only one
+	// if len(rootSlice) == 0 {
+	// 	log.SetFlags(0)
+	// 	log.Fatal("PrintTree: Could not find root node in Tree structure")
+	// } else if len(rootSlice) > 1 {
+	// 	fmt.Println("WARNING: found multiple root nodes")
+	// }
+	// root := rootSlice[0]
+	// rootNode, err := GetNodeByName(root, tree.Nodes)
+	// if err != nil {
+	// 	log.SetFlags(0)
+	// 	log.Fatal(err)
+	// }
+	rootNodeName := tree.rootNode
+	rootNode, err := GetNodeByName(rootNodeName, tree.Nodes)
 	if err != nil {
 		log.SetFlags(0)
 		log.Fatal(err)
 	}
-
-	specialPrint(root, true, false)               //bool have no real impact for this case
+	// specialPrint(root, true, false)               //bool have no real impact for this case
+	specialPrint(rootNodeName, true, false)       //bool have no real impact for this case
 	PrintNode(tree.Nodes, rootNode, false, false) //bool have no real impact for this case
 }
 

@@ -31,7 +31,7 @@ var suggestions = []prompt.Suggest{
 	{"exit", "Exit adretctl"},
 	{"help", "get help method"},
 
-	//key
+	// key
 	{"keyconfig", "set the key used to decrypt the fs"},
 	{"keyprint", "print the current key"},
 
@@ -43,6 +43,9 @@ var suggestions = []prompt.Suggest{
 	{"ls", "list directory contents on remote encrypted fs"},
 	{"cat", "print file content on remote encrypted fs resource"},
 	{"tree", "print tree of remote encrypte fs"},
+
+	// Write Method
+	{"rm", "remove directory or file on remote encrypted fs"},
 }
 
 //Prefix for the prompt
@@ -153,6 +156,19 @@ func executor(in string) {
 		}
 		adret.RemoteTree(ctx.key)
 		return
+	// case "rm":
+	// 	if !hasKey(*ctx) {
+	// 		return
+	// 	}
+	// 	var path string
+	// 	if len(blocks) == 2 {
+	// 		path = ctx.path + "/" + blocks[1]
+	// 	} else {
+	// 		fmt.Println("Please provide the file or directory name to remove")
+	// 		return
+	// 	}
+	// 	adret.RemoteRm(ctx.key, path)
+	// 	return
 	case "help":
 		fmt.Println("available commands: keyconfig, keyprint, connect, ls, cat, tree")
 		return

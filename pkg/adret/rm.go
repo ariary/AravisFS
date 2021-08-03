@@ -87,3 +87,11 @@ func PrintRmPatch(key string, treeJSON string, resourceName string) {
 	patch := GetRmPatchString(key, tree, resourceName)
 	fmt.Println(patch)
 }
+
+// Remove a resource on remote encrypted fs. First it retrieve tree from remote
+//Then, it forge the patch to apply and finally send it to remote (to be applied by remote ubac lister)
+func RemoteRm(key string, resourceName string) {
+	//retrieve tree from remote
+	//forge patch
+	//send patch
+}

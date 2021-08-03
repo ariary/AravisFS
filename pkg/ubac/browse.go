@@ -22,7 +22,11 @@ func GetResourceList(filename string) (filesystem.ResourceList, error) {
 	byteFS, _ := ioutil.ReadAll(fs)
 
 	var rl filesystem.ResourceList
-	json.Unmarshal(byteFS, &rl)
+	err = json.Unmarshal(byteFS, &rl)
+	if err != nil {
+		fmt.Println("GetResourceList:", err)
+		os.Exit(1)
+	}
 
 	if nil == rl.List {
 		return rl, errors.New("empty resource list")

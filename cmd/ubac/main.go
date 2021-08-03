@@ -24,6 +24,11 @@ func main() {
 	treeCmd := flag.NewFlagSet("tree", flag.ExitOnError)
 	treePath := treeCmd.String("path", "", "path to the encrypted fs location")
 
+	//rm
+	rmCmd := flag.NewFlagSet("rm", flag.ExitOnError)
+	rmPath := rmCmd.String("path", "", "path to the encrypted fs location")
+	rmPatch := rmCmd.String("patch", "", "patch to the encrypted fs")
+
 	//listen
 	listenCmd := flag.NewFlagSet("listen", flag.ExitOnError)
 	listenPort := listenCmd.String("port", "", "listener port")
@@ -76,10 +81,29 @@ func main() {
 		//path parsing
 		if *treePath != "" {
 			ubac.PrintTree(*treePath)
+			os.Exit(0)
 		} else if len(treeCmd.Args()) != 0 {
 			ubac.PrintTree(treeCmd.Arg(0))
 		} else {
 			fmt.Println("No encrypted fs precised. expected path for tree subcommand. see 'ubac help' to get help")
+			os.Exit(1)
+		}
+	case "rm":
+		rmCmd.Parse(os.Args[2:])
+
+		//path parsing
+		if *rmPath == "" {
+			fmt.Println("No encrypted fs precised. expected path for rm subcommand. see 'ubac help' to get help")
+			os.Exit(1)
+		}
+		//patch parsing
+		if *rmPatch != "" {
+			ubac.ApplyPatch(*rmPatch, *rmPath)
+			os.Exit(0)
+		} else if len(rmCmd.Args()) != 0 {
+			ubac.ApplyPatch(rmCmd.Arg(0), *rmPath)
+		} else {
+			fmt.Println("expected patch for rm subcommand. see 'adret help' to get help")
 			os.Exit(1)
 		}
 	case "listen":

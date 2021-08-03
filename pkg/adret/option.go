@@ -33,7 +33,6 @@ func PrintEncryptfsMessage() {
 	fmt.Println(("\tparameters required: key (-key) and path (-path)"))
 	fmt.Println(("\texample: adret encryptfs -key \"toto\" \"test/toto/titi\""))
 	fmt.Println("\t⚠ To be able to print the tree later, launch the command on the same location of the directory you want to encrypt (ie. path must be in you current directory when you launch the command")
-	fmt.Println()
 }
 
 //Read access
@@ -43,7 +42,6 @@ func PrintDecryptlsMessage() {
 	fmt.Println(("\tparameters required: key (-key) and ubac_ls_output (-output)"))
 	fmt.Println(("\t💡 get output with 'ubac ls -path=<encryptedfs>.arfs <resource>'"))
 	fmt.Println(("\texample: adret decryptls -key \"toto\" \"directory:AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA237KVk6le21X9+Fky1Fb98v61k+DQJivbwJosBKJ8FSD4YitHoo9GZf40l3HLHGTDjc=\""))
-	fmt.Println()
 }
 
 func PrintDecryptcatMessage() {
@@ -52,7 +50,6 @@ func PrintDecryptcatMessage() {
 	fmt.Println(("\tparameters required: key (-key) and ubac_cat_output (-output)"))
 	fmt.Println(("\t💡 get output with 'ubac cat -path=<encryptedfs>.arafs <resource>'"))
 	fmt.Println(("\texample: adret decryptcat -key \"toto\" \"directory:AAAAAAAAAAAAAAAA6ihdrw4ttG+sj+eQMnlA237KVk6le21X9+Fky1Fb98v61k+DQJivbwJosBKJ8FSD4YitHoo9GZf40l3HLHGTDjc=\""))
-	fmt.Println()
 }
 
 func PrintDecrypttreeMessage() {
@@ -61,7 +58,6 @@ func PrintDecrypttreeMessage() {
 	fmt.Println(("\tparameters required: key (-key) and ubac_tree_output (-output)"))
 	fmt.Println(("\t💡 get output with 'ubac tree -path=<encryptedfs>.arafs'"))
 	fmt.Println("\t⚠ To be able to print the tree, the fs has to be built in the same directory where the `adret encryptfs` command was run(see adret encryptfs")
-	fmt.Println()
 }
 
 //Write access
@@ -69,42 +65,37 @@ func PrintDecrypttreeMessage() {
 func PrintRmPatchMessage() {
 	fmt.Println(("encryptrm: return a patch to provide to ubac to remove a resource on encrypted fs."))
 	fmt.Println(("\tuse: adret encryptrm -key=<secret> -tree=<ubac_tree_output> <path>"))
-	fmt.Println(("\tparameters required: key (-key) and ubac_tree_output (-output)"))
+	fmt.Println(("\tparameters required: key (-key), ubac_tree_output (-output) and path (-path) of the resource you want to remove"))
 	fmt.Println(("\t💡 You first need to retrieve the tree of the encrypted fs using ubac 'ubac tree -path=<encryptedfs>.arafs'"))
-	fmt.Println()
 }
 
 //Remote
 func PrintConfigremoteMessage() {
-	fmt.Println(("configremote: enable to configurate the port and hostname of the remote ubac listener. It is equivalent to 'export REMOTE_UBAC_LISTER=<hostname>:<port>"))
+	fmt.Println(("configremote: enable to configurate the port and hostname of the remote ubac listener. It is equivalent to 'export REMOTE_UBAC_URL=<hostname>:<port>"))
 	fmt.Println(("\tuse: eval `adret configremote -port=<ubac_port> -host=<ubac_hostname>`"))
 	fmt.Println(("\tparameters required: port (-port) and hostname (-host) (ubac is listening on hostname:port"))
-	fmt.Println()
 }
 
 func PrintRemotelsMessage() {
 	fmt.Println(("remotels: perform a ls on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs"))
 	fmt.Println(("\tuse: adret remotels -key=<key> <resource_name>"))
 	fmt.Println(("\tparameters required: key (-key) use for encryption/decryption resource_name (-resource) which is the resource on which we want to perform the ls command"))
-	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_LISTER envar (w/ 'adret configremote') before"))
-	fmt.Println()
+	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_URL envar (w/ 'adret configremote') before"))
 }
 
 func PrintRemotecatMessage() {
 	fmt.Println("remotecat: perform a cat on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs")
 	fmt.Println("\tuse: adret remotecat -key=<key> <resource_name>")
 	fmt.Println("\tparameters required: key (-key) use for encryption/decryption resource_name (-resource) which is the resource on which we want to perform the cat command")
-	fmt.Println("\t💡 Lauch ubac listener and set REMOTE_UBAC_LISTER envar (w/ 'adret configremote') before")
-	fmt.Println()
+	fmt.Println("\t💡 Lauch ubac listener and set REMOTE_UBAC_URL envar (w/ 'adret configremote') before")
 }
 
 func PrintRemotetreeMessage() {
 	fmt.Println("remotetree: perform a tree on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs")
 	fmt.Println("\tuse: adret remotree -key=<key>")
 	fmt.Println("\tparameters required: key (-key) use for encryption/decryption ")
-	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_LISTER envar (w/ 'adret configremote') before"))
+	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_URL envar (w/ 'adret configremote') before"))
 	fmt.Println("\t⚠ To be able to print the tree, the fs has to be built in the same directory where the `adret encryptfs` command was run(see adret encryptfs")
-	fmt.Println()
 }
 
 //Print all help messages (all available command and their use)
@@ -126,6 +117,7 @@ func PrintHelp() {
 	PrintMapInOrder(mFunctionNameEncryption, orderedFunctionNameEncryption)
 
 	//READ COMMAND
+	fmt.Println()
 	fmt.Println("READ ACCESS COMMAND")
 
 	mFunctionNameRead := map[string]func(){
@@ -139,6 +131,7 @@ func PrintHelp() {
 	PrintMapInOrder(mFunctionNameRead, orderedFunctionNameRead)
 
 	//WRITE COMMAND
+	fmt.Println()
 	fmt.Println("WRITE ACCESS COMMAND")
 
 	mFunctionNameWrite := map[string]func(){
@@ -150,6 +143,7 @@ func PrintHelp() {
 	PrintMapInOrder(mFunctionNameWrite, orderedFunctionNameWrite)
 
 	//REMOTE COMMAND
+	fmt.Println()
 	fmt.Println("REMOTE COMMAND")
 	// Contain all command function help messsage
 	mFunctionNameRemote := map[string]func(){
