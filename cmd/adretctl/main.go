@@ -156,19 +156,19 @@ func executor(in string) {
 		}
 		adret.RemoteTree(ctx.key)
 		return
-	// case "rm":
-	// 	if !hasKey(*ctx) {
-	// 		return
-	// 	}
-	// 	var path string
-	// 	if len(blocks) == 2 {
-	// 		path = ctx.path + "/" + blocks[1]
-	// 	} else {
-	// 		fmt.Println("Please provide the file or directory name to remove")
-	// 		return
-	// 	}
-	// 	adret.RemoteRm(ctx.key, path)
-	// 	return
+	case "rm":
+		if !hasKey(*ctx) {
+			return
+		}
+		var path string
+		if len(blocks) == 2 {
+			path = ctx.path + "/" + blocks[1]
+		} else {
+			fmt.Println("Please provide the file or directory name to remove")
+			return
+		}
+		adret.RemoteRm(ctx.key, path)
+		return
 	case "help":
 		fmt.Println("available commands: keyconfig, keyprint, connect, ls, cat, tree")
 		return
