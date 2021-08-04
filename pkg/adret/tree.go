@@ -312,7 +312,7 @@ func RemoteGetTreeJSON() string {
 	}
 	endpoint := url + "tree"
 
-	treeJSON := remote.SendReadrequest("", endpoint)
+	treeJSON := remote.SendReadRequest("", endpoint)
 	return treeJSON
 }
 

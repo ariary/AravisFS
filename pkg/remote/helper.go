@@ -82,7 +82,7 @@ func DecodeJSONBody(w http.ResponseWriter, r *http.Request, dst interface{}) err
 }
 
 //use to decode a body for read access command (cat & ls & tree)
-func DecodeBodyRead(w http.ResponseWriter, r *http.Request, body interface{}) (err error) {
+func DecodeBody(w http.ResponseWriter, r *http.Request, body interface{}) (err error) {
 	err = DecodeJSONBody(w, r, &body)
 	if err != nil {
 		var mr *MalformedRequest

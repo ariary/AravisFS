@@ -8,6 +8,7 @@ import (
 
 	"github.com/ariary/AravisFS/pkg/encrypt"
 	"github.com/ariary/AravisFS/pkg/filesystem"
+	"github.com/ariary/AravisFS/pkg/remote"
 )
 
 //provide the patch to remove a resource on ubac side
@@ -90,8 +91,25 @@ func PrintRmPatch(key string, treeJSON string, resourceName string) {
 
 // Remove a resource on remote encrypted fs. First it retrieve tree from remote
 //Then, it forge the patch to apply and finally send it to remote (to be applied by remote ubac lister)
-func RemoteRm(key string, resourceName string) {
+func RemoteRm(key string, resourceName string) string {
+	url := os.Getenv("REMOTE_UBAC_URL")
+	if url == "" {
+		fmt.Println("Configure REMOTE_UBAC_URL envar with `adret configremote` before launching remotels. see `adret help`")
+		os.Exit(1)
+	}
+	endpoint := url + "patch"
 	//retrieve tree from remote
+	treeJSON := RemoteGetTreeJSON()
+	tree := GetTreeStructFromTreeJson(treeJSON, key)
 	//forge patch
+	patch := GetRmPatchString(key, tree, resourceName)
 	//send patch
+	bodyRes := remote.SendWriteRequest(patch, endpoint)
+
+	return bodyRes
+}
+
+func PrintRemoteRm(key string, resourceName string) {
+	result := RemoteRm(resourceName, key)
+	fmt.Println(result)
 }

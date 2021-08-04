@@ -86,7 +86,7 @@ func PrintRemotelsMessage() {
 func PrintRemotecatMessage() {
 	fmt.Println("remotecat: perform a cat on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs")
 	fmt.Println("\tuse: adret remotecat -key=<key> <resource_name>")
-	fmt.Println("\tparameters required: key (-key) use for encryption/decryption resource_name (-resource) which is the resource on which we want to perform the cat command")
+	fmt.Println("\tparameters required: key (-key) use for encryption/decryption and resource_name (-resource) which is the resource on which we want to perform the cat command")
 	fmt.Println("\t💡 Lauch ubac listener and set REMOTE_UBAC_URL envar (w/ 'adret configremote') before")
 }
 
@@ -96,6 +96,13 @@ func PrintRemotetreeMessage() {
 	fmt.Println("\tparameters required: key (-key) use for encryption/decryption ")
 	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_URL envar (w/ 'adret configremote') before"))
 	fmt.Println("\t⚠ To be able to print the tree, the fs has to be built in the same directory where the `adret encryptfs` command was run(see adret encryptfs")
+}
+
+func PrintRemotermMessage() {
+	fmt.Println("remoterm: perform a rm on a remote encrypted fs. We use ubac on listening mode to proxify our request onto the fs")
+	fmt.Println("\tuse: adret remoterm -key=<key> <resource_name>")
+	fmt.Println("\tparameters required: key (-key) use for encryption/decryption and resource_name (-resource) which is the resource on which we want to perform the cat command")
+	fmt.Println(("\t💡 Lauch ubac listener and set REMOTE_UBAC_URL envar (w/ 'adret configremote') before"))
 }
 
 //Print all help messages (all available command and their use)
@@ -151,9 +158,10 @@ func PrintHelp() {
 		"PrintRemotelsMessage":     PrintRemotelsMessage,
 		"PrintRemotecatMessage":    PrintRemotecatMessage,
 		"PrintRemotetreeMessage":   PrintRemotetreeMessage,
+		"PrintRemotermMessage":     PrintRemotermMessage,
 	}
 	// oredered them for printing
-	orderedFunctionNameRemote := []string{"PrintConfigremoteMessage", "PrintRemotelsMessage", "PrintRemotecatMessage", "PrintRemotetreeMessage"}
+	orderedFunctionNameRemote := []string{"PrintConfigremoteMessage", "PrintRemotelsMessage", "PrintRemotecatMessage", "PrintRemotetreeMessage", "PrintRemotermMessage"}
 	//print help message for all
 	PrintMapInOrder(mFunctionNameRemote, orderedFunctionNameRemote)
 }

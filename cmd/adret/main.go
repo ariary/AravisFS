@@ -61,6 +61,11 @@ func main() {
 	remotetreeCmd := flag.NewFlagSet("remotetree", flag.ExitOnError)
 	remotetreeKey := remotetreeCmd.String("key", "", "key used for encryption/decryption")
 
+	//remoterm
+	remotermCmd := flag.NewFlagSet("remoterm", flag.ExitOnError)
+	remotermResource := remotermCmd.String("resource", "", "name of the resource (in clear-text)")
+	remotermKey := remotermCmd.String("key", "", "key used for encryption/decryption")
+
 	if len(os.Args) < 2 {
 		fmt.Println("expected subcommands see 'adret help' to get help")
 		os.Exit(1)
@@ -235,6 +240,22 @@ func main() {
 			os.Exit(1)
 		}
 		adret.RemoteTree(*remotetreeKey)
+	case "remoterm":
+		remotermCmd.Parse(os.Args[2:])
+		//key parsing
+		if *remotermKey == "" {
+			fmt.Println("expected key for remoterm subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
+		//output parsing
+		if *remotermResource != "" {
+			adret.PrintRemoteRm(*remotermResource, *remotermKey)
+		} else if len(remotermCmd.Args()) != 0 {
+			adret.PrintRemoteRm(remotermCmd.Arg(0), *remotermKey)
+		} else {
+			fmt.Println("expected data to decrypt for decryptrm subcommand. see 'adret help' to get help")
+			os.Exit(1)
+		}
 	case "help":
 		adret.PrintHelp()
 	default:

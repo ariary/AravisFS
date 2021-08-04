@@ -32,7 +32,6 @@ func ApplyPatch(patch string, filename string) (err error) {
 	//apply remove resources
 	removeList := patchStruct.RemoveList
 	for i := 0; i < len(removeList); i++ {
-		fmt.Println(removeList[i])
 		resources.RemoveResourceFromName(removeList[i])
 	}
 	//apply resource adding

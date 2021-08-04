@@ -28,10 +28,10 @@ func RemoteLs(path string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//like this we could use path in RemoteLs Handler
 		var body remote.BodyRead
-		err := remote.DecodeBodyRead(w, r, &body)
+		err := remote.DecodeBody(w, r, &body)
 
 		if err != nil {
-			return
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 
 		lsContent, err := Ls(body.ResourceName, path)
@@ -52,10 +52,10 @@ func RemoteCat(path string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//read body request
 		var body remote.BodyRead
-		err := remote.DecodeBodyRead(w, r, &body)
+		err := remote.DecodeBody(w, r, &body)
 
 		if err != nil {
-			return
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 
 		catContent, err := Cat(body.ResourceName, path)
@@ -77,5 +77,28 @@ func RemoteTree(path string) http.HandlerFunc {
 		treeContent := GetTreeFromFS(path)
 
 		fmt.Fprintf(w, treeContent)
+	}
+}
+
+// handler for apply patch function (ie modification of encrypted fs). Waiting POST request with the patch on the body
+// on /patch endpoint
+// return nothing apart if there is a problem
+func RemoteApplyPatch(path string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//read body request
+		var body remote.BodyWrite
+		err := remote.DecodeBody(w, r, &body)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+
+		err = ApplyPatch(body.Patch, path)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		fmt.Fprintf(w, "encrypted filesytem changes done")
 	}
 }
