@@ -1,20 +1,17 @@
 
+
 # AravisFS 🗻🌄
 
 A remote fake encrypted filesystem  🔐 *Another non production-ready software*
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 
-| **DRAFT STAGE** - *Any idea, criticism, contribution is welcome*.  |
+| *Any idea, criticism, contribution is welcome*.  |
 |:------------------------------------------------------------------------------------------------------------------:|
 *No pretension just to learn and keep my mind busy*
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	
-
-
-
-
 
 ##  Table of contents
 
@@ -30,13 +27,13 @@ A remote fake encrypted filesystem  🔐 *Another non production-ready software*
 Providing a fake encrypted FS and utilities to interact with.  The objective is to leak as little information as possible. 
 
 The local machine is our trusted environment where we could manipulate the key, the clear-text data etc. This is our **(light side)**
- On another untrusted location we have our encrypted fs. We do not want to manipulate key or clear text but we want to be able to interact as much as possible with the encrypted fs. This is our **(dark side)**
+ On another untrusted location we have our "encrypted file system". We do not want to manipulate key or clear text but we want to be able to interact as much as possible with the encrypted fs. This is our **(dark side)**
 
 For this purpose we use 2 utilities, each on different side:
 - `adret`: Encrypt/decrypt fs etc. Deal with key & clear-text data ***(light side)***
  - `ubac`: Interact with encrypted fs. Deal with no "sensitive" data (no key & clear-text manipulation) ***(dark side)***
 
-*We accept to leak information about the fs structure (number of file/folder, size)*
+*We accept to leak information about the fs structure (number of file/folder, size)* on the dark side
 
 ***Note:*** `adretctl` offer a much clever user experience of adret utility with a CLI etc. See [usage](#-usage)
 
@@ -48,7 +45,7 @@ For this purpose we use 2 utilities, each on different side:
  - To boast of having an encrypted fs .. but practically unusable anyway
 
 **Why "fake"?**
- - Cause encryption isn't strong *(AES ECB)*
+ - Cause encryption isn't strong enough *(AES ECB)*
  - Cause it does not provide a real fs, just a representation of it. *(And to be honest it only encrypts a folder but by extension we say a filesystem)*
 
  ## 💺 Installation
@@ -74,6 +71,9 @@ Idem, to build `ubac`:
 ***REMINDER***: use `adret`/`adretctl` in an trusted environment cause it will manipulate clear-text data and key. Transfer `ubac` utility where you encrypted fs is (w/ tftp, python web server, nc, certutil, etc Be [creative](https://medium.com/@PenTest_duck/almost-all-the-ways-to-file-transfer-1bd6bf710d65))
 
  ## 🚀 Usage 
+ ### Adretctl & ubac demo
+ ![demo](https://github.com/ariary/AravisFS/blob/main/img/adretctldemo.gif)
+
 ### 🔍 Explore encrypted folder
 #### List folder content from my encrypted fs
 First I encrypt my fs :
@@ -84,7 +84,7 @@ First I encrypt my fs :
     [...]
     done! Encrypted fs saved in encrypted.arafs
 
-Then I put the result, our encrypted fs `.arafs`, and `ubac` utility on the dark zone the way I want( It  could be a target machine, my OVH server, container on GKE, etc).  I could then remove `<myfolder>`from my host, *otherwise it has real no sense*
+Then I put the result, our encrypted fs `.arafs`, and `ubac` utility on the dark zone the way I want( It  could be a target machine, my OVH server, container on GKE, etc).  I could then remove `<myfolder>`from my host, *otherwise it has real no sense* ([see](https://github.com/ariary/AravisFS/blob/main/img/encryptfs.gif) )
 
 Say I want to `ls` in ` "test/mytestfolder/titi"`, so I encrypt first the encrypt the path:
 
