@@ -198,7 +198,7 @@ it must reimplemet the already present function (`ls`, `cat`,`tree`) and add som
 |----------|----------------------------------------------------------------------|
 | keyconfig| set key use to decrypt/encrypt| 
 | keyprint| print the current key used| 
-| connect|join a remote ubac listener|
+| connect|connect to remote ubac listener|
 | cat,rm,cd,tree,ls| as we expect|  
 
 ### Target 4 - The world is yours - Manipulate FS
