@@ -170,7 +170,7 @@ func executor(in string) {
 		adret.RemoteRm(ctx.key, path)
 		return
 	case "help":
-		fmt.Println("available commands: keyconfig, keyprint, connect, ls, cat, tree")
+		fmt.Println("available commands: keyconfig, keyprint, connect, ls, cat, tree, rm")
 		return
 	case "exit":
 		fmt.Println("Bye!🕶")
