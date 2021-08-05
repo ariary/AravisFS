@@ -38,6 +38,8 @@ For this purpose we use 2 utilities, each on different side:
 
 *We accept to leak information about the fs structure (number of file/folder, size)*
 
+***Note:*** `adretctl` offer a much clever user experience of adret utility with a CLI etc. See [usage](#-usage)
+
 
 
 **Use case?**
@@ -50,9 +52,17 @@ For this purpose we use 2 utilities, each on different side:
  - Cause it does not provide a real fs, just a representation of it. *(And to be honest it only encrypts a folder but by extension we say a filesystem)*
 
  ## 💺 Installation
+
+ Clone the repo and download the dependencies locally:
+```    
+git clone https://github.com/ariary/AravisFS.git
+go mod download
+```
+
  To build `adret` :
 
      make build_adret
+    
  To build `adretctl` :
 
      make build_adretclt
@@ -61,7 +71,7 @@ Idem, to build `ubac`:
 
     make build_ubac
 
-***REMINDER***: use `adret` in an trusted environment cause it will manipulate clear-text data and key. Transfer `ubac`utility where you encrypted fs is (w/ tftp, python web server, nc, certutil, etc Be [creative](https://medium.com/@PenTest_duck/almost-all-the-ways-to-file-transfer-1bd6bf710d65))
+***REMINDER***: use `adret`/`adretctl` in an trusted environment cause it will manipulate clear-text data and key. Transfer `ubac` utility where you encrypted fs is (w/ tftp, python web server, nc, certutil, etc Be [creative](https://medium.com/@PenTest_duck/almost-all-the-ways-to-file-transfer-1bd6bf710d65))
 
  ## 🚀 Usage 
 ### 🔍 Explore encrypted folder
@@ -183,17 +193,17 @@ Build a interactive prompt CLI for adret: **`adretctl`**. It is used to dial wit
 it must reimplemet the already present function (`ls`, `cat`,`tree`) and add some more context to browse the the remote encrypted filesystem (`cd`)
 
 ### Target 4 - The world is yours - Manipulate FS
-**📍HERE WE ARE**
+
 
 #### 🌄 
 | function | parameter                   | return | use                       |
 |----------|-----------------------------|--------|---------------------------|
-| patch       | key,tree,parent_path,resource_path, action|        | provide patch that remove the resource in the fs (represented by the tree)   |
+| rmpatch       | key,tree,resource|        | provide patch that remove the resource in the fs (represented by the tree)   |
 
+the `tree` is obtained by asking it to `ubac` first
 
-`action` could be remove (`rm`), create a file (`touch`/`mkdir`), move a resource (`mv`), copy a ressource (`cp`)
+(probably mvpatch, cppatch, vimpatch)
 
-And probably theirs siblings `remotemv`  ,etc
 #### 🗻
 | function | parameter                   | return | use                       |
 |----------|-----------------------------|--------|---------------------------|
@@ -281,12 +291,10 @@ Patch is used to inform `ubac` which resources it will change. So it contains 3 
 #### Example: remove an element
 
  1. ask ubac the tree
- 2. Use adret to get the `darkenpath` of the parent directory of the resource we want to remove 
- 2. ask ubac the content of the  directory of the parent of the resource we want to remove
- 3. Ask adret the patch to delete the resource
+ 2. Ask adret the patch to delete the resource
   add to `to_delete` the resource + modify parent resource content (withdraw the resource of it) and add parent resource to `to_change`
 	 - if resource is a folder: add to `to_delete` all the resource with prefix containing <resource_to_delete_name> (ie under the directory)
- 5. Provide the the patch to ubac
+ 3. Provide the the patch to ubac, and let ubac apply it
 
 ## 💭Limits/improvements
 - `adret` encrypt using AES ECB (attack possible). *A more robust AES encryption scheme change the nonce at each encryption => for the same input different outputs at each encryption. It is a problem as darkenpath must provide the same path encrypted as the initial encyrption (when we encrypt the fs)*
