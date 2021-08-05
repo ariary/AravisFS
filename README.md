@@ -74,6 +74,9 @@ Idem, to build `ubac`:
  ### Adretctl & ubac demo
  ![demo](https://github.com/ariary/AravisFS/blob/main/img/adretctldemo.gif)
 
+*In this demo, I have an encrypted fs (encrypt with key "toto") on the non trusted zone. `ubac listen` expose it and with `adretctl` I will join it to browse it, cat file and delete a directory*
+See [adretctl spec](#target-3---to-the-infinite---interactive-prompt-w-fs-cli)
+
 ### 🔍 Explore encrypted folder
 #### List folder content from my encrypted fs
 First I encrypt my fs :
@@ -84,7 +87,7 @@ First I encrypt my fs :
     [...]
     done! Encrypted fs saved in encrypted.arafs
 
-Then I put the result, our encrypted fs `.arafs`, and `ubac` utility on the dark zone the way I want( It  could be a target machine, my OVH server, container on GKE, etc).  I could then remove `<myfolder>`from my host, *otherwise it has real no sense* ([see](https://github.com/ariary/AravisFS/blob/main/img/encryptfs.gif) )
+Then I put the result, our encrypted fs `.arafs`, and `ubac` utility on the dark zone the way I want( It  could be a target machine, my OVH server, container on GKE, etc).  I could then remove `<myfolder>`from my host, *otherwise it has real no sense* (see [example](https://github.com/ariary/AravisFS/blob/main/img/encryptfs.gif))
 
 Say I want to `ls` in ` "test/mytestfolder/titi"`, so I encrypt first the encrypt the path:
 
@@ -187,10 +190,16 @@ Use `-mv`, `-touch` etc the same way you could use it in unix system
 |----------|-----------|--------|----------------------------------------------------------------------|
 | listen   | port      |        | Act like a server. Wait for request from ubac, process it, return it |
 
-### Target 4 - to the infinite - Interactive prompt w/ FS (CLI)
+### Target 3 - to the infinite - Interactive prompt w/ FS (CLI)
 Build a interactive prompt CLI for adret: **`adretctl`**. It is used to dial with an `ubac` listener in an interactive way.
 
-it must reimplemet the already present function (`ls`, `cat`,`tree`) and add some more context to browse the the remote encrypted filesystem (`cd`)
+it must reimplemet the already present function (`ls`, `cat`,`tree`) and add some more context to browse the the remote encrypted filesystem (`cd`).
+| function |  use                                                                  |
+|----------|----------------------------------------------------------------------|
+| keyconfig| set key use to decrypt/encrypt| 
+| keyprint| print the current key used| 
+| connect|join a remote ubac listener|
+| cat,rm,cd,tree,ls| as we expect|  
 
 ### Target 4 - The world is yours - Manipulate FS
 
