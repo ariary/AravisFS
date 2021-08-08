@@ -42,6 +42,7 @@ For this purpose we use 2 utilities, each on different side:
 **Use case?**
  - To avoid your volume being spied on by your cloud provider
  - To make a temporary folder/fs on a target machine if you are a black hat and you do not want to be spied on by forensic people. Or if you want to hide a payload.
+ - To get a manipulable ransomware 
  - To boast of having an encrypted fs .. but practically unusable anyway
 
 **Why "fake"?**
