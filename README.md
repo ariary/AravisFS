@@ -76,7 +76,12 @@ Idem, to build `ubac`:
  ![demo](https://github.com/ariary/AravisFS/blob/main/img/adretctldemo.gif)
 
 *In this demo, I have an encrypted fs (encrypt with key "toto") on the non trusted zone. `ubac listen` expose it and interact with it using `adretctl` : browse it, cat file and delete a directory*
+
 See [adretctl spec](#target-3---to-the-infinite---interactive-prompt-w-fs-cli)
+
+### 🔒 Encrypt folder/fs
+
+![demo encrypt](https://github.com/ariary/AravisFS/blob/main/img/encryptfs.gif)
 
 ### 🔍 Explore encrypted folder
 #### List folder content from my encrypted fs
