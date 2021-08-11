@@ -158,9 +158,22 @@ Launch ` ubac` listener and config local host wit `adret` like [above](#list-fol
 
 ### ✂️ Manipulate encrypted fs
 #### Remove a file from encrypted fs
-    (remote) ubac -rm darkpath myencryptedfs.arafs
- 
-Use `-mv`, `-touch` etc the same way you could use it in unix system
+
+First retrieve encrypted tree from encrypted fs:
+
+    (remote) ubac tree test/arafs/medium.arafs
+    **We obtain the encrypted tree result! COPY THE RESULT**
+
+Then get a patch (which describes the changes you want to make):
+```
+(local) adret rmpatch -key=toto -tree=<output_ubac_tree> <resource_I_want_to_remove>
+***WE OBTAIN A PATCH COPY IT***
+```
+
+Then apply the patch onto the encrypted fs
+```
+(remote) ubac applypatch -path=encrypted.arafs <my_patch>
+``` 
 
 ## 📝 Spec
 ### Target 1 - MVP - Basic utility on FS
@@ -223,8 +236,6 @@ the `tree` is obtained by asking it to `ubac` first
 | function | parameter                   | return | use                       |
 |----------|-----------------------------|--------|---------------------------|
 | applypatch| encrypted_fs, patch|        | apply a patch onto the encrypted fs    |
-
-
 
 
 
