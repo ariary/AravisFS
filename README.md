@@ -81,7 +81,7 @@ See [adretctl spec](#target-3---to-the-infinite---interactive-prompt-w-fs-cli)
 
 ### 🔒 Encrypt folder/fs
 
-![demo encrypt](https://github.com/ariary/AravisFS/blob/main/img/encryptfs.gif)
+See [demo encrypt (.GIF)](https://github.com/ariary/AravisFS/blob/main/img/encryptfs.gif)
 
 ### 🔍 Explore encrypted folder
 #### List folder content from my encrypted fs
