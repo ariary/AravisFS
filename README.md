@@ -55,6 +55,7 @@ For this purpose we use 2 utilities, each on different side:
 ```    
 git clone https://github.com/ariary/AravisFS.git
 go mod download
+go mod vendor
 ```
 
  To build `adret` :
