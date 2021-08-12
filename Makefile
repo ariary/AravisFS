@@ -15,23 +15,26 @@ ifdef params
   $(eval $(RUN_ARGS):;@:)
 endif
 
-build_adret:
+before.build:
+	go mod download && go mod vendor
+
+build.adret:
 	@echo "build in ${PWD}";go build -o adret cmd/adret/main.go
 
-build_adretctl:
+build.adretctl:
 	@echo "build in ${PWD}";go build -o adretctl cmd/adretctl/main.go
 
-build_ubac:
+build.ubac:
 	@echo "build in ${PWD}";go build -o ubac cmd/ubac/main.go
 
-debug_adret:
+debug.adret:
 	@dlv debug github.com/ariary/AravisFS/cmd/adret -- $(RUN_ARGS)
 
-debug_ubac:
+debug.ubac:
 	@dlv debug github.com/ariary/AravisFS/cmd/ubac -- $(RUN_ARGS)
 
-test_adret:
+test.adret:
 	@echo "test adret";go test pkg/test/adret/adret_test.go
 
-test_ubac:
+test.ubac:
 	@echo "test ubac";go test pkg/test/ubac/ubac_test.go

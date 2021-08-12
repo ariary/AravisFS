@@ -54,21 +54,20 @@ For this purpose we use 2 utilities, each on different side:
  Clone the repo and download the dependencies locally:
 ```    
 git clone https://github.com/ariary/AravisFS.git
-go mod download
-go mod vendor
+make before.build
 ```
 
  To build `adret` :
 
-     make build_adret
+     make build.adret
     
  To build `adretctl` :
 
-     make build_adretclt
+     make build.adretclt
 	    
 Idem, to build `ubac`:
 
-    make build_ubac
+    make build.ubac
 
 ***REMINDER***: use `adret`/`adretctl` in an trusted environment cause it will manipulate clear-text data and key. Transfer `ubac` utility where you encrypted fs is (w/ tftp, python web server, nc, certutil, etc Be [creative](https://medium.com/@PenTest_duck/almost-all-the-ways-to-file-transfer-1bd6bf710d65))
 
