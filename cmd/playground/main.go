@@ -3,106 +3,23 @@ package main
 import (
 	"fmt"
 
-	"github.com/ariary/AravisFS/pkg/adret"
-	"github.com/ariary/AravisFS/pkg/ubac"
+	"github.com/ariary/AravisFS/pkg/encrypt"
 )
 
-// test
-// ├── ansible
-// │   ├── bullit_conf					// "\t "
-// │   │   ├── brain.txt
-// │   │   ├── bullit_conf.yml.j2
-// │   │   ├── fuldir
-// │	 │   |	 ├── toto.c
-// │   │   |	 └── bullit.yml
-// │   │   └── bullit.yml
-// │   ├── cat.yaml
-// │   ├── kube-hunter.yaml
-// │   ├── report.j2
-// │   ├── result.json
-// │   ├── run.sh
-// │   ├── toto.log
-// │   ├── slice
-// │   |	 ├── slice2
-// │   |	 |	 └── slice3
-// │   |	 └── slice2bis
-// │	 │    	 ├── toto.c
-// │   |       └── slice2bis.txt
-// ├── go
-// │   ├── hello-world
-// │   ├── hello-world.go
-// │   └── slice.go
-// └── pentest
-//     └── ftp-server.py
-
 func main() {
-	resources := make(map[string]string)
-	resources["test"] = "directory"
-	resources["test/ansible"] = "directory"
-	resources["test/ansible/toto.log"] = "file"
-	resources["test/ansible/run.sh"] = "file"
-	resources["test/ansible/bullit_conf/notemptydir"] = "directory"
-	resources["test/ansible/bullit_conf/notemptydir/brain.txt"] = "file"
-	resources["test/ansible/bullit_conf/notemptydir/emptydir"] = "directory"
-	resources["test/ansible/cat.yaml"] = "file"
-	resources["test/ansible/kube-hunter.yaml"] = "file"
-	resources["test/ansible/bullit_conf"] = "directory"
-	resources["test/ansible/bullit_conf/bullit.yml"] = "file"
-	resources["test/ansible/bullit_conf/bullit_conf.yml.j2"] = "file"
-	resources["test/ansible/bullit_conf/emptydir"] = "directory"
-	resources["test/ansible/bullit_conf/brain.txt"] = "file"
-	resources["test/ansible/result.json"] = "file"
-	resources["test/ansible/report.j2"] = "file"
-	resources["test/ansible/slice"] = "directory"
-	resources["test/ansible/slice/slice2"] = "directory"
-	resources["test/ansible/slice/slice2/slice3"] = "directory"
-	resources["test/ansible/slice/slice2bis"] = "directory"
-	resources["test/ansible/slice/slice2bis/toto.c"] = "file"
-	resources["test/ansible/slice/slice2bis/slice2bis.txt"] = "file"
-	resources["test/ansible/bullit_conf/hello_world"] = "file"
-	resources["test/go"] = "directory"
-	resources["test/go/slice.go"] = "file"
-	resources["test/go/hello-world.go"] = "file"
-	resources["test/pentest"] = "directory"
-	resources["test/pentest/ftp-server.py"] = "file"
+	key := "toto955748deded!"
+	path := "referfref541fe8r4er84ferfer7%58s\""
+	pathEnc := encrypt.Encrypt([]byte(path), key)
+	fmt.Println("pathEnc:", string(pathEnc))
+	pathDec := encrypt.DecryptByte(pathEnc, key)
+	fmt.Println("pathDec:", string(pathDec))
 
-	//tree := adret.GetTreeStructFromResourcesMap(resources)
-	//print tree struct test
-	// treeJSON, _ := json.Marshal(tree)
-	// fmt.Println(string(treeJSON))
+	pathEnc2 := encrypt.Encrypt([]byte(path), key)
+	fmt.Println("pathEnc2:", string(pathEnc2))
 
-	//isDir
-	// dir := adret.IsDir("test/pentest", tree.Nodes)
-	// notdir := adret.IsDir("test/ansible/slice/slice2bis/slice2bis.txt", tree.Nodes)
-	// fmt.Println("dir:", dir, "not dir:", notdir)
-
-	//GetRmPatch
-	// patch := adret.GetRmPatch("toto", tree, "test/ansible/bullit_conf")
-	// fmt.Println("Remove list:", patch.RemoveList)
-	// fmt.Println("Change map:", patch.ChangeMap)
-	// fmt.Println("Add list:", patch.AddList)
-	// fmt.Println()
-	// patch2 := adret.GetRmPatch("toto", tree, "test/ansible/report.j2")
-	// fmt.Println("Remove list:", patch2.RemoveList)
-	// fmt.Println("Change map:", patch2.ChangeMap)
-	// fmt.Println("Add list:", patch2.AddList)
-	// fmt.Println()
-	// patch3 := adret.GetRmPatch("toto", tree, "test/")
-	// fmt.Println("Remove list:", patch3.RemoveList)
-	// fmt.Println("Change map:", patch3.ChangeMap)
-	// fmt.Println("Add list:", patch3.AddList)
-
-	// patch_string := adret.GetRmPatchString("toto", tree, "test/ansible/bullit_conf")
-
-	//Apply
-	treeJSON := ubac.GetTreeFromFS("encrypted.arafs")
-	tree := adret.GetTreeStructFromTreeJson(treeJSON, "toto")
-	fmt.Println("tree:", tree)
-	patch := adret.GetRmPatchString("toto", tree, "test/mytestfolder/titi")
-	fmt.Println(patch)
-	ubac.ApplyPatch(patch, "encrypted.arafs")
-	treeJSONAfter := ubac.GetTreeFromFS("encrypted.arafs")
-	treeAfter := adret.GetTreeStructFromTreeJson(treeJSONAfter, "toto")
-	fmt.Println("tree after:", treeAfter)
-
+	pathEncN, nonce := encrypt.EncryptAndGetNonce([]byte(path), key)
+	fmt.Println("pathEncN:", string(pathEncN))
+	fmt.Println("nonce:", string(nonce))
+	pathEncWithNonce := encrypt.EncryptWithNonce([]byte(path), nonce, key)
+	fmt.Println("pathEncN==pathEncWithNonce:", string(pathEncN) == string(pathEncWithNonce))
 }

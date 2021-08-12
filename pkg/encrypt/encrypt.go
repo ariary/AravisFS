@@ -4,9 +4,11 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/md5"
+	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"path/filepath"
 )
@@ -17,6 +19,35 @@ func createHash(key string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(key))
 	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func EncryptAndGetNonce(data []byte, key string) (ciphertext []byte, nonce []byte) {
+	block, _ := aes.NewCipher([]byte(createHash(key)))
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		panic(err.Error())
+	}
+	nonce = make([]byte, gcm.NonceSize())
+	// /!\ AES encryption must be used we a unique nonce at each encryption
+	// Here we don't want a different output for the same input that's why
+	// (ie. AES ECB)
+	// BUT IT IS UNSECURE !!(https://zachgrace.com/posts/attacking-ecb/)
+	//uncomment this part to have a unique nonce each time
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		panic(err.Error())
+	}
+	ciphertext = gcm.Seal(nonce, nonce, data, nil)
+	return ciphertext, nonce
+}
+
+func EncryptWithNonce(data []byte, nonce []byte, key string) (ciphertext []byte) {
+	block, _ := aes.NewCipher([]byte(createHash(key)))
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		panic(err.Error())
+	}
+	ciphertext = gcm.Seal(nonce, nonce, data, nil)
+	return ciphertext
 }
 
 func Encrypt(data []byte, key string) []byte {
@@ -31,9 +62,9 @@ func Encrypt(data []byte, key string) []byte {
 	// (ie. AES ECB)
 	// BUT IT IS UNSECURE !!(https://zachgrace.com/posts/attacking-ecb/)
 	//uncomment this part to have a unique nonce each time
-	// if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-	// 	panic(err.Error())
-	// }
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		panic(err.Error())
+	}
 	ciphertext := gcm.Seal(nonce, nonce, data, nil)
 	return ciphertext
 }
