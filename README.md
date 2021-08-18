@@ -323,7 +323,7 @@ Patch is used to inform `ubac` which resources it will change. So it contains 3 
  3. Provide the the patch to ubac, and let ubac apply it
 
 ## 💭Limits/improvements
-- `adret` encrypt using AES ECB (attack possible). *A more robust AES encryption scheme change the nonce at each encryption => for the same input different outputs at each encryption. It is a problem as darkenpath must provide the same path encrypted as the initial encyrption (when we encrypt the fs)*
+- `adret` encrypt using AES ECB (attack possible). *A more robust AES encryption scheme change the nonce at each encryption => for the same input different outputs at each encryption. It is a problem as darkenpath must provide the same path encrypted as the initial encryption (when we encrypt the fs)*
 - you can't encrypt a filesystem w/ a folder/file having `'\'` in its name. *It is due to the way we encapsulate resource in directory content*
 - you can't perform "`ls .`". *As we search for resource with its exact name we do not have `.` resource from now*
 - launch `adret` in the same directory of the fs you want to encrypt *Otherwise it will keep prefix like "../" etc, (see filesystem.GetDirectoryContent)*
