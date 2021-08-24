@@ -1,8 +1,8 @@
 
-
 # AravisFS 🗻🌄
-
+<p align="center">
 A remote fake encrypted filesystem  🔐 *Another non production-ready software*
+</p>
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 
@@ -49,7 +49,7 @@ For this purpose we use 2 utilities, each on different side:
  - Cause encryption isn't strong enough *(AES ECB)*
  - Cause it does not provide a real fs, just a representation of it. *(And to be honest it only encrypts a folder but by extension we say a filesystem)*
 
- ## 💺 Installation
+## 💺 Installation
 
  Clone the repo and download the dependencies locally:
 ```    
@@ -71,8 +71,8 @@ Idem, to build `ubac`:
 
 ***REMINDER***: use `adret`/`adretctl` in an trusted environment cause it will manipulate clear-text data and key. Transfer `ubac` utility where you encrypted fs is (w/ tftp, python web server, nc, certutil, etc Be [creative](https://medium.com/@PenTest_duck/almost-all-the-ways-to-file-transfer-1bd6bf710d65))
 
- ## 🚀 Usage 
- ### Adretctl & ubac demo
+## 🚀 Usage 
+### Adretctl & ubac demo
  ![demo](https://github.com/ariary/AravisFS/blob/main/img/adretctldemo.gif)
 
 *In this demo, I have an encrypted fs (encrypt with key "toto") on the non trusted zone. `ubac listen` expose it and interact with it using `adretctl` : browse it, cat file and delete a directory*
@@ -84,7 +84,8 @@ See [adretctl spec](#target-3---to-the-infinite---interactive-prompt-w-fs-cli)
 See [demo encrypt (.GIF)](https://github.com/ariary/AravisFS/blob/main/img/encryptfs.gif)
 
 ### 🔍 Explore encrypted folder
-#### List folder content from my encrypted fs
+<details>
+<summary><h4>List folder content from my encrypted fs</h4></summary>
 First I encrypt my fs :
 
     (local) $ adret encryptfs -key=<secret> <path>
@@ -109,7 +110,8 @@ And finally decrypt the result of ls:
 
     (local) $ adret decryptls -key="toto"
     tutu tutu.txt utut.txt
-	
+</details>
+
 #### Print file content from my encrypted fs
 Idem as above with `ls` but change the `ubac` command with:
 
@@ -331,3 +333,4 @@ Patch is used to inform `ubac` which resources it will change. So it contains 3 
 	- Workaround for `ARG_MAX` length: Save the arg in file and pass it with `$(cat <FILE>)`
 - file permissions
 - CLi flag and command parsing is homemade (see [cobra](https://github.com/spf13/cobra) to improve/facilitate)
+
