@@ -140,6 +140,7 @@ If you want to interact with your remote encrypted fs more fluidly
  - remote is accesible on port `<ip>:<port>`
  - `adret` on local 
  - have the `key` which encrypt the fs
+
 <details>
 	<summary>List folder content from remote encrypted fs</summmary>
 Start your `ubac` listener on the remote where the encrypted fs is :
@@ -155,6 +156,7 @@ I can now interact directly with my encrypted fs on my local machine and obtain 
 
     (remote) $ adret remotels -key=toto test/mytestfolder
 </details>
+
 <details>
 	<summary>List folder content from remote encrypted fs</summary>
 Launch ` ubac` listener and config local host wit `adret` like [above](#list-folder-content-from-remote-encrypted-fs) and launch `remotecat`:
