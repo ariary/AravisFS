@@ -167,8 +167,8 @@ I can now interact directly with my encrypted fs on my local machine and obtain 
 </details>
 
 <details>
-	<summary>print file content from remote encrypted fs</summary>
-Launch ` ubac` listener and config local host wit `adret` like <a href="#list-folder-content-from-remote-encrypted-fs">above</a> and launch `remotecat`:
+	<summary>Print file content from remote encrypted fs</summary>
+	Launch <code>ubac</code> listener and config local host wit `adret` like <a href="#list-folder-content-from-remote-encrypted-fs">above</a> and launch `remotecat`:
 
     (remote) $ adret remotecat -key=toto test/mytestfolder/toto.txt
 </details>
