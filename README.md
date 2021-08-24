@@ -13,14 +13,24 @@
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	
 
-##  Table of contents
+----
 
- - [🔦 Idea](#-idea)
- - [💺 Installation](#-installation)
- - [🚀 Usage](#-usage)
- - [📝 Spec](#-spec)
- - [🧙 How does it work?](#-how-does-it-work)
- - [💭Limits/improvements](#limitsimprovements)
+<p align="center">
+<strong><a href="#-idea">🔦 Idea</a></strong>
+|
+<strong><a href="#-installation">💺 Installation</a></strong>
+|
+<strong><a href="#-usage">🚀 Usage</a></strong>
+|
+<strong><a href="#-spec">📝 Spec</a></strong>
+|
+<strong><a href="#-how-does-it-work">🧙 How does it work?</a></strong>
+|
+<strong><a href="#limitsimprovements">💭Limits/improvements</a></strong>
+</p>
+
+----
+
 	
 ## 🔦 Idea
 **Aim?**
@@ -142,7 +152,7 @@ If you want to interact with your remote encrypted fs more fluidly
  - have the `key` which encrypt the fs
 
 <details>
-	<summary>List folder content from remote encrypted fs</summmary>
+<summary>List folder content from remote encrypted fs</summary>
 Start your `ubac` listener on the remote where the encrypted fs is :
 
     (remote) $ ubac listen -path="./test/arafs/encrypted.arafs" 4444
