@@ -6,10 +6,8 @@
 
 <div align="center">
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
-	
 	Any idea, criticism, contribution is welcome.</i>/th>
 	No pretension just to learn and keep my mind busy</th>
-
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 </div>
 	
