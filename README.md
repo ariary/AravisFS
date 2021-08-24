@@ -5,8 +5,8 @@
 </p>
 
 <div align="center">
-	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 
+	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	Any idea, criticism, contribution is welcome
 	No pretension just to learn and keep my mind busy
 </div>
