@@ -85,7 +85,7 @@ See [demo encrypt (.GIF)](https://github.com/ariary/AravisFS/blob/main/img/encry
 
 ### 🔍 Explore encrypted folder
 <details>
-	<summary><br>List folder content from my encrypted fs</br></summary>
+	<summary>List folder content from my encrypted fs</summary>
 First I encrypt my fs :
 
     (local) $ adret encryptfs -key=<secret> <path>
@@ -112,12 +112,14 @@ And finally decrypt the result of ls:
     tutu tutu.txt utut.txt
 </details>
 
-#### Print file content from my encrypted fs
+<details>
+	<summary>Print file content from my encrypted fs</summary>
 Idem as above with `ls` but change the `ubac` command with:
 
     (remote) ubac cat -path=myencryptedfs.arafs <encryptedpath_from_adret>
-
-#### Print  encrypted fs tree
+</details>
+<details>
+	<summary>Print  encrypted fs tree</summary>
 First retrieve encrypted tree from encrypted fs:
 
     (remote) ubac tree test/arafs/medium.arafs
@@ -126,7 +128,7 @@ First retrieve encrypted tree from encrypted fs:
   Then decrypt it to print it with (assume the fs was encrypted with the key "toto"):
 
       (local) $ adret decrypttree -key="toto" <encryptedtree_from_ubac>
-
+</details>
    
 
 ### 🤖 Automate a bit 
@@ -138,8 +140,8 @@ If you want to interact with your remote encrypted fs more fluidly
  - remote is accesible on port `<ip>:<port>`
  - `adret` on local 
  - have the `key` which encrypt the fs
-
-#### List folder content from remote encrypted fs
+<details>
+	<summary>List folder content from remote encrypted fs</summmary>
 Start your `ubac` listener on the remote where the encrypted fs is :
 
     (remote) $ ubac listen -path="./test/arafs/encrypted.arafs" 4444
@@ -152,14 +154,17 @@ An local machine configure your environment variable to dial with remote ubac li
 I can now interact directly with my encrypted fs on my local machine and obtain direct result:
 
     (remote) $ adret remotels -key=toto test/mytestfolder
-
-#### List folder content from remote encrypted fs
+</details>
+<details>
+	<summary>List folder content from remote encrypted fs</summary>
 Launch ` ubac` listener and config local host wit `adret` like [above](#list-folder-content-from-remote-encrypted-fs) and launch `remotecat`:
 
     (remote) $ adret remotecat -key=toto test/mytestfolder/toto.txt
-
+</details>
+	
 ### ✂️ Manipulate encrypted fs
-#### Remove a file from encrypted fs
+<details>
+	<summary>Remove a file from encrypted fs</summary>
 
 First retrieve encrypted tree from encrypted fs:
 
@@ -176,7 +181,8 @@ Then apply the patch onto the encrypted fs
 ```
 (remote) ubac applypatch -path=encrypted.arafs <my_patch>
 ``` 
-
+</details>
+	
 ## 📝 Spec
 ### Target 1 - MVP - Basic utility on FS
 
