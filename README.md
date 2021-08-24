@@ -7,7 +7,6 @@
 <div align="center">
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	<table>
-	    <caption>banner</caption>
 	    <tr>
 		    <th scope="col"><i>Any idea, criticism, contribution is welcome.</i>/th>
 	    </tr>
