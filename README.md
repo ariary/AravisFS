@@ -123,7 +123,8 @@ And finally decrypt the result of ls:
 
 <details>
 	<summary>Print file content from my encrypted fs</summary>
-Idem as above with `ls` but change the `ubac` command with:
+
+	Idem as above with `ls` but change the `ubac` command with:
 
     (remote) ubac cat -path=myencryptedfs.arafs <encryptedpath_from_adret>
 </details>
