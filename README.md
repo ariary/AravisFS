@@ -6,6 +6,7 @@
 
 <div align="center">
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
+	
 	<table>
 	    <tr>
 		    <th scope="col"><i>Any idea, criticism, contribution is welcome.</i>/th>
