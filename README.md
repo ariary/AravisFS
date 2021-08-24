@@ -7,14 +7,9 @@
 <div align="center">
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	
-	<table>
-	    <tr>
-		    <th scope="col"><i>Any idea, criticism, contribution is welcome.</i>/th>
-	    </tr>
-	    <tr>
-		<th scope="row">No pretension just to learn and keep my mind busy</th>
-	    </tr>
-	</table>
+	Any idea, criticism, contribution is welcome.</i>/th>
+	No pretension just to learn and keep my mind busy</th>
+
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 </div>
 	
