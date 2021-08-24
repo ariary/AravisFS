@@ -8,7 +8,7 @@
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 	Any idea, criticism, contribution is welcome
-	No pretension just to learn and keep my mind busy
+	No pretention just to learn and keep my mind busy
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 </div>
 	
