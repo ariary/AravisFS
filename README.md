@@ -6,7 +6,8 @@
 
 <div align="center">
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
-	Any idea, criticism, contribution is welcome.
+
+	Any idea, criticism, contribution is welcome
 	No pretension just to learn and keep my mind busy
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 </div>
