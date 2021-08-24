@@ -1,7 +1,7 @@
 
-# AravisFS 🗻🌄
+<h1 align="center"> AravisFS 🗻🌄</h1>
 <p align="center">
-A remote fake encrypted filesystem  🔐 *Another non production-ready software*
+	A remote fake encrypted filesystem  🔐 <i>Another non production-ready software</i>
 </p>
 
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
