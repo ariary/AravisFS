@@ -4,15 +4,20 @@
 	A remote fake encrypted filesystem  🔐 <i>Another non production-ready software</i>
 </p>
 
+<div align="center">
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
-
-| *Any idea, criticism, contribution is welcome*.  |
-|:------------------------------------------------------------------------------------------------------------------:|
-*No pretension just to learn and keep my mind busy*
-
+	<table>
+	    <caption>banner</caption>
+	    <tr>
+		    <th scope="col"><i>Any idea, criticism, contribution is welcome.</i>/th>
+	    </tr>
+	    <tr>
+		<th scope="row">No pretension just to learn and keep my mind busy</th>
+	    </tr>
+	</table>
 	🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
+</div>
 	
-
 ----
 
 <p align="center">
