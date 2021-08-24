@@ -85,7 +85,7 @@ See [demo encrypt (.GIF)](https://github.com/ariary/AravisFS/blob/main/img/encry
 
 ### 🔍 Explore encrypted folder
 <details>
-<summary>List folder content from my encrypted fs</summary>
+	<summary><br>List folder content from my encrypted fs</br></summary>
 First I encrypt my fs :
 
     (local) $ adret encryptfs -key=<secret> <path>
