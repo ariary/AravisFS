@@ -35,8 +35,9 @@
 **Aim?**
 Providing a fake encrypted FS and utilities to interact with.  The objective is to leak as little information as possible. 
 
-The local machine is our trusted environment where we could manipulate the key, the clear-text data etc. This is our **(light side)**
- On another untrusted location we have our "encrypted file system". We do not want to manipulate key or clear text but we want to be able to interact as much as possible with the encrypted fs. This is our **(dark side)**
+The local machine is our trusted environment where we could manipulate the key, the clear-text data etc. This is our **(light side)**.
+
+ On another untrusted location we have our "encrypted file system". We do not want to manipulate key or clear text but we want to be able to interact as much as possible with the encrypted fs. This is our **(dark side)**.
 
 For this purpose we use 2 utilities, each on different side:
 - `adret`: Encrypt/decrypt fs etc. Deal with key & clear-text data ***(light side)***
