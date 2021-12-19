@@ -37,7 +37,7 @@ Providing a fake encrypted FS and utilities to interact with.  The objective is 
 
 The local machine is our trusted environment where we could manipulate the key, the clear-text data etc. This is our **(light side)**.
 
- On another untrusted location we have our "encrypted file system". We do not want to manipulate key or clear text but we want to be able to interact as much as possible with the encrypted fs. This is our **(dark side)**.
+ On another untrusted location we have our "encrypted file system". We do not want to manipulate key or clear text but we want to be able to interact as much as possible with the encrypted fs. This is our **(dark side)**. Practically, it is a cloud space (or any other space when we want to store data without being spied on. On compromise machine during a Pentest for example)
 
 For this purpose we use 2 utilities, each on different side:
 - `adret`: Encrypt/decrypt fs etc. Deal with key & clear-text data ***(light side)***
