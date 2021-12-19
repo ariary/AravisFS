@@ -303,7 +303,7 @@ Previously we have our `ubac` listener launch on an accesible port on remote and
  1. `remotecat  -key=<key> path/to/file`
  2. The path is encrypted using the `darkenpath`function ~~> `darkenedpath`
  3. The adret send a request to the ubac listener to perform a `cat` with `darkenedpath`
- 4. The ubec listener perform the cat and return the encrypted result to `adret`
+ 4. The ubac listener perform the cat and return the encrypted result to `adret`
  5. `adret` decrypt it and print the result
 
 ### How does the fs is modified ?
@@ -317,7 +317,7 @@ As the encrypted FS is represented in a JSON file format and `ubac` has no ackno
  6. Provide the patch to `ubac` to apply it on the FS
 
 ##### Tree
-Tree is a containaing all the Resource in the ecrypted fs. It is a `Node` list
+Tree is a structure containaing all the Resource in the ecrypted fs. It is a `Node` list
 
 A `Node` on ubac side is:
 |  |  |
