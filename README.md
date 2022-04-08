@@ -21,8 +21,6 @@
 |
 <strong><a href="#-usage">🚀 Usage</a></strong>
 |
-<strong><a href="#-spec">📝 Spec</a></strong>
-|
 <strong><a href="#-how-does-it-work">🧙 How does it work?</a></strong>
 |
 <strong><a href="#limitsimprovements">💭Limits/improvements</a></strong>
