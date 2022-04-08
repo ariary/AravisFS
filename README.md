@@ -53,6 +53,7 @@ For this purpose we use 2 utilities, each on different side:
  - To avoid your volume being spied on by your cloud provider
  - To make a temporary folder/fs on a target machine if you are a black hat and you do not want to be spied on by forensic people. Or if you want to hide a payload.
  - To get a manipulable ransomware 
+ - To share data with colleague without setting up a hardened db or others. (just share and update `.arfs` file)
  - To boast of having an encrypted fs .. but practically unusable anyway
 
 **Why "fake"?**
